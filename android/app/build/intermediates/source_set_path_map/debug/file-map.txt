@@ -1,0 +1,42 @@
+com.foreplay.app-pngs-0 /Users/nadavimergreen/ Final project /ForePlay/android/app/build/generated/res/pngs/debug
+com.foreplay.app-resValues-1 /Users/nadavimergreen/ Final project /ForePlay/android/app/build/generated/res/resValues/debug
+com.foreplay.app-packageDebugResources-2 /Users/nadavimergreen/ Final project /ForePlay/android/app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.foreplay.app-packageDebugResources-3 /Users/nadavimergreen/ Final project /ForePlay/android/app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.foreplay.app-merged_res-4 /Users/nadavimergreen/ Final project /ForePlay/android/app/build/intermediates/merged_res/debug
+com.foreplay.app-debug-5 /Users/nadavimergreen/ Final project /ForePlay/android/app/src/debug/res
+com.foreplay.app-main-6 /Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/res
+com.foreplay.app-packaged_res-7 /Users/nadavimergreen/ Final project /ForePlay/node_modules/react-native-gesture-handler/android/build/intermediates/packaged_res/debug
+com.foreplay.app-packaged_res-8 /Users/nadavimergreen/ Final project /ForePlay/node_modules/react-native-safe-area-context/android/build/intermediates/packaged_res/debug
+com.foreplay.app-packaged_res-9 /Users/nadavimergreen/ Final project /ForePlay/node_modules/react-native-screens/android/build/intermediates/packaged_res/debug
+com.foreplay.app-jetified-emoji2-views-helper-1.2.0-10 /Users/nadavimergreen/.gradle/caches/transforms-3/01f70cbc806641ddb112b99069838ff7/transformed/jetified-emoji2-views-helper-1.2.0/res
+com.foreplay.app-jetified-viewpager2-1.0.0-11 /Users/nadavimergreen/.gradle/caches/transforms-3/0fcf44a3d628dbc4f61f2c4e38bdf17e/transformed/jetified-viewpager2-1.0.0/res
+com.foreplay.app-jetified-savedstate-1.2.0-12 /Users/nadavimergreen/.gradle/caches/transforms-3/1110bf3974d125ac9cfd7b70239045cf/transformed/jetified-savedstate-1.2.0/res
+com.foreplay.app-appcompat-1.6.1-13 /Users/nadavimergreen/.gradle/caches/transforms-3/1744d026f98b08eb3d7bcc4d40e83212/transformed/appcompat-1.6.1/res
+com.foreplay.app-jetified-autofill-1.1.0-14 /Users/nadavimergreen/.gradle/caches/transforms-3/27bb3214162b8ac5e716dff51f13cc01/transformed/jetified-autofill-1.1.0/res
+com.foreplay.app-jetified-activity-1.6.0-15 /Users/nadavimergreen/.gradle/caches/transforms-3/4e36e7a49082f041c8ea81c798d70d68/transformed/jetified-activity-1.6.0/res
+com.foreplay.app-cardview-1.0.0-16 /Users/nadavimergreen/.gradle/caches/transforms-3/51e23da8ae092d3ed391de11b3677da8/transformed/cardview-1.0.0/res
+com.foreplay.app-jetified-emoji2-1.2.0-17 /Users/nadavimergreen/.gradle/caches/transforms-3/55ea674e057d47d0d7b4f8ae7879b167/transformed/jetified-emoji2-1.2.0/res
+com.foreplay.app-sqlite-2.2.0-18 /Users/nadavimergreen/.gradle/caches/transforms-3/5db91e55aa55ea910934cc2fb83da0d6/transformed/sqlite-2.2.0/res
+com.foreplay.app-lifecycle-livedata-core-2.5.1-19 /Users/nadavimergreen/.gradle/caches/transforms-3/5e23fb87971a731fb94a79691aa91eba/transformed/lifecycle-livedata-core-2.5.1/res
+com.foreplay.app-material-1.9.0-20 /Users/nadavimergreen/.gradle/caches/transforms-3/6a4d6cecabd0df7671dacef61453a172/transformed/material-1.9.0/res
+com.foreplay.app-jetified-drawee-3.1.3-21 /Users/nadavimergreen/.gradle/caches/transforms-3/70856301f82d811a410b44fb26a65f53/transformed/jetified-drawee-3.1.3/res
+com.foreplay.app-coordinatorlayout-1.2.0-22 /Users/nadavimergreen/.gradle/caches/transforms-3/7e74baef50e2f709c23e9bd7f9309881/transformed/coordinatorlayout-1.2.0/res
+com.foreplay.app-jetified-startup-runtime-1.1.1-23 /Users/nadavimergreen/.gradle/caches/transforms-3/7f2f5558344c162f4fd00d2c98726bbe/transformed/jetified-startup-runtime-1.1.1/res
+com.foreplay.app-fragment-1.3.6-24 /Users/nadavimergreen/.gradle/caches/transforms-3/83b3ac3b3b9f9569d385c946e465cc7c/transformed/fragment-1.3.6/res
+com.foreplay.app-core-1.9.0-25 /Users/nadavimergreen/.gradle/caches/transforms-3/84b80b19f9df20f0748e16f424971126/transformed/core-1.9.0/res
+com.foreplay.app-drawerlayout-1.1.1-26 /Users/nadavimergreen/.gradle/caches/transforms-3/a1a7bdc2c2b6512447864f38d97ee002/transformed/drawerlayout-1.1.1/res
+com.foreplay.app-jetified-flipper-0.201.0-27 /Users/nadavimergreen/.gradle/caches/transforms-3/a292034a92075469686b49861f829cfc/transformed/jetified-flipper-0.201.0/res
+com.foreplay.app-constraintlayout-2.0.1-28 /Users/nadavimergreen/.gradle/caches/transforms-3/a5ddaee8091445ca58c384756c6cbb6d/transformed/constraintlayout-2.0.1/res
+com.foreplay.app-jetified-react-android-0.73.4-debug-29 /Users/nadavimergreen/.gradle/caches/transforms-3/a8393aef65b6eac4138ead67c88ff7e3/transformed/jetified-react-android-0.73.4-debug/res
+com.foreplay.app-recyclerview-1.1.0-30 /Users/nadavimergreen/.gradle/caches/transforms-3/b83a6e2bb5d6a03943fd1586daa9b92d/transformed/recyclerview-1.1.0/res
+com.foreplay.app-jetified-annotation-experimental-1.3.0-31 /Users/nadavimergreen/.gradle/caches/transforms-3/c30968064b4d638673d02fc044187974/transformed/jetified-annotation-experimental-1.3.0/res
+com.foreplay.app-jetified-lifecycle-process-2.4.1-32 /Users/nadavimergreen/.gradle/caches/transforms-3/c3d5523456db53b69f430706ba4e9f6b/transformed/jetified-lifecycle-process-2.4.1/res
+com.foreplay.app-jetified-core-ktx-1.9.0-33 /Users/nadavimergreen/.gradle/caches/transforms-3/c75b0cb626f2518360aecddd03d6983c/transformed/jetified-core-ktx-1.9.0/res
+com.foreplay.app-transition-1.2.0-34 /Users/nadavimergreen/.gradle/caches/transforms-3/cf49947946889f1b36a1de03a33617c4/transformed/transition-1.2.0/res
+com.foreplay.app-swiperefreshlayout-1.1.0-35 /Users/nadavimergreen/.gradle/caches/transforms-3/d74d47a901741389d66e4dc477941bb3/transformed/swiperefreshlayout-1.1.0/res
+com.foreplay.app-sqlite-framework-2.2.0-36 /Users/nadavimergreen/.gradle/caches/transforms-3/da1f6deec5fec6720e620b7fdbfe44ae/transformed/sqlite-framework-2.2.0/res
+com.foreplay.app-jetified-appcompat-resources-1.6.1-37 /Users/nadavimergreen/.gradle/caches/transforms-3/e1dce1682ef9b44b082c50f84fb91dc4/transformed/jetified-appcompat-resources-1.6.1/res
+com.foreplay.app-jetified-lifecycle-viewmodel-savedstate-2.5.1-38 /Users/nadavimergreen/.gradle/caches/transforms-3/eb33fb7cfdc6415539110a078f071536/transformed/jetified-lifecycle-viewmodel-savedstate-2.5.1/res
+com.foreplay.app-lifecycle-runtime-2.5.1-39 /Users/nadavimergreen/.gradle/caches/transforms-3/f1646c0efc8d6c2cac2b369a2ff4f7da/transformed/lifecycle-runtime-2.5.1/res
+com.foreplay.app-lifecycle-viewmodel-2.5.1-40 /Users/nadavimergreen/.gradle/caches/transforms-3/f39d1ce23684d68741b5ea60dd2fdb79/transformed/lifecycle-viewmodel-2.5.1/res
+com.foreplay.app-jetified-tracing-1.1.0-41 /Users/nadavimergreen/.gradle/caches/transforms-3/fac53d63321ac6302a575f4b976dd752/transformed/jetified-tracing-1.1.0/res
