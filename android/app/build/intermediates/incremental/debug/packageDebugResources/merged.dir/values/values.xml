@@ -3,6 +3,13 @@
     <integer name="react_native_dev_server_port">8081</integer>
     <integer name="react_native_inspector_proxy_port">8081</integer>
     <string name="app_name">foreplay</string>
+    <string name="default_web_client_id" translatable="false">492193713065-v13i3q8p0e0f72fe5pm0mhhrmrv3np1g.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">492193713065</string>
+    <string name="google_api_key" translatable="false">AIzaSyDgENISUTtH-tponvCd7s5caROjRsSqA0g</string>
+    <string name="google_app_id" translatable="false">1:492193713065:android:0b1b18d513d888aad3d2b8</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyDgENISUTtH-tponvCd7s5caROjRsSqA0g</string>
+    <string name="google_storage_bucket" translatable="false">foreplay-dating-app.appspot.com</string>
+    <string name="project_id" translatable="false">foreplay-dating-app</string>
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>

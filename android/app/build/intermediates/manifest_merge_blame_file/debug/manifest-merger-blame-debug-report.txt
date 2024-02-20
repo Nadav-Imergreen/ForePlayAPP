@@ -9,110 +9,189 @@
 9        android:targetSdkVersion="34" />
 10
 11    <uses-permission android:name="android.permission.INTERNET" />
-11-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:3:5-67
-11-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:3:22-64
+11-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:3:5-67
+11-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:3:22-64
 12    <!--
 13    This manifest file is used only by Gradle to configure debug-only capabilities
 14    for React Native Apps.
 15    -->
-16    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-16-->[com.facebook.react:react-android:0.73.4] /Users/nadavimergreen/.gradle/caches/transforms-3/a8393aef65b6eac4138ead67c88ff7e3/transformed/jetified-react-android-0.73.4-debug/AndroidManifest.xml:16:5-78
-16-->[com.facebook.react:react-android:0.73.4] /Users/nadavimergreen/.gradle/caches/transforms-3/a8393aef65b6eac4138ead67c88ff7e3/transformed/jetified-react-android-0.73.4-debug/AndroidManifest.xml:16:22-75
-17    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-17-->[com.facebook.flipper:flipper:0.201.0] /Users/nadavimergreen/.gradle/caches/transforms-3/a292034a92075469686b49861f829cfc/transformed/jetified-flipper-0.201.0/AndroidManifest.xml:14:5-76
-17-->[com.facebook.flipper:flipper:0.201.0] /Users/nadavimergreen/.gradle/caches/transforms-3/a292034a92075469686b49861f829cfc/transformed/jetified-flipper-0.201.0/AndroidManifest.xml:14:22-73
-18
-19    <permission
-19-->[androidx.core:core:1.9.0] /Users/nadavimergreen/.gradle/caches/transforms-3/84b80b19f9df20f0748e16f424971126/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
-20        android:name="com.foreplay.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-20-->[androidx.core:core:1.9.0] /Users/nadavimergreen/.gradle/caches/transforms-3/84b80b19f9df20f0748e16f424971126/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
-21        android:protectionLevel="signature" />
-21-->[androidx.core:core:1.9.0] /Users/nadavimergreen/.gradle/caches/transforms-3/84b80b19f9df20f0748e16f424971126/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
-22
-23    <uses-permission android:name="com.foreplay.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-23-->[androidx.core:core:1.9.0] /Users/nadavimergreen/.gradle/caches/transforms-3/84b80b19f9df20f0748e16f424971126/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
-23-->[androidx.core:core:1.9.0] /Users/nadavimergreen/.gradle/caches/transforms-3/84b80b19f9df20f0748e16f424971126/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
+16    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- Although the *SdkVersion is captured in gradle build files, this is required for non gradle builds -->
+16-->[com.facebook.react:react-android:0.73.4] /Users/nadavimergreen/.gradle/caches/transforms-3/8e53c2cab0b41b2b9db66d1363df1e68/transformed/jetified-react-android-0.73.4-debug/AndroidManifest.xml:16:5-78
+16-->[com.facebook.react:react-android:0.73.4] /Users/nadavimergreen/.gradle/caches/transforms-3/8e53c2cab0b41b2b9db66d1363df1e68/transformed/jetified-react-android-0.73.4-debug/AndroidManifest.xml:16:22-75
+17    <!-- <uses-sdk android:minSdkVersion="14"/> -->
+18    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+18-->[com.google.firebase:firebase-storage:20.3.0] /Users/nadavimergreen/.gradle/caches/transforms-3/5751b2184cf603f99186c4c9e52a7243/transformed/jetified-firebase-storage-20.3.0/AndroidManifest.xml:23:5-79
+18-->[com.google.firebase:firebase-storage:20.3.0] /Users/nadavimergreen/.gradle/caches/transforms-3/5751b2184cf603f99186c4c9e52a7243/transformed/jetified-firebase-storage-20.3.0/AndroidManifest.xml:23:22-76
+19    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+19-->[com.facebook.flipper:flipper:0.201.0] /Users/nadavimergreen/.gradle/caches/transforms-3/488263de7f1925d24d29becbcab5e11b/transformed/jetified-flipper-0.201.0/AndroidManifest.xml:14:5-76
+19-->[com.facebook.flipper:flipper:0.201.0] /Users/nadavimergreen/.gradle/caches/transforms-3/488263de7f1925d24d29becbcab5e11b/transformed/jetified-flipper-0.201.0/AndroidManifest.xml:14:22-73
+20
+21    <permission
+21-->[androidx.core:core:1.9.0] /Users/nadavimergreen/.gradle/caches/transforms-3/502376eef4f4b34c8b292f5bacb35ecc/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
+22        android:name="com.foreplay.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+22-->[androidx.core:core:1.9.0] /Users/nadavimergreen/.gradle/caches/transforms-3/502376eef4f4b34c8b292f5bacb35ecc/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
+23        android:protectionLevel="signature" />
+23-->[androidx.core:core:1.9.0] /Users/nadavimergreen/.gradle/caches/transforms-3/502376eef4f4b34c8b292f5bacb35ecc/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
 24
-25    <application
-25-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:5:5-24:19
-26        android:name="com.foreplay.MainApplication"
-26-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:6:7-38
-27        android:allowBackup="false"
-27-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:10:7-34
-28        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-28-->[androidx.core:core:1.9.0] /Users/nadavimergreen/.gradle/caches/transforms-3/84b80b19f9df20f0748e16f424971126/transformed/core-1.9.0/AndroidManifest.xml:28:18-86
-29        android:debuggable="true"
-30        android:extractNativeLibs="true"
-31        android:icon="@mipmap/ic_launcher"
-31-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:8:7-41
-32        android:label="@string/app_name"
-32-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:7:7-39
-33        android:roundIcon="@mipmap/ic_launcher_round"
-33-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:9:7-52
-34        android:theme="@style/AppTheme"
-34-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:11:7-38
-35        android:usesCleartextTraffic="true" >
-35-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/debug/AndroidManifest.xml:6:9-44
-36        <activity
-36-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:12:7-23:18
-37            android:name="com.foreplay.MainActivity"
-37-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:13:9-37
-38            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
-38-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:15:9-118
-39            android:exported="true"
-39-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:18:9-32
-40            android:label="@string/app_name"
-40-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:14:9-41
-41            android:launchMode="singleTask"
-41-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:16:9-40
-42            android:windowSoftInputMode="adjustResize" >
-42-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:17:9-51
-43            <intent-filter>
-43-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:19:9-22:25
-44                <action android:name="android.intent.action.MAIN" />
-44-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:20:13-65
-44-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:20:21-62
-45
-46                <category android:name="android.intent.category.LAUNCHER" />
-46-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:21:13-73
-46-->/Users/nadavimergreen/ Final project /ForePlay/android/app/src/main/AndroidManifest.xml:21:23-70
-47            </intent-filter>
-48        </activity>
-49        <activity
-49-->[com.facebook.react:react-android:0.73.4] /Users/nadavimergreen/.gradle/caches/transforms-3/a8393aef65b6eac4138ead67c88ff7e3/transformed/jetified-react-android-0.73.4-debug/AndroidManifest.xml:19:9-21:40
-50            android:name="com.facebook.react.devsupport.DevSettingsActivity"
-50-->[com.facebook.react:react-android:0.73.4] /Users/nadavimergreen/.gradle/caches/transforms-3/a8393aef65b6eac4138ead67c88ff7e3/transformed/jetified-react-android-0.73.4-debug/AndroidManifest.xml:20:13-77
-51            android:exported="false" />
-51-->[com.facebook.react:react-android:0.73.4] /Users/nadavimergreen/.gradle/caches/transforms-3/a8393aef65b6eac4138ead67c88ff7e3/transformed/jetified-react-android-0.73.4-debug/AndroidManifest.xml:21:13-37
-52
-53        <provider
-53-->[androidx.emoji2:emoji2:1.2.0] /Users/nadavimergreen/.gradle/caches/transforms-3/55ea674e057d47d0d7b4f8ae7879b167/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
-54            android:name="androidx.startup.InitializationProvider"
-54-->[androidx.emoji2:emoji2:1.2.0] /Users/nadavimergreen/.gradle/caches/transforms-3/55ea674e057d47d0d7b4f8ae7879b167/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:25:13-67
-55            android:authorities="com.foreplay.androidx-startup"
-55-->[androidx.emoji2:emoji2:1.2.0] /Users/nadavimergreen/.gradle/caches/transforms-3/55ea674e057d47d0d7b4f8ae7879b167/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:26:13-68
-56            android:exported="false" >
-56-->[androidx.emoji2:emoji2:1.2.0] /Users/nadavimergreen/.gradle/caches/transforms-3/55ea674e057d47d0d7b4f8ae7879b167/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:27:13-37
-57            <meta-data
-57-->[androidx.emoji2:emoji2:1.2.0] /Users/nadavimergreen/.gradle/caches/transforms-3/55ea674e057d47d0d7b4f8ae7879b167/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
-58                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-58-->[androidx.emoji2:emoji2:1.2.0] /Users/nadavimergreen/.gradle/caches/transforms-3/55ea674e057d47d0d7b4f8ae7879b167/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:30:17-75
-59                android:value="androidx.startup" />
-59-->[androidx.emoji2:emoji2:1.2.0] /Users/nadavimergreen/.gradle/caches/transforms-3/55ea674e057d47d0d7b4f8ae7879b167/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:31:17-49
-60            <meta-data
-60-->[androidx.lifecycle:lifecycle-process:2.4.1] /Users/nadavimergreen/.gradle/caches/transforms-3/c3d5523456db53b69f430706ba4e9f6b/transformed/jetified-lifecycle-process-2.4.1/AndroidManifest.xml:31:13-33:52
-61                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-61-->[androidx.lifecycle:lifecycle-process:2.4.1] /Users/nadavimergreen/.gradle/caches/transforms-3/c3d5523456db53b69f430706ba4e9f6b/transformed/jetified-lifecycle-process-2.4.1/AndroidManifest.xml:32:17-78
-62                android:value="androidx.startup" />
-62-->[androidx.lifecycle:lifecycle-process:2.4.1] /Users/nadavimergreen/.gradle/caches/transforms-3/c3d5523456db53b69f430706ba4e9f6b/transformed/jetified-lifecycle-process-2.4.1/AndroidManifest.xml:33:17-49
-63        </provider>
-64
-65        <meta-data
-65-->[com.facebook.soloader:soloader:0.10.5] /Users/nadavimergreen/.gradle/caches/transforms-3/aaca8a2a24aeec8477a7c5c36e71ad50/transformed/jetified-soloader-0.10.5/AndroidManifest.xml:12:9-14:37
-66            android:name="com.facebook.soloader.enabled"
-66-->[com.facebook.soloader:soloader:0.10.5] /Users/nadavimergreen/.gradle/caches/transforms-3/aaca8a2a24aeec8477a7c5c36e71ad50/transformed/jetified-soloader-0.10.5/AndroidManifest.xml:13:13-57
-67            android:value="false" />
-67-->[com.facebook.soloader:soloader:0.10.5] /Users/nadavimergreen/.gradle/caches/transforms-3/aaca8a2a24aeec8477a7c5c36e71ad50/transformed/jetified-soloader-0.10.5/AndroidManifest.xml:14:13-34
-68    </application>
-69
-70</manifest>
+25    <uses-permission android:name="com.foreplay.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+25-->[androidx.core:core:1.9.0] /Users/nadavimergreen/.gradle/caches/transforms-3/502376eef4f4b34c8b292f5bacb35ecc/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
+25-->[androidx.core:core:1.9.0] /Users/nadavimergreen/.gradle/caches/transforms-3/502376eef4f4b34c8b292f5bacb35ecc/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
+26
+27    <application
+27-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:5:5-24:19
+28        android:name="com.foreplay.MainApplication"
+28-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:6:7-38
+29        android:allowBackup="false"
+29-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:10:7-34
+30        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+30-->[androidx.core:core:1.9.0] /Users/nadavimergreen/.gradle/caches/transforms-3/502376eef4f4b34c8b292f5bacb35ecc/transformed/core-1.9.0/AndroidManifest.xml:28:18-86
+31        android:debuggable="true"
+32        android:extractNativeLibs="true"
+33        android:icon="@mipmap/ic_launcher"
+33-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:8:7-41
+34        android:label="@string/app_name"
+34-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:7:7-39
+35        android:roundIcon="@mipmap/ic_launcher_round"
+35-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:9:7-52
+36        android:theme="@style/AppTheme"
+36-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:11:7-38
+37        android:usesCleartextTraffic="true" >
+37-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/debug/AndroidManifest.xml:6:9-44
+38        <activity
+38-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:12:7-23:18
+39            android:name="com.foreplay.MainActivity"
+39-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:13:9-37
+40            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
+40-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:15:9-118
+41            android:exported="true"
+41-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:18:9-32
+42            android:label="@string/app_name"
+42-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:14:9-41
+43            android:launchMode="singleTask"
+43-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:16:9-40
+44            android:windowSoftInputMode="adjustResize" >
+44-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:17:9-51
+45            <intent-filter>
+45-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:19:9-22:25
+46                <action android:name="android.intent.action.MAIN" />
+46-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:20:13-65
+46-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:20:21-62
+47
+48                <category android:name="android.intent.category.LAUNCHER" />
+48-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:21:13-73
+48-->/Users/nadavimergreen/ Final project /git/ForePlayAPP/android/app/src/main/AndroidManifest.xml:21:23-70
+49            </intent-filter>
+50        </activity>
+51        <activity
+51-->[com.facebook.react:react-android:0.73.4] /Users/nadavimergreen/.gradle/caches/transforms-3/8e53c2cab0b41b2b9db66d1363df1e68/transformed/jetified-react-android-0.73.4-debug/AndroidManifest.xml:19:9-21:40
+52            android:name="com.facebook.react.devsupport.DevSettingsActivity"
+52-->[com.facebook.react:react-android:0.73.4] /Users/nadavimergreen/.gradle/caches/transforms-3/8e53c2cab0b41b2b9db66d1363df1e68/transformed/jetified-react-android-0.73.4-debug/AndroidManifest.xml:20:13-77
+53            android:exported="false" />
+53-->[com.facebook.react:react-android:0.73.4] /Users/nadavimergreen/.gradle/caches/transforms-3/8e53c2cab0b41b2b9db66d1363df1e68/transformed/jetified-react-android-0.73.4-debug/AndroidManifest.xml:21:13-37
+54
+55        <service
+55-->[com.google.firebase:firebase-storage:20.3.0] /Users/nadavimergreen/.gradle/caches/transforms-3/5751b2184cf603f99186c4c9e52a7243/transformed/jetified-firebase-storage-20.3.0/AndroidManifest.xml:27:9-36:19
+56            android:name="com.google.firebase.components.ComponentDiscoveryService"
+56-->[com.google.firebase:firebase-storage:20.3.0] /Users/nadavimergreen/.gradle/caches/transforms-3/5751b2184cf603f99186c4c9e52a7243/transformed/jetified-firebase-storage-20.3.0/AndroidManifest.xml:28:13-84
+57            android:directBootAware="true"
+57-->[com.google.firebase:firebase-common:20.4.2] /Users/nadavimergreen/.gradle/caches/transforms-3/b0e0fb6ce98848d8e0de9ea064148193/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:32:13-43
+58            android:exported="false" >
+58-->[com.google.firebase:firebase-storage:20.3.0] /Users/nadavimergreen/.gradle/caches/transforms-3/5751b2184cf603f99186c4c9e52a7243/transformed/jetified-firebase-storage-20.3.0/AndroidManifest.xml:29:13-37
+59            <meta-data
+59-->[com.google.firebase:firebase-storage:20.3.0] /Users/nadavimergreen/.gradle/caches/transforms-3/5751b2184cf603f99186c4c9e52a7243/transformed/jetified-firebase-storage-20.3.0/AndroidManifest.xml:30:13-32:85
+60                android:name="com.google.firebase.components:com.google.firebase.storage.FirebaseStorageKtxRegistrar"
+60-->[com.google.firebase:firebase-storage:20.3.0] /Users/nadavimergreen/.gradle/caches/transforms-3/5751b2184cf603f99186c4c9e52a7243/transformed/jetified-firebase-storage-20.3.0/AndroidManifest.xml:31:17-118
+61                android:value="com.google.firebase.components.ComponentRegistrar" />
+61-->[com.google.firebase:firebase-storage:20.3.0] /Users/nadavimergreen/.gradle/caches/transforms-3/5751b2184cf603f99186c4c9e52a7243/transformed/jetified-firebase-storage-20.3.0/AndroidManifest.xml:32:17-82
+62            <meta-data
+62-->[com.google.firebase:firebase-storage:20.3.0] /Users/nadavimergreen/.gradle/caches/transforms-3/5751b2184cf603f99186c4c9e52a7243/transformed/jetified-firebase-storage-20.3.0/AndroidManifest.xml:33:13-35:85
+63                android:name="com.google.firebase.components:com.google.firebase.storage.StorageRegistrar"
+63-->[com.google.firebase:firebase-storage:20.3.0] /Users/nadavimergreen/.gradle/caches/transforms-3/5751b2184cf603f99186c4c9e52a7243/transformed/jetified-firebase-storage-20.3.0/AndroidManifest.xml:34:17-107
+64                android:value="com.google.firebase.components.ComponentRegistrar" />
+64-->[com.google.firebase:firebase-storage:20.3.0] /Users/nadavimergreen/.gradle/caches/transforms-3/5751b2184cf603f99186c4c9e52a7243/transformed/jetified-firebase-storage-20.3.0/AndroidManifest.xml:35:17-82
+65            <meta-data
+65-->[com.google.firebase:firebase-appcheck:17.1.2] /Users/nadavimergreen/.gradle/caches/transforms-3/84079a27ff2c634e998095893855ad5e/transformed/jetified-firebase-appcheck-17.1.2/AndroidManifest.xml:25:13-27:85
+66                android:name="com.google.firebase.components:com.google.firebase.appcheck.FirebaseAppCheckKtxRegistrar"
+66-->[com.google.firebase:firebase-appcheck:17.1.2] /Users/nadavimergreen/.gradle/caches/transforms-3/84079a27ff2c634e998095893855ad5e/transformed/jetified-firebase-appcheck-17.1.2/AndroidManifest.xml:26:17-120
+67                android:value="com.google.firebase.components.ComponentRegistrar" />
+67-->[com.google.firebase:firebase-appcheck:17.1.2] /Users/nadavimergreen/.gradle/caches/transforms-3/84079a27ff2c634e998095893855ad5e/transformed/jetified-firebase-appcheck-17.1.2/AndroidManifest.xml:27:17-82
+68            <meta-data
+68-->[com.google.firebase:firebase-appcheck:17.1.2] /Users/nadavimergreen/.gradle/caches/transforms-3/84079a27ff2c634e998095893855ad5e/transformed/jetified-firebase-appcheck-17.1.2/AndroidManifest.xml:28:13-30:85
+69                android:name="com.google.firebase.components:com.google.firebase.appcheck.FirebaseAppCheckRegistrar"
+69-->[com.google.firebase:firebase-appcheck:17.1.2] /Users/nadavimergreen/.gradle/caches/transforms-3/84079a27ff2c634e998095893855ad5e/transformed/jetified-firebase-appcheck-17.1.2/AndroidManifest.xml:29:17-117
+70                android:value="com.google.firebase.components.ComponentRegistrar" />
+70-->[com.google.firebase:firebase-appcheck:17.1.2] /Users/nadavimergreen/.gradle/caches/transforms-3/84079a27ff2c634e998095893855ad5e/transformed/jetified-firebase-appcheck-17.1.2/AndroidManifest.xml:30:17-82
+71            <meta-data
+71-->[com.google.firebase:firebase-common-ktx:20.4.2] /Users/nadavimergreen/.gradle/caches/transforms-3/9d5bc0392f9d0d9c0658adefc3996e1c/transformed/jetified-firebase-common-ktx-20.4.2/AndroidManifest.xml:12:13-14:85
+72                android:name="com.google.firebase.components:com.google.firebase.ktx.FirebaseCommonLegacyRegistrar"
+72-->[com.google.firebase:firebase-common-ktx:20.4.2] /Users/nadavimergreen/.gradle/caches/transforms-3/9d5bc0392f9d0d9c0658adefc3996e1c/transformed/jetified-firebase-common-ktx-20.4.2/AndroidManifest.xml:13:17-116
+73                android:value="com.google.firebase.components.ComponentRegistrar" />
+73-->[com.google.firebase:firebase-common-ktx:20.4.2] /Users/nadavimergreen/.gradle/caches/transforms-3/9d5bc0392f9d0d9c0658adefc3996e1c/transformed/jetified-firebase-common-ktx-20.4.2/AndroidManifest.xml:14:17-82
+74            <meta-data
+74-->[com.google.firebase:firebase-common:20.4.2] /Users/nadavimergreen/.gradle/caches/transforms-3/b0e0fb6ce98848d8e0de9ea064148193/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:35:13-37:85
+75                android:name="com.google.firebase.components:com.google.firebase.FirebaseCommonKtxRegistrar"
+75-->[com.google.firebase:firebase-common:20.4.2] /Users/nadavimergreen/.gradle/caches/transforms-3/b0e0fb6ce98848d8e0de9ea064148193/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:36:17-109
+76                android:value="com.google.firebase.components.ComponentRegistrar" />
+76-->[com.google.firebase:firebase-common:20.4.2] /Users/nadavimergreen/.gradle/caches/transforms-3/b0e0fb6ce98848d8e0de9ea064148193/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:37:17-82
+77        </service>
+78
+79        <activity
+79-->[com.google.android.gms:play-services-base:18.1.0] /Users/nadavimergreen/.gradle/caches/transforms-3/89b2111c5829a016eab37a0a503cffcf/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:9-22:45
+80            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+80-->[com.google.android.gms:play-services-base:18.1.0] /Users/nadavimergreen/.gradle/caches/transforms-3/89b2111c5829a016eab37a0a503cffcf/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:19-85
+81            android:exported="false"
+81-->[com.google.android.gms:play-services-base:18.1.0] /Users/nadavimergreen/.gradle/caches/transforms-3/89b2111c5829a016eab37a0a503cffcf/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:22:19-43
+82            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+82-->[com.google.android.gms:play-services-base:18.1.0] /Users/nadavimergreen/.gradle/caches/transforms-3/89b2111c5829a016eab37a0a503cffcf/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:21:19-78
+83
+84        <provider
+84-->[com.google.firebase:firebase-common:20.4.2] /Users/nadavimergreen/.gradle/caches/transforms-3/b0e0fb6ce98848d8e0de9ea064148193/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:23:9-28:39
+85            android:name="com.google.firebase.provider.FirebaseInitProvider"
+85-->[com.google.firebase:firebase-common:20.4.2] /Users/nadavimergreen/.gradle/caches/transforms-3/b0e0fb6ce98848d8e0de9ea064148193/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:24:13-77
+86            android:authorities="com.foreplay.firebaseinitprovider"
+86-->[com.google.firebase:firebase-common:20.4.2] /Users/nadavimergreen/.gradle/caches/transforms-3/b0e0fb6ce98848d8e0de9ea064148193/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:25:13-72
+87            android:directBootAware="true"
+87-->[com.google.firebase:firebase-common:20.4.2] /Users/nadavimergreen/.gradle/caches/transforms-3/b0e0fb6ce98848d8e0de9ea064148193/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:26:13-43
+88            android:exported="false"
+88-->[com.google.firebase:firebase-common:20.4.2] /Users/nadavimergreen/.gradle/caches/transforms-3/b0e0fb6ce98848d8e0de9ea064148193/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:27:13-37
+89            android:initOrder="100" />
+89-->[com.google.firebase:firebase-common:20.4.2] /Users/nadavimergreen/.gradle/caches/transforms-3/b0e0fb6ce98848d8e0de9ea064148193/transformed/jetified-firebase-common-20.4.2/AndroidManifest.xml:28:13-36
+90
+91        <meta-data
+91-->[com.google.android.gms:play-services-basement:18.3.0] /Users/nadavimergreen/.gradle/caches/transforms-3/2f1891e7ba66b168501930a560ce44d2/transformed/jetified-play-services-basement-18.3.0/AndroidManifest.xml:21:9-23:69
+92            android:name="com.google.android.gms.version"
+92-->[com.google.android.gms:play-services-basement:18.3.0] /Users/nadavimergreen/.gradle/caches/transforms-3/2f1891e7ba66b168501930a560ce44d2/transformed/jetified-play-services-basement-18.3.0/AndroidManifest.xml:22:13-58
+93            android:value="@integer/google_play_services_version" />
+93-->[com.google.android.gms:play-services-basement:18.3.0] /Users/nadavimergreen/.gradle/caches/transforms-3/2f1891e7ba66b168501930a560ce44d2/transformed/jetified-play-services-basement-18.3.0/AndroidManifest.xml:23:13-66
+94
+95        <provider
+95-->[androidx.emoji2:emoji2:1.2.0] /Users/nadavimergreen/.gradle/caches/transforms-3/c3c41d911054676987c399e97fc78e9e/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
+96            android:name="androidx.startup.InitializationProvider"
+96-->[androidx.emoji2:emoji2:1.2.0] /Users/nadavimergreen/.gradle/caches/transforms-3/c3c41d911054676987c399e97fc78e9e/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:25:13-67
+97            android:authorities="com.foreplay.androidx-startup"
+97-->[androidx.emoji2:emoji2:1.2.0] /Users/nadavimergreen/.gradle/caches/transforms-3/c3c41d911054676987c399e97fc78e9e/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:26:13-68
+98            android:exported="false" >
+98-->[androidx.emoji2:emoji2:1.2.0] /Users/nadavimergreen/.gradle/caches/transforms-3/c3c41d911054676987c399e97fc78e9e/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:27:13-37
+99            <meta-data
+99-->[androidx.emoji2:emoji2:1.2.0] /Users/nadavimergreen/.gradle/caches/transforms-3/c3c41d911054676987c399e97fc78e9e/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:29:13-31:52
+100                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+100-->[androidx.emoji2:emoji2:1.2.0] /Users/nadavimergreen/.gradle/caches/transforms-3/c3c41d911054676987c399e97fc78e9e/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:30:17-75
+101                android:value="androidx.startup" />
+101-->[androidx.emoji2:emoji2:1.2.0] /Users/nadavimergreen/.gradle/caches/transforms-3/c3c41d911054676987c399e97fc78e9e/transformed/jetified-emoji2-1.2.0/AndroidManifest.xml:31:17-49
+102            <meta-data
+102-->[androidx.lifecycle:lifecycle-process:2.4.1] /Users/nadavimergreen/.gradle/caches/transforms-3/b63fe02f72e8f476cd602c03f42172bd/transformed/jetified-lifecycle-process-2.4.1/AndroidManifest.xml:31:13-33:52
+103                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+103-->[androidx.lifecycle:lifecycle-process:2.4.1] /Users/nadavimergreen/.gradle/caches/transforms-3/b63fe02f72e8f476cd602c03f42172bd/transformed/jetified-lifecycle-process-2.4.1/AndroidManifest.xml:32:17-78
+104                android:value="androidx.startup" />
+104-->[androidx.lifecycle:lifecycle-process:2.4.1] /Users/nadavimergreen/.gradle/caches/transforms-3/b63fe02f72e8f476cd602c03f42172bd/transformed/jetified-lifecycle-process-2.4.1/AndroidManifest.xml:33:17-49
+105        </provider>
+106
+107        <meta-data
+107-->[com.facebook.soloader:soloader:0.10.5] /Users/nadavimergreen/.gradle/caches/transforms-3/166ff798998698da0ba3f6d44040aa8e/transformed/jetified-soloader-0.10.5/AndroidManifest.xml:12:9-14:37
+108            android:name="com.facebook.soloader.enabled"
+108-->[com.facebook.soloader:soloader:0.10.5] /Users/nadavimergreen/.gradle/caches/transforms-3/166ff798998698da0ba3f6d44040aa8e/transformed/jetified-soloader-0.10.5/AndroidManifest.xml:13:13-57
+109            android:value="false" />
+109-->[com.facebook.soloader:soloader:0.10.5] /Users/nadavimergreen/.gradle/caches/transforms-3/166ff798998698da0ba3f6d44040aa8e/transformed/jetified-soloader-0.10.5/AndroidManifest.xml:14:13-34
+110    </application>
+111
+112</manifest>

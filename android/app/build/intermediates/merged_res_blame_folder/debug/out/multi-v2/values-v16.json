@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.foreplay.app-mergeDebugResources-2:/values-v16/values-v16.xml",
+            "outputFile": "com.foreplay.app-mergeDebugResources-3:/values-v16/values-v16.xml",
             "map": [
                 {
-                    "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/1744d026f98b08eb3d7bcc4d40e83212/transformed/appcompat-1.6.1/res/values-v16/values-v16.xml",
+                    "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/791e5bd22296e897d66950c62d0a2e23/transformed/appcompat-1.6.1/res/values-v16/values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
@@ -23,7 +23,7 @@
                     }
                 },
                 {
-                    "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/84b80b19f9df20f0748e16f424971126/transformed/core-1.9.0/res/values-v16/values-v16.xml",
+                    "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/502376eef4f4b34c8b292f5bacb35ecc/transformed/core-1.9.0/res/values-v16/values-v16.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

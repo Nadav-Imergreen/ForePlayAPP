@@ -26,38 +26,37 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     setLoading(true);
-    //
-    // try {
-    //   const user = await login(email, password);
-    //
-    //   if (user) {
-    //     if (!user.emailVerified) {
-    //       setShowEmailMessage(true);
-    //       await emailVerification();
-    //     }
-    //   }
-    // } catch (error) {
-    //   setLoading(false);
-    //
-    //   if (
-    //     error.code === 'auth/user-not-found' ||
-    //     error.code === 'auth/wrong-password'
-    //   ) {
-    //     alert('Invalid email or password. Please try again.');
-    //   } else if (error.code === 'auth/too-many-requests') {
-    //     alert('Too many unsuccessful login attempts. Please try again later.');
-    //   } else {
-    //     alert('Sign-in error: ' + error.message);
-    //   }
-    // }
+
+    try {
+      const user = await login(email, password);
+
+      if (user) {
+        if (!user.emailVerified) {
+          setShowEmailMessage(true);
+          await emailVerification();
+        }
+      }
+    } catch (error) {
+      setLoading(false);
+
+      if (
+        error.code === 'auth/user-not-found' ||
+        error.code === 'auth/wrong-password'
+      ) {
+        alert('Invalid email or password. Please try again.');
+      } else if (error.code === 'auth/too-many-requests') {
+        alert('Too many unsuccessful login attempts. Please try again later.');
+      } else {
+        alert('Sign-in error: ' + error.message);
+      }
+    }
   };
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <View style={styles.content}>
         <Image source={require('../assets/logo.png')} style={styles.image} />
-        <Text style={styles.title}>Looooogin</Text>
-        <Text style={styles.title}>Looooogin</Text>
+        <Text style={styles.title}>Login</Text>
 
         {showEmailMessage ? (
           <Text style={{color: 'red', paddingVertical: 5}}>

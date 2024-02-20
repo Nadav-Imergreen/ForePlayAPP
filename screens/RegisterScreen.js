@@ -37,25 +37,25 @@ const RegisterScreen = () => {
   const handleSignup = async () => {
     setLoading(true);
 
-    // try {
-    //   const user = await signup(email, password);
-    //
-    //   if (user) {
-    //     const id = user.uid;
-    //     await saveUserData(id, firstname, lastname);
-    //     // navigation.navigate('Login');
-    //   }
-    // } catch (error) {
-    //   setLoading(false);
-    //
-    //   if (error.code === 'auth/email-already-in-use') {
-    //     alert('Email already in use. Please choose a different email.');
-    //   } else if (error.code === 'auth/weak-password') {
-    //     alert('Weak password. Please choose a stronger password.');
-    //   } else {
-    //     alert('Signup error: ' + error.message);
-    //   }
-    // }
+    try {
+      const user = await signup(email, password);
+
+      if (user) {
+        const id = user.uid;
+        await saveUserData(id, firstname, lastname);
+        // navigation.navigate('Login');
+      }
+    } catch (error) {
+      setLoading(false);
+
+      if (error.code === 'auth/email-already-in-use') {
+        alert('Email already in use. Please choose a different email.');
+      } else if (error.code === 'auth/weak-password') {
+        alert('Weak password. Please choose a stronger password.');
+      } else {
+        alert('Signup error: ' + error.message);
+      }
+    }
   };
 
   //  const googleAuth = async () => {

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "492193713065",
+    "project_id": "foreplay-dating-app",
+    "storage_bucket": "foreplay-dating-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:492193713065:android:0b1b18d513d888aad3d2b8",
+        "android_client_info": {
+          "package_name": "com.foreplay"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "492193713065-v13i3q8p0e0f72fe5pm0mhhrmrv3np1g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgENISUTtH-tponvCd7s5caROjRsSqA0g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "492193713065-v13i3q8p0e0f72fe5pm0mhhrmrv3np1g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

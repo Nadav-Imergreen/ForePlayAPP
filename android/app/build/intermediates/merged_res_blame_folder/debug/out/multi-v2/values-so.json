@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.foreplay.app-mergeDebugResources-2:/values-so/values-so.xml",
+            "outputFile": "com.foreplay.app-mergeDebugResources-3:/values-so/values-so.xml",
             "map": [
                 {
-                    "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/a8393aef65b6eac4138ead67c88ff7e3/transformed/jetified-react-android-0.73.4-debug/res/values-so/values-so.xml",
+                    "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/8e53c2cab0b41b2b9db66d1363df1e68/transformed/jetified-react-android-0.73.4-debug/res/values-so/values-so.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7",
                         "startColumns": "4,4,4,4,4,4",
