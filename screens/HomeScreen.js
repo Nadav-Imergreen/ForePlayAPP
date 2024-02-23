@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View, Button} from 'react-native';
-// import {signOut} from 'firebase/auth';
+import {signOut} from 'firebase/auth';
 import {useNavigation} from '@react-navigation/native';
 import Loader from '../services/loadingIndicator';
 import {auth} from '../services/config';
@@ -10,14 +10,14 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   console.log(auth);
   const handleSignOut = () => {
-    // try {
-    //   setLoading(true);
-    //   signOut(auth).then(() => {
-    //     navigation.navigate('Login');
-    //   });
-    // } catch (error) {
-    //   console.error('Sign out error:', error.message);
-    // }
+    try {
+      setLoading(true);
+      signOut(auth).then(() => {
+        navigation.navigate('Login');
+      });
+    } catch (error) {
+      console.error('Sign out error:', error.message);
+    }
   };
 
   return (

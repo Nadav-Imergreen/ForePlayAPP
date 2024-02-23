@@ -42,8 +42,7 @@ const RegisterScreen = () => {
 
       if (user) {
         const id = user.uid;
-        await saveUserData(id, firstname, lastname);
-        // navigation.navigate('Login');
+        // await saveUserData(id, firstname, lastname);
       }
     } catch (error) {
       setLoading(false);
