@@ -9,6 +9,7 @@ import {onAuthStateChanged} from 'firebase/auth';
 import {auth} from './services/config';
 
 export default function App() {
+
   const Stack = createNativeStackNavigator();
 
   const [initializing, setInitializing] = useState(true);

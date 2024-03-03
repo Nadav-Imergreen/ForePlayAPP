@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ForePlayAPP.iml" filepath="$PROJECT_DIR$/.idea/ForePlayAPP.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/react-native-vector-icons.iml" filepath="$PROJECT_DIR$/.idea/modules/react-native-vector-icons.iml" />
     </modules>
   </component>
 </project>

@@ -26,7 +26,7 @@
 
 //firebaseDatabase.js
 import { db } from './config';  // Update the path
-import { collection, getDoc } from 'firebase/firestore';
+import { collection, addDoc } from 'firebase/firestore';
 
 export async function saveUserData(userId, firstname, lastname) {
   const data = {
@@ -39,8 +39,8 @@ export async function saveUserData(userId, firstname, lastname) {
     const dbRef = collection(db, 'data');
 
     // Add a document with the specified user data
-    await getDoc(dbRef).then(s=>{
-      console.log('User data saved to Firestore with ID:', s.data());});
+    await addDoc(dbRef, data).then(s=>{
+      console.log('User data saved to Firestore with ID:', dbRef.id);});
 
   } catch (error) {
     console.error('Error saving user data to Firestore:', error);

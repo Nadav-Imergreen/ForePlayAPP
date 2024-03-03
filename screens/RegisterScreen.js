@@ -1,6 +1,6 @@
 // RegisterScreen.js
 
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   ScrollView,
   View,
@@ -11,14 +11,10 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {signup} from '../services/auth';
-import {saveUserData} from '../services/firebaseDatabase'; // Update the path
+import {saveUserData} from '../services/firebaseDatabase';
 import Loader from '../services/loadingIndicator';
 import styles from '../cssStyles/commonStyles';
 import {SocialIcon} from 'react-native-elements';
-//import { GoogleSignin } from '@react-native-google-signin/google-signin';
-//import auth from '@react-native-firebase/auth';
-//import firebase from "firebase/compat";
-// import {WEB_CLIENT_ID} from '@env';
 
 const RegisterScreen = () => {
   const [email, setEmail] = useState('test@gmail.com');
@@ -29,11 +25,6 @@ const RegisterScreen = () => {
 
   const navigation = useNavigation();
 
-  // const WEB_CLIENT_ID="492193713065-v13i3q8p0e0f72fe5pm0mhhrmrv3np1g.apps.googleusercontent.com"
-  // GoogleSignin.configure({
-  //     webClientId: WEB_CLIENT_ID,
-  // });
-
   const handleSignup = async () => {
     setLoading(true);
 
@@ -42,7 +33,7 @@ const RegisterScreen = () => {
 
       if (user) {
         const id = user.uid;
-        // await saveUserData(id, firstname, lastname);
+        await saveUserData(id, firstname, lastname);
       }
     } catch (error) {
       setLoading(false);
@@ -57,62 +48,31 @@ const RegisterScreen = () => {
     }
   };
 
-  //  const googleAuth = async () => {
-  //
-  //     // Check if your device supports Google Play
-  //     await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-  //     // Get the users ID token
-  //     const {idToken} = await GoogleSignin.signIn();
-  //
-  //     // Create a Google credential with the token
-  //     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-  //
-  //     // Sign-in the user with the credential
-  //     return auth().signInWithCredential(googleCredential);
-  // };
+  // import {GoogleSignin} from '@react-native-google-signin/google-signin';
+  // import auth from '@react-native-firebase/auth';
 
-  const googleLogin = async () => {
-    //     try {
-    //         const result = await Expo.Google.logInAsync({
-    //             androidClientId: "Your Client ID",
-    //             //iosClientId: YOUR_CLIENT_ID_HERE,  <-- if you use iOS
-    //             scopes: ["profile", "email"]
-    //
-    //         })
-    //         if (result.type === "success") {
-    //             const credential = firebase.auth.GoogleAuthProvider.credential(result.idToken, result.accessToken);
-    //             firebase.auth().signInAndRetrieveDataWithCredential(credential).then(function(result){
-    //                 console.log(result);
-    //             });
-    //             this.props.navigation.navigate('Where you want to go');
-    //         } else {
-    //             console.log("cancelled")
-    //         }
-    //     } catch (e) {
-    //         console.log("error", e)
-    //     }
-  };
+  // const WEB_CLIENT_ID="492193713065-v13i3q8p0e0f72fe5pm0mhhrmrv3np1g.apps.googleusercontent.com";
+  // GoogleSignin.configure({
+  //   webClientId:WEB_CLIENT_ID,
+  // });
 
-  const handleGoogleSignup = async () => {
-    // setLoading(true);
-    // try {
-    //   const user = await googleLogin();
-    //   if (user) {
-    //     const id = user.uid;
-    //     await saveUserData(id, firstname, lastname);
-    //     // navigation.navigate('Login');
-    //   }
-    // } catch (error) {
-    //   setLoading(false);
+  const  handleGoogleSignup = async () => {
+    setLoading(true);
+    // Get the users ID token
+    // const { idToken } = await GoogleSignin.signIn();
+
+    // // Create a Google credential with the token
+    // const googleCredential = auth.GoogleAuthProvider.credential(idToken);
     //
-    //   if (error.code === 'auth/email-already-in-use') {
-    //     alert('Email already in use. Please choose a different email.');
-    //   } else if (error.code === 'auth/weak-password') {
-    //     alert('Weak password. Please choose a stronger password.');
-    //   } else {
-    //     alert('Signup error: ' + error.message);
-    //   }
-    // }
+    // // Sign-in the user with the credential
+    // const userSignIn = auth().signInWithCredential(googleCredential);
+    //
+    // userSignIn.then((user)=>{
+    //   console.log(user);})
+    //     .catch((error)=>{
+    //       console.log(error);
+    //       setLoading(false);
+    //     })
   };
 
   return (

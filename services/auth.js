@@ -4,12 +4,6 @@ import {
   createUserWithEmailAndPassword,
 } from 'firebase/auth';
 import {auth} from './config';
-//import { signInWithPopup,signInWithCredential,  signInWithRedirect, GoogleAuthProvider, getAdditionalUserInfo } from "firebase/auth";
-// import * as GoogleAuthentication from 'expo-google-app-auth';
-// import * as WebBrowser from "expo-web-browser";
-// import * as Google from "expo-auth-session/providers/google";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { ANDROID_CLIENT_ID, IOS_CLIENT_ID, WEB_CLIENT_ID } from "@env";
 
 export const signup = async (email, password) => {
   try {
@@ -63,6 +57,23 @@ export const login = async (email, password) => {
     throw error;
   }
 };
+
+//import { signInWithPopup,signInWithCredential,  signInWithRedirect, GoogleAuthProvider, getAdditionalUserInfo } from "firebase/auth";
+
+// import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { ANDROID_CLIENT_ID, IOS_CLIENT_ID, WEB_CLIENT_ID } from "@env";
+
+// const signInRequest = () => {
+//   BeginSignInRequest.builder()
+//       .setGoogleIdTokenRequestOptions(
+//           BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+//               .setSupported(true)
+//               .setServerClientId("492193713065-v13i3q8p0e0f72fe5pm0mhhrmrv3np1g.apps.googleusercontent.com")
+//               // Only show accounts previously used to sign in.
+//               .setFilterByAuthorizedAccounts(true)
+//               .build())
+//       .build()
+// }
 
 //
 // export const googleAuth = async () => {
