@@ -1,8 +1,25 @@
 {
     "logs": [
         {
-            "outputFile": "com.foreplay.app-mergeDebugResources-3:/values-en-rGB/values-en-rGB.xml",
+            "outputFile": "com.foreplay.app-mergeDebugResources-40:/values-en-rGB/values-en-rGB.xml",
             "map": [
+                {
+                    "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/c09cd989c823ee12b8bfc0e43acf7d4c/transformed/jetified-react-android-0.73.6-debug/res/values-en-rGB/values-en-rGB.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8,9,10,11,12",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "55,154,230,313,387,463,545,625,703,783,857",
+                        "endColumns": "98,75,82,73,75,81,79,77,79,73,73",
+                        "endOffsets": "149,225,308,382,458,540,620,698,778,852,926"
+                    },
+                    "to": {
+                        "startLines": "38,42,68,83,84,122,123,124,126,128,129",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "3386,3777,6637,7727,7801,10746,10828,10908,11069,11250,11324",
+                        "endColumns": "98,75,82,73,75,81,79,77,79,73,73",
+                        "endOffsets": "3480,3848,6715,7796,7872,10823,10903,10981,11144,11319,11393"
+                    }
+                },
                 {
                     "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/791e5bd22296e897d66950c62d0a2e23/transformed/appcompat-1.6.1/res/values-en-rGB/values-en-rGB.xml",
                     "from": {
@@ -71,23 +88,6 @@
                         "startOffsets": "11149",
                         "endColumns": "100",
                         "endOffsets": "11245"
-                    }
-                },
-                {
-                    "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/8e53c2cab0b41b2b9db66d1363df1e68/transformed/jetified-react-android-0.73.4-debug/res/values-en-rGB/values-en-rGB.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8,9,10,11,12",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "55,154,230,313,387,463,545,625,703,783,857",
-                        "endColumns": "98,75,82,73,75,81,79,77,79,73,73",
-                        "endOffsets": "149,225,308,382,458,540,620,698,778,852,926"
-                    },
-                    "to": {
-                        "startLines": "38,42,68,83,84,122,123,124,126,128,129",
-                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4",
-                        "startOffsets": "3386,3777,6637,7727,7801,10746,10828,10908,11069,11250,11324",
-                        "endColumns": "98,75,82,73,75,81,79,77,79,73,73",
-                        "endOffsets": "3480,3848,6715,7796,7872,10823,10903,10981,11144,11319,11393"
                     }
                 },
                 {

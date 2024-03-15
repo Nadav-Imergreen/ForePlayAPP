@@ -1,8 +1,25 @@
 {
     "logs": [
         {
-            "outputFile": "com.foreplay.app-mergeDebugResources-3:/values-uz/values-uz.xml",
+            "outputFile": "com.foreplay.app-mergeDebugResources-40:/values-uz/values-uz.xml",
             "map": [
+                {
+                    "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/c09cd989c823ee12b8bfc0e43acf7d4c/transformed/jetified-react-android-0.73.6-debug/res/values-uz/values-uz.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "55,147,215,296,365,433,507",
+                        "endColumns": "91,67,80,68,67,73,71",
+                        "endOffsets": "142,210,291,360,428,502,574"
+                    },
+                    "to": {
+                        "startLines": "41,67,68,70,84,123,124",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "3731,6744,6812,6960,8011,11108,11182",
+                        "endColumns": "91,67,80,68,67,73,71",
+                        "endOffsets": "3818,6807,6888,7024,8074,11177,11249"
+                    }
+                },
                 {
                     "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/89b2111c5829a016eab37a0a503cffcf/transformed/jetified-play-services-base-18.1.0/res/values-uz/values.xml",
                     "from": {
@@ -105,23 +122,6 @@
                         "endLines": "5,33,34,35,36,37,38,39,40,61,62,66,69,71,72,73,74,75,76,77,78,79,80,81,82,83,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121",
                         "endColumns": "12,76,79,82,93,86,94,126,83,63,102,69,66,108,62,66,58,73,62,53,114,57,61,53,74,128,89,88,140,81,81,85,59,50,65,72,77,85,71,76,74,70,93,78,95,93,73,75,85,52,65,84,90,61,63,62,101,90,95,91,63,54,82",
                         "endOffsets": "328,3076,3156,3239,3333,3420,3515,3642,3726,6241,6344,6739,6955,7133,7196,7263,7322,7396,7459,7513,7628,7686,7748,7802,7877,8006,8164,8253,8394,8476,8558,8644,8704,8755,8821,8894,8972,9058,9130,9207,9282,9353,9447,9526,9622,9716,9790,9866,9952,10005,10071,10156,10247,10309,10373,10436,10538,10629,10725,10817,10881,10936,11019"
-                    }
-                },
-                {
-                    "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/8e53c2cab0b41b2b9db66d1363df1e68/transformed/jetified-react-android-0.73.4-debug/res/values-uz/values-uz.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "55,147,215,296,365,433,507",
-                        "endColumns": "91,67,80,68,67,73,71",
-                        "endOffsets": "142,210,291,360,428,502,574"
-                    },
-                    "to": {
-                        "startLines": "41,67,68,70,84,123,124",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "3731,6744,6812,6960,8011,11108,11182",
-                        "endColumns": "91,67,80,68,67,73,71",
-                        "endOffsets": "3818,6807,6888,7024,8074,11177,11249"
                     }
                 }
             ]

@@ -1,8 +1,25 @@
 {
     "logs": [
         {
-            "outputFile": "com.foreplay.app-mergeDebugResources-3:/values-hy/values-hy.xml",
+            "outputFile": "com.foreplay.app-mergeDebugResources-40:/values-hy/values-hy.xml",
             "map": [
+                {
+                    "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/c09cd989c823ee12b8bfc0e43acf7d4c/transformed/jetified-react-android-0.73.6-debug/res/values-hy/values-hy.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "55,132,200,281,349,421,496",
+                        "endColumns": "76,67,80,67,71,74,73",
+                        "endOffsets": "127,195,276,344,416,491,565"
+                    },
+                    "to": {
+                        "startLines": "41,67,68,70,84,123,124",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "3742,6801,6869,7012,8045,11177,11252",
+                        "endColumns": "76,67,80,67,71,74,73",
+                        "endOffsets": "3814,6864,6945,7075,8112,11247,11321"
+                    }
+                },
                 {
                     "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/2f1891e7ba66b168501930a560ce44d2/transformed/jetified-play-services-basement-18.3.0/res/values-hy/values.xml",
                     "from": {
@@ -105,23 +122,6 @@
                         "startOffsets": "3819,3925,4090,4224,4332,4486,4622,4749,5013,5180,5288,5456,5592,5754,5920,5985,6052",
                         "endColumns": "105,164,133,107,153,135,126,112,166,107,167,135,161,165,64,66,81",
                         "endOffsets": "3920,4085,4219,4327,4481,4617,4744,4857,5175,5283,5451,5587,5749,5915,5980,6047,6129"
-                    }
-                },
-                {
-                    "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/8e53c2cab0b41b2b9db66d1363df1e68/transformed/jetified-react-android-0.73.4-debug/res/values-hy/values-hy.xml",
-                    "from": {
-                        "startLines": "2,3,4,5,6,7,8",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "55,132,200,281,349,421,496",
-                        "endColumns": "76,67,80,67,71,74,73",
-                        "endOffsets": "127,195,276,344,416,491,565"
-                    },
-                    "to": {
-                        "startLines": "41,67,68,70,84,123,124",
-                        "startColumns": "4,4,4,4,4,4,4",
-                        "startOffsets": "3742,6801,6869,7012,8045,11177,11252",
-                        "endColumns": "76,67,80,67,71,74,73",
-                        "endOffsets": "3814,6864,6945,7075,8112,11247,11321"
                     }
                 }
             ]

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.foreplay.app-mergeDebugResources-3:/values-gl/values-gl.xml",
+            "outputFile": "com.foreplay.app-mergeDebugResources-40:/values-gl/values-gl.xml",
             "map": [
                 {
                     "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/3627d408fdf8d34689271b6a162e6e32/transformed/browser-1.4.0/res/values-gl/values-gl.xml",

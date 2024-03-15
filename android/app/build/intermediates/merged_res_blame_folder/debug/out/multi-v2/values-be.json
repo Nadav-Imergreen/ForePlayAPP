@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.foreplay.app-mergeDebugResources-3:/values-be/values-be.xml",
+            "outputFile": "com.foreplay.app-mergeDebugResources-40:/values-be/values-be.xml",
             "map": [
                 {
                     "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/2f1891e7ba66b168501930a560ce44d2/transformed/jetified-play-services-basement-18.3.0/res/values-be/values.xml",
@@ -35,6 +35,23 @@
                         "startOffsets": "11109",
                         "endColumns": "100",
                         "endOffsets": "11205"
+                    }
+                },
+                {
+                    "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/c09cd989c823ee12b8bfc0e43acf7d4c/transformed/jetified-react-android-0.73.6-debug/res/values-be/values-be.xml",
+                    "from": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,126",
+                        "endColumns": "70,84",
+                        "endOffsets": "121,206"
+                    },
+                    "to": {
+                        "startLines": "68,69",
+                        "startColumns": "4,4",
+                        "startOffsets": "6804,6875",
+                        "endColumns": "70,84",
+                        "endOffsets": "6870,6955"
                     }
                 },
                 {
@@ -105,23 +122,6 @@
                         "startOffsets": "432,552,655,771,857,962,1081,1161,1238,1330,1424,1519,1613,1708,1802,1898,1993,2085,2177,2258,2364,2469,2567,2675,2781,2889,3062,11027",
                         "endColumns": "119,102,115,85,104,118,79,76,91,93,94,93,94,93,95,94,91,91,80,105,104,97,107,105,107,172,99,81",
                         "endOffsets": "547,650,766,852,957,1076,1156,1233,1325,1419,1514,1608,1703,1797,1893,1988,2080,2172,2253,2359,2464,2562,2670,2776,2884,3057,3157,11104"
-                    }
-                },
-                {
-                    "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/8e53c2cab0b41b2b9db66d1363df1e68/transformed/jetified-react-android-0.73.4-debug/res/values-be/values-be.xml",
-                    "from": {
-                        "startLines": "2,3",
-                        "startColumns": "4,4",
-                        "startOffsets": "55,126",
-                        "endColumns": "70,84",
-                        "endOffsets": "121,206"
-                    },
-                    "to": {
-                        "startLines": "68,69",
-                        "startColumns": "4,4",
-                        "startOffsets": "6804,6875",
-                        "endColumns": "70,84",
-                        "endOffsets": "6870,6955"
                     }
                 }
             ]

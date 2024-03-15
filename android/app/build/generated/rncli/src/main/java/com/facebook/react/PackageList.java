@@ -13,6 +13,8 @@ import java.util.ArrayList;
 
 // react-native-gesture-handler
 import com.swmansion.gesturehandler.RNGestureHandlerPackage;
+// react-native-image-picker
+import com.imagepicker.ImagePickerPackage;
 // react-native-safe-area-context
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 // react-native-screens
@@ -63,6 +65,7 @@ public class PackageList {
     return new ArrayList<>(Arrays.<ReactPackage>asList(
       new MainReactPackage(mConfig),
       new RNGestureHandlerPackage(),
+      new ImagePickerPackage(),
       new SafeAreaContextPackage(),
       new RNScreensPackage()
     ));

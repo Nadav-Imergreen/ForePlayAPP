@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.foreplay.app-mergeDebugResources-3:/values-b+sr+Latn/values-b+sr+Latn.xml",
+            "outputFile": "com.foreplay.app-mergeDebugResources-40:/values-b+sr+Latn/values-b+sr+Latn.xml",
             "map": [
                 {
                     "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/89b2111c5829a016eab37a0a503cffcf/transformed/jetified-play-services-base-18.1.0/res/values-b+sr+Latn/values.xml",

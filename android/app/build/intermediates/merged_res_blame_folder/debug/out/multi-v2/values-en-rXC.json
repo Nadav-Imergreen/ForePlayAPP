@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.foreplay.app-mergeDebugResources-3:/values-en-rXC/values-en-rXC.xml",
+            "outputFile": "com.foreplay.app-mergeDebugResources-40:/values-en-rXC/values-en-rXC.xml",
             "map": [
                 {
                     "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/3627d408fdf8d34689271b6a162e6e32/transformed/browser-1.4.0/res/values-en-rXC/values-en-rXC.xml",

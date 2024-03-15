@@ -11,16 +11,18 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {signup} from '../services/auth';
-import {saveUserData} from '../services/firebaseDatabase';
+import {saveUser} from '../services/firebaseDatabase';
 import Loader from '../services/loadingIndicator';
 import styles from '../cssStyles/commonStyles';
 import {SocialIcon} from 'react-native-elements';
 
+//import {GoogleSignin} from '@react-native-google-signin/google-signin';
+//import auth from '@react-native-firebase/auth';
+
 const RegisterScreen = () => {
-  const [email, setEmail] = useState('test@gmail.com');
-  const [password, setPassword] = useState('123456');
-  const [firstname, setFirstname] = useState('a');
-  const [lastname, setLastname] = useState('b');
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
@@ -33,7 +35,7 @@ const RegisterScreen = () => {
 
       if (user) {
         const id = user.uid;
-        await saveUserData(id, firstname, lastname);
+        await saveUser(id, email);
       }
     } catch (error) {
       setLoading(false);
@@ -48,8 +50,7 @@ const RegisterScreen = () => {
     }
   };
 
-  // import {GoogleSignin} from '@react-native-google-signin/google-signin';
-  // import auth from '@react-native-firebase/auth';
+
 
   // const WEB_CLIENT_ID="492193713065-v13i3q8p0e0f72fe5pm0mhhrmrv3np1g.apps.googleusercontent.com";
   // GoogleSignin.configure({
@@ -82,20 +83,6 @@ const RegisterScreen = () => {
           <Image source={require('../assets/logo.png')} style={styles.image} />
           <Text style={styles.title}>Register</Text>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Firstname"
-            autoCapitalize="none"
-            value={firstname}
-            onChangeText={setFirstname}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Lastname"
-            autoCapitalize="none"
-            value={lastname}
-            onChangeText={setLastname}
-          />
           <TextInput
             style={styles.input}
             placeholder="Email"

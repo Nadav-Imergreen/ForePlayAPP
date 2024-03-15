@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.foreplay.app-mergeDebugResources-3:/values-watch-v20/values-watch-v20.xml",
+            "outputFile": "com.foreplay.app-mergeDebugResources-40:/values-watch-v20/values-watch-v20.xml",
             "map": [
                 {
                     "source": "/Users/nadavimergreen/.gradle/caches/transforms-3/24794a3b34ad4e9db1cf5af16c63b715/transformed/jetified-play-services-auth-21.0.0/res/values-watch-v20/values.xml",

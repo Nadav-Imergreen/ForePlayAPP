@@ -1,25 +1,38 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/loginScreen';
-import HomeScreen from './screens/HomeScreen';
 import RegisterScreen from './screens/RegisterScreen';
-import {onAuthStateChanged} from 'firebase/auth';
-import {auth} from './services/config';
+import UserInfoScreen from './screens/UserInfoScreen';
+import HomeScreen from './screens/HomeScreen';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './services/config';
+import { getUserData } from './services/firebaseDatabase'; // Import the function to retrieve user data
 
 export default function App() {
-
   const Stack = createNativeStackNavigator();
-
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState(null);
+  const [userInfoSetup, setUserInfoSetup] = useState(false);
 
   // Handle user state changes
-  const onAuthStateChangedHandler = user => {
+  const onAuthStateChangedHandler = async (user) => {
     setUser(user);
     if (initializing) {
       setInitializing(false);
+    }
+
+    // Check if user is logged in
+    if (user) {
+      try {
+        const userData = await getUserData(user.uid); // Retrieve user data from the database
+        if (userData && userData.userInfoSetup) {
+          setUserInfoSetup(true); // Update userInfoSetup state if setup is true in the database
+        }
+      } catch (error) {
+        console.error('Error retrieving user data:', error);
+      }
     }
   };
 
@@ -39,7 +52,14 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         {user ? (
-          <Stack.Screen name="Home" component={HomeScreen} />
+          userInfoSetup ? (
+            <Stack.Screen name="Home" component={HomeScreen} />
+          ) : (
+            <Stack.Screen 
+              name="UserInfo" 
+              component={() => <UserInfoScreen setUserInfoSetup={setUserInfoSetup} />} 
+            />
+          )
         ) : (
           <>
             <Stack.Screen name="Login" component={LoginScreen} />
