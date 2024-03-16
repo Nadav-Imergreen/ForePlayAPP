@@ -45,9 +45,10 @@ const RegisterScreen = () => {
 
     const handleGoogleSignup = async () => {
         setLoading(true);
-        try { await googleSignIn().then(async (user) => {
-            user ? await saveUser(user.uid, user.email) : console.log('user not register')})
-        } catch (error) {console.log(error);
+        try {
+            const user = await googleSignIn();
+            if (user) await saveUser(user.uid, user.email);
+        } catch (error) {console.log('WARNING: user not register', error);
         } finally {setLoading(false)}
     };
 

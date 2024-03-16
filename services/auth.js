@@ -16,11 +16,7 @@ export const signup = async (email, password) => {
       email,
       password,
     );
-    const user = userCredential.user;
-    console.log('INFO: User registered: userID:', user.uid);
-
-    // You can redirect the user to another screen or perform any additional actions here
-    return user;
+    return userCredential.user;
   } catch (error) {
     throw error;
   }
@@ -66,7 +62,6 @@ GoogleSignin.configure({
     const {idToken} = await GoogleSignin.signIn();
   // Create a Google credential with the token
    const credential = GoogleAuthProvider.credential(idToken);
-   console.log('googleCredential received');
   // Sign-in the user with the credential
    return (await signInWithCredential(auth, credential)).user;
   }
