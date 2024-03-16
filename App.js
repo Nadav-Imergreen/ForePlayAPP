@@ -18,6 +18,7 @@ export default function App() {
 
   // Handle user state changes
   const onAuthStateChangedHandler = async (user) => {
+    console.log('INFO: Auth state changed:');
     setUser(user);
     if (initializing) {
       setInitializing(false);

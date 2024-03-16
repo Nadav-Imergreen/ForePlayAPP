@@ -25,11 +25,11 @@
 // }
 
 //firebaseDatabase.js
-import { db } from './config';  // Update the path
-import { collection, addDoc, getDocs, updateDoc, query, where, doc } from 'firebase/firestore';
+import {db} from './config'; // Update the path
+import {addDoc, collection, doc, getDocs, query, updateDoc, where} from 'firebase/firestore';
 
 export async function saveUser(userId, email) {
- 
+ console.log('INFO: in save user: ', userId, email)
   const data = {
     userId: userId,
     email: email,
@@ -40,11 +40,11 @@ export async function saveUser(userId, email) {
     const dbRef = collection(db, 'users');
 
     // Add a document with the specified user data
-    await addDoc(dbRef, data).then(s=>{
-      console.log('User data saved to Firestore with ID:', dbRef.id);});
+    await addDoc(dbRef, data).then((s) =>{
+      console.log('INFO: User data saved to Firestore with ID:', s.id);});
 
   } catch (error) {
-    console.error('Error saving user data to Firestore:', error);
+    console.error('WARNING: Error saving user to Firestore:', error);
     throw error;  // You might want to propagate the error to the caller
   }
 }
@@ -56,7 +56,7 @@ export async function saveUserData(userId, firstName, lastName, age, sex, hometo
 
     if (userQuerySnapshot.empty) {
       // If no document is found, return or handle the error accordingly
-      throw new Error('User not found');
+      throw new Error('WARNING: User not found');
     }
 
     // Get the first document from the query result
@@ -72,9 +72,9 @@ export async function saveUserData(userId, firstName, lastName, age, sex, hometo
       userInfoSetup: true // Update userInfoSetup to indicate that user info setup is complete
     });
 
-    console.log('User data updated successfully');
+    console.log('INFO: User data updated successfully');
   } catch (error) {
-    console.error('Error updating user data:', error);
+    console.error('WARNING: Error updating user data:', error);
     throw error;
   }
 }
@@ -87,8 +87,7 @@ export async function getUserData(userId) {
     const querySnapshot = await getDocs(userQuery);
 
     if (!querySnapshot.empty) {
-      const userData = querySnapshot.docs[0].data();
-      return userData;
+      return querySnapshot.docs[0].data();
     } else {
       throw new Error('User data not found');
     }
