@@ -6,6 +6,7 @@ INJECTED from /Users/nadavimergreen/ForePlayAPP/android/app/src/debug/AndroidMan
 INJECTED from /Users/nadavimergreen/ForePlayAPP/android/app/src/debug/AndroidManifest.xml:2:1-9:12
 INJECTED from /Users/nadavimergreen/ForePlayAPP/android/app/src/debug/AndroidManifest.xml:2:1-9:12
 MERGED from [com.facebook.react:flipper-integration:0.73.6] /Users/nadavimergreen/.gradle/caches/transforms-3/0154fd5111aa98aee2a7e83a215ed535/transformed/jetified-flipper-integration-0.73.6-debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:react-native-async-storage_async-storage] /Users/nadavimergreen/ForePlayAPP/node_modules/@react-native-async-storage/async-storage/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-firebase_auth] /Users/nadavimergreen/ForePlayAPP/node_modules/@react-native-firebase/auth/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-11:12
 MERGED from [:react-native-firebase_app] /Users/nadavimergreen/ForePlayAPP/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-30:12
 MERGED from [:react-native-google-signin_google-signin] /Users/nadavimergreen/ForePlayAPP/node_modules/@react-native-google-signin/google-signin/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
@@ -241,6 +242,8 @@ INJECTED from /Users/nadavimergreen/ForePlayAPP/android/app/src/debug/AndroidMan
 INJECTED from /Users/nadavimergreen/ForePlayAPP/android/app/src/debug/AndroidManifest.xml
 MERGED from [com.facebook.react:flipper-integration:0.73.6] /Users/nadavimergreen/.gradle/caches/transforms-3/0154fd5111aa98aee2a7e83a215ed535/transformed/jetified-flipper-integration-0.73.6-debug/AndroidManifest.xml:5:5-44
 MERGED from [com.facebook.react:flipper-integration:0.73.6] /Users/nadavimergreen/.gradle/caches/transforms-3/0154fd5111aa98aee2a7e83a215ed535/transformed/jetified-flipper-integration-0.73.6-debug/AndroidManifest.xml:5:5-44
+MERGED from [:react-native-async-storage_async-storage] /Users/nadavimergreen/ForePlayAPP/node_modules/@react-native-async-storage/async-storage/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:react-native-async-storage_async-storage] /Users/nadavimergreen/ForePlayAPP/node_modules/@react-native-async-storage/async-storage/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-firebase_auth] /Users/nadavimergreen/ForePlayAPP/node_modules/@react-native-firebase/auth/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-firebase_auth] /Users/nadavimergreen/ForePlayAPP/node_modules/@react-native-firebase/auth/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-firebase_app] /Users/nadavimergreen/ForePlayAPP/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:6:5-44

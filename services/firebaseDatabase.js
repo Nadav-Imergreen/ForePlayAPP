@@ -30,7 +30,6 @@ export async function saveUser(userId, email) {
 export async function saveUserData(userId, firstName, lastName, age, sex, hometown) {
     try {
         const userDoc = await getUserData(userId);
-
         // Update the document with the new user information
         await updateDoc(doc(db, 'users', userDoc.id), {
             firstName: firstName,
@@ -54,13 +53,13 @@ export async function getUserData(userId) {
         const querySnapshot = await getDocs(userQuery);
 
         if (!querySnapshot.empty) {
-            console.log('INFO: in gat user data: ', querySnapshot.docs[0]);
+            console.log('INFO: gat user data: ', querySnapshot.docs[0].data());
             return querySnapshot.docs[0];
         } else {
             throw new Error('User data not found');
         }
     } catch (error) {
-        console.error('Error fetching user data:', error);
+        console.error('Error fetching user data:', error.message);
         throw error;
     }
 }

@@ -18,11 +18,9 @@ export default function App() {
 
     // Handle user state changes
     const onAuthStateChangedHandler = async (user) => {
-        user ? console.log('INFO: Auth state changed:', user.uid) : console.log('INFO: Auth state "user" not define');
+        user ? console.log('INFO: auth state changed:', user.uid) : console.log('INFO: auth undefined - no user loged in');
         setUser(user);
-        if (initializing) {
-            setInitializing(false);
-        }
+        if (initializing) setInitializing(false);
 
         // Check if user is logged in
         if (user) {

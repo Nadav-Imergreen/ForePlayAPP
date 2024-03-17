@@ -3,11 +3,10 @@ import {
   GoogleAuthProvider,
   sendEmailVerification,
   signInWithCredential,
-  signInWithEmailAndPassword,
+  signInWithEmailAndPassword, signOut,
 } from 'firebase/auth';
 import {auth} from './config';
 import {GoogleSignin} from "@react-native-google-signin/google-signin";
-
 
 export const signup = async (email, password) => {
   try {
@@ -65,4 +64,9 @@ GoogleSignin.configure({
   // Sign-in the user with the credential
    return (await signInWithCredential(auth, credential)).user;
   }
+
+export const handleSignOut = () => {
+    signOut(auth).catch((error) =>  console.error('Sign out error:', error.message))
+};
+
 
