@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { auth } from '../services/config';
 import { saveUserData } from '../services/firebaseDatabase';
 import Loader from '../services/loadingIndicator';
+import UploadImage from "../components/UploadImage";
 
 const UserInfoScreen = () => {
   const [loading, setLoading] = useState(false);
@@ -84,6 +85,7 @@ const UserInfoScreen = () => {
         value={hometown}
         onChangeText={setHometown}
       />
+      <UploadImage />
       {loading ? (
         <Loader />
       ) : (
