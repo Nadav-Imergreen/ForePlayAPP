@@ -1,66 +1,48 @@
 //firebaseDatabase.js
-import {db} from './config'; // Update the path
-import {addDoc, collection, doc, getDocs, query, updateDoc, where} from 'firebase/firestore';
+import {auth, db} from './config'; // Update the path
+import {setDoc, getDoc, collection, doc, updateDoc} from 'firebase/firestore';
 
 export async function saveUser(userId, email) {
-    // check if user exist in database
-    if (await getUserData(userId)) return;
 
-    console.log('INFO: in save user: ', userId, email)
+    // check if user exist in database - skip this function
+    const userData = await getUserData(userId);
+    if (userData) {
+        console.log('INFO: User', email, 'already exists in Firestore');
+        return; // Exit the function if user already exists
+    }
+
+
+    console.log('INFO: in save user: ', email)
     const data = {
         userId: userId,
         email: email,
-        userInfoSetup: false // Add userInfoSetup field
     };
-    try {
-        // Reference to the 'users' collection
-        const dbRef = collection(db, 'users');
-
-        // Add a document with the specified user data
-        await addDoc(dbRef, data).then((s) => {
-            console.log('INFO: User data saved to Firestore with ID:', s.id);
-        });
-
-    } catch (error) {
-        console.error('WARNING: Error saving user to Firestore:', error);
-        throw error;  // You might want to propagate the error to the caller
-    }
+    // Reference to the 'users' collection
+    const usersRef = collection(db, 'users');
+    await setDoc(doc(usersRef, userId), data)
+        .then(() => console.log('INFO: User', email, 'saved to Firestore'))
+        .catch((error)=> console.error('WARNING: Error saving user to Firestore:', error));
 }
 
-export async function saveUserData(userId, firstName, lastName, age, sex, hometown) {
-    try {
-        const userDoc = await getUserData(userId);
-        // Update the document with the new user information
-        await updateDoc(doc(db, 'users', userDoc.id), {
-            firstName: firstName,
-            lastName: lastName,
-            age: age,
-            sex: sex,
-            hometown: hometown,
-            userInfoSetup: true // Update userInfoSetup to indicate that user info setup is complete
-        });
-        console.log('INFO: User data updated successfully');
-    } catch (error) {
-        console.error('WARNING: Error updating user data:', error);
-        throw error;
-    }
+export async function saveUserInfo(firstName, lastName, age, sex, hometown) {
+    // Update the document with the new user information
+    const userId = auth.currentUser.uid;
+    await updateDoc(doc(db, 'users', userId), {
+        firstName: firstName,
+        lastName: lastName,
+        age: age,
+        sex: sex,
+        hometown: hometown
+    }).then(()=> console.log('INFO: User data updated successfully'))
+        .catch((error)=> console.error('WARNING: Error updating user data:', error))
 }
 
 export async function getUserData(userId) {
-    try {
-        const usersRef = collection(db, 'users');
-        const userQuery = query(usersRef, where('userId', '==', userId));
-        const querySnapshot = await getDocs(userQuery);
 
-        if (!querySnapshot.empty) {
-            console.log('INFO: gat user data: ', querySnapshot.docs[0].data());
-            return querySnapshot.docs[0];
-        } else {
-            throw new Error('User data not found');
-        }
-    } catch (error) {
-        console.error('Error fetching user data:', error.message);
-        throw error;
-    }
+    const docRef =  doc(db, "users", userId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap) return docSnap.data();
+    else console.log("WARNING: No such document!");
 }
 

@@ -1,37 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native';
-import { getDocs, collection, query, where } from 'firebase/firestore'; // Import Firestore functions
-import { db } from '../services/config'; // Import Firestore configuration
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, View, Text, Button} from 'react-native';
+import {getUserData} from '../services/firebaseDatabase'; // Import getUserData function
+import {handleSignOut} from '../services/auth'; // Import handleSignOut function
+import UserInfoScreen from './UserInfoScreen'; // Import UserInfoScreen
+import {useNavigation} from '@react-navigation/native';
+import {auth} from "../services/config";
 
 const HomeScreen = () => {
-    const [suggestedUsers, setSuggestedUsers] = useState([]);
+    const navigation = useNavigation(); // Get navigation object
 
-    // Fetch suggested users from Firestore
+    const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
+
+    // Fetch user data and suggested users from Firestore
     useEffect(() => {
-        const fetchSuggestedUsers = async () => {
-            try {
-                const usersQuerySnapshot = await getDocs(query(collection(db, 'users')));
-                const usersData = usersQuerySnapshot.docs.map(doc => doc.data());
-                // Filter out the current user from suggested users
-                const filteredUsers = usersData.filter(user => user.userId !== auth.currentUser.uid);
-                // Set the suggested users state
-                setSuggestedUsers(filteredUsers);
-            } catch (error) {
-                console.error('Error fetching suggested users:', error);
-            }
+        const fetchData = async () => {
         };
-        fetchSuggestedUsers();
+        fetchData()
+            .catch((error)=> console.error('WARNING: Error retrieving user data:', error))
     }, []);
+
+    // Handle navigation to UserInfoScreen when "Fill Info" button is pressed
+    const infoScreenNavigation = () => navigation.navigate('UserInfo');
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Suggested Users</Text>
-            {suggestedUsers.map(user => (
-                <TouchableOpacity key={user.userId} style={styles.userContainer}>
-                    <Image source={{ uri: user.profileImageUrl }} style={styles.userImage} />
-                    <Text style={styles.userName}>{user.firstName} {user.lastName}</Text>
-                </TouchableOpacity>
-            ))}
+            <Button title="Fill Info" onPress={infoScreenNavigation}/>
+            <Button title="Sign Out" onPress={handleSignOut}/>
+            {/* Render suggested users */}
+            {/* {suggestedUsers.map(user => (
+        <TouchableOpacity key={user.userId} style={styles.userContainer}>
+          <Image source={{ uri: user.profileImageUrl }} style={styles.userImage} />
+          <Text style={styles.userName}>{user.firstName} {user.lastName}</Text>
+        </TouchableOpacity>
+      ))} */}
         </View>
     );
 };

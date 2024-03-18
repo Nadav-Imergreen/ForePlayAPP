@@ -13,7 +13,7 @@ import styles from '../cssStyles/commonStyles';
 import Loader from '../services/loadingIndicator';
 
 const LoginScreen = () => {
-    const [email, setEmail] = useState('ff@gmail.com');
+    const [email, setEmail] = useState('gfg@gmaim.com');
     const [password, setPassword] = useState('123456');
     const [loading, setLoading] = useState(false);
     const [showEmailMessage, setShowEmailMessage] = useState(false);

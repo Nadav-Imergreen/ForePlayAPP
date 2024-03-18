@@ -1,29 +1,32 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View, Button, TextInput} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {auth} from '../services/config';
-import {saveUserData} from '../services/firebaseDatabase';
+import {saveUserInfo} from '../services/firebaseDatabase';
 import Loader from '../services/loadingIndicator';
 import UploadImage from "../components/UploadImage";
 import {handleSignOut} from '../services/auth';
 
 const UserInfoScreen = () => {
+
+    const navigation = useNavigation(); // Get navigation object
+
     const [loading, setLoading] = useState(false);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [age, setAge] = useState('');
     const [sex, setSex] = useState('Male'); // Default to Male
     const [hometown, setHometown] = useState('');
-    const navigation = useNavigation();
 
     const handleSaveUserInfo = async () => {
         setLoading(true);
-        const userId = auth.currentUser.uid;
-        await saveUserData(userId, firstName, lastName, age, sex, hometown)
+        await saveUserInfo(firstName, lastName, age, sex, hometown)
             .then(() =>{})
             .catch((error) => console.error('Error saving user data:', error.message))
             .finally(() => setLoading(false))
     };
+
+    const homeScreenNavigation = () => navigation.navigate('Home');
+
 
     return (
         <View style={styles.container}>
@@ -76,7 +79,7 @@ const UserInfoScreen = () => {
             ) : (
                 <Button title="Save User Info" onPress={handleSaveUserInfo}/>
             )}
-            <Button title="Sign Out" onPress={handleSignOut}/>
+            <Button title="Back" onPress={homeScreenNavigation}/>
         </View>
     );
 };

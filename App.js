@@ -8,29 +8,18 @@ import UserInfoScreen from './screens/UserInfoScreen';
 import HomeScreen from './screens/HomeScreen';
 import {onAuthStateChanged} from 'firebase/auth';
 import {auth} from './services/config';
-import {getUserData} from './services/firebaseDatabase'; // Import the function to retrieve user data
 
 export default function App() {
     const Stack = createNativeStackNavigator();
+
     const [initializing, setInitializing] = useState(true);
     const [user, setUser] = useState(null);
-    const [userInfoSetup, setUserInfoSetup] = useState(false);
 
-    // Handle user state changes
     const onAuthStateChangedHandler = async (user) => {
-        user ? console.log('INFO: auth state changed:', user.uid) : console.log('INFO: auth undefined - no user loged in');
+        user ? console.log('INFO: auth state changed:', user.uid)
+            : console.log('INFO: auth undefined - no user logged in');
         setUser(user);
         if (initializing) setInitializing(false);
-
-        // Check if user is logged in
-        if (user) {
-            await getUserData(user.uid).then((userData) => {
-                // Update userInfoSetup state if setup is true in the database
-                if (userData.data().userInfoSetup) setUserInfoSetup(true)
-            }).catch((error) => {
-                console.error('Error retrieving user data:', error)
-            })
-        }
     }
 
     useEffect(() => {
@@ -49,10 +38,10 @@ export default function App() {
         <NavigationContainer>
             <Stack.Navigator>
                 {user ? (
-                    userInfoSetup ? (
+                    <>
                         <Stack.Screen name="Home" component={HomeScreen}/>
-                    ) : (
-                        <Stack.Screen name="UserInfo" component={UserInfoScreen}/>)
+                        <Stack.Screen name="UserInfo" component={UserInfoScreen}/>
+                    </>
                 ) : (
                     <>
                         <Stack.Screen name="Login" component={LoginScreen}/>
