@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import { ref, uploadBytes } from 'firebase/storage';
-import { auth, storage } from '../services/config';
-import { launchImageLibrary } from "react-native-image-picker";
+import React, {useState} from 'react';
+import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {ref as storageRef, uploadBytes, getDownloadURL} from 'firebase/storage';
+import {auth, storage} from '../services/config';
+import {launchImageLibrary} from "react-native-image-picker";
+import {saveUrl} from '../services/firebaseDatabase';
 
 const UploadImage = () => {
     const [selectedImage, setSelectedImage] = useState('');
+    const [imageUrl, setImageUrl] = useState(undefined);
+
 
     const submitData = () => {
-        const storageRef = ref(storage, 'image');
+        console.log("CHECK: selectedImage: ", selectedImage);
+        const imageRef = storageRef(storage, `images/${selectedImage}`);
 
         // Define user metadata
         const metadata = {
@@ -17,17 +21,20 @@ const UploadImage = () => {
             },
         };
 
-        uploadBytes(storageRef, selectedImage, metadata).then((snapshot) => {
+        uploadBytes(imageRef, selectedImage, metadata)
+            .then((snapshot) => {
             if (selectedImage === '')
-                console.log('WARNING: please chose an image from library');
-            else {
-                console.log('INFO: Uploaded an image!', snapshot.metadata);
-                setSelectedImage('');
-            }
+                throw Error('WARNING: please chose an image from library');
+
+            console.log('INFO: Uploaded an image!', snapshot.metadata);
+            setSelectedImage('');
+            getDownloadURL(snapshot.ref)
+                .then((url) => saveUrl(url))
+                .catch((error) => console.log(error.message));
         }).catch((error) => console.log(error.message));
     };
 
-    const handleChange = async () => {
+    const chooseImage = async () => {
         const options = {
             mediaType: 'photo',
             includeBase64: false,
@@ -48,7 +55,7 @@ const UploadImage = () => {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={handleChange}><Text>Choose Image</Text></TouchableOpacity>
+            <TouchableOpacity onPress={chooseImage}><Text>Choose Image</Text></TouchableOpacity>
             <TouchableOpacity onPress={submitData}><Text>Upload Photo</Text></TouchableOpacity>
         </View>
     );

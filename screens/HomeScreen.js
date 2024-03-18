@@ -1,10 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Button} from 'react-native';
-import {getUserData} from '../services/firebaseDatabase'; // Import getUserData function
+import {StyleSheet, View, Text, Button, TouchableOpacity} from 'react-native';
 import {handleSignOut} from '../services/auth'; // Import handleSignOut function
-import UserInfoScreen from './UserInfoScreen'; // Import UserInfoScreen
 import {useNavigation} from '@react-navigation/native';
-import {auth} from "../services/config";
+import {getAllUsers, getUserData} from "../services/firebaseDatabase";
 
 const HomeScreen = () => {
     const navigation = useNavigation(); // Get navigation object
@@ -13,10 +11,17 @@ const HomeScreen = () => {
 
     // Fetch user data and suggested users from Firestore
     useEffect(() => {
-        const fetchData = async () => {
-        };
+        const fetchData = async ()=> {
+            const currentUser =await getUserData();
+            await getAllUsers(currentUser.sex)
+                .then((docs)=> {
+                    docs.forEach((doc) => {
+                        console.log(doc.id, " => ", doc.data().sex);
+                    });
+                });
+        }
         fetchData()
-            .catch((error)=> console.error('WARNING: Error retrieving user data:', error))
+            .catch((error)=> console.error('WARNING: Error retrieving user data:', error));
     }, []);
 
     // Handle navigation to UserInfoScreen when "Fill Info" button is pressed
@@ -28,12 +33,12 @@ const HomeScreen = () => {
             <Button title="Fill Info" onPress={infoScreenNavigation}/>
             <Button title="Sign Out" onPress={handleSignOut}/>
             {/* Render suggested users */}
-            {/* {suggestedUsers.map(user => (
-        <TouchableOpacity key={user.userId} style={styles.userContainer}>
-          <Image source={{ uri: user.profileImageUrl }} style={styles.userImage} />
-          <Text style={styles.userName}>{user.firstName} {user.lastName}</Text>
-        </TouchableOpacity>
-      ))} */}
+      {/*       {suggestedUsers.map((user) => (*/}
+      {/*  <TouchableOpacity key={user.id} style={styles.userContainer}>*/}
+      {/*    /!*<Image source={{ uri: user.profileImageUrl }} style={styles.userImage} />*!/*/}
+      {/*    <Text style={styles.userName}>{user.data()}</Text>*/}
+      {/*  </TouchableOpacity>*/}
+      {/*))}*/}
         </View>
     );
 };
