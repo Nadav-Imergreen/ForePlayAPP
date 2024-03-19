@@ -14,14 +14,7 @@ const UploadImage = () => {
         console.log("CHECK: selectedImage: ", selectedImage);
         const imageRef = storageRef(storage, `images/${selectedImage}`);
 
-        // Define user metadata
-        const metadata = {
-            customMetadata: {
-                userId: auth.currentUser.uid,
-            },
-        };
-
-        uploadBytes(imageRef, selectedImage, metadata)
+        uploadBytes(imageRef, selectedImage)
             .then((snapshot) => {
             if (selectedImage === '')
                 throw Error('WARNING: please chose an image from library');

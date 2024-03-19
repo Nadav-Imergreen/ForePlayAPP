@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Button, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text, Button, TouchableOpacity, Image} from 'react-native';
 import {handleSignOut} from '../services/auth'; // Import handleSignOut function
 import {useNavigation} from '@react-navigation/native';
 import {getAllUsers, getUserData} from "../services/firebaseDatabase";
@@ -9,20 +9,27 @@ const HomeScreen = () => {
 
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
 
-    // Fetch user data and suggested users from Firestore
+// Fetch user data and suggested users from Firestore
     useEffect(() => {
-        const fetchData = async ()=> {
-            const currentUser =await getUserData();
-            await getAllUsers(currentUser.sex)
-                .then((docs)=> {
-                    docs.forEach((doc) => {
-                        console.log(doc.id, " => ", doc.data().sex);
-                    });
-                });
-        }
-        fetchData()
-            .catch((error)=> console.error('WARNING: Error retrieving user data:', error));
+        const fetchData = async () => {
+
+                const currentUser = await getUserData();
+                if (currentUser.sex){
+                    const usersSnapshot = await getAllUsers(currentUser.sex);
+                    const usersData = usersSnapshot.docs.map(doc => ({
+                        ...doc.data()
+                    }));
+                    setSuggestedUsers(usersData);
+                    usersData.map(user => (
+                        console.log('CHECK: SuggestedUsers ', user)
+                    ));
+                }
+                else throw Error('user preference are not filled');
+        };
+
+        fetchData().catch((e)=> console.error('WARNING: failed to fetch suggested users:', e));
     }, []);
+
 
     // Handle navigation to UserInfoScreen when "Fill Info" button is pressed
     const infoScreenNavigation = () => navigation.navigate('UserInfo');
@@ -33,12 +40,12 @@ const HomeScreen = () => {
             <Button title="Fill Info" onPress={infoScreenNavigation}/>
             <Button title="Sign Out" onPress={handleSignOut}/>
             {/* Render suggested users */}
-      {/*       {suggestedUsers.map((user) => (*/}
-      {/*  <TouchableOpacity key={user.id} style={styles.userContainer}>*/}
-      {/*    /!*<Image source={{ uri: user.profileImageUrl }} style={styles.userImage} />*!/*/}
-      {/*    <Text style={styles.userName}>{user.data()}</Text>*/}
-      {/*  </TouchableOpacity>*/}
-      {/*))}*/}
+            {suggestedUsers.length > 0 && suggestedUsers.map((user) => (
+                <TouchableOpacity key={user.userId} style={styles.userContainer}>
+                    {user.url && <Image style={styles.logo} source={{uri: user.url,}}/>}
+                    <Text style={styles.userName}>{user.firstName}</Text>
+                </TouchableOpacity>
+            ))}
         </View>
     );
 };
@@ -68,6 +75,10 @@ const styles = StyleSheet.create({
     },
     userName: {
         fontSize: 16,
+    },
+    logo: {
+        width: 96,
+        height: 98,
     },
 });
 
