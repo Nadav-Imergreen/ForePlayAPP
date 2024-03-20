@@ -1,31 +1,12 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import {ref as storageRef, uploadBytes, getDownloadURL} from 'firebase/storage';
-import {auth, storage} from '../services/config';
-import {launchImageLibrary} from "react-native-image-picker";
-import {saveUrl} from '../services/firebaseDatabase';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { saveUrl } from '../services/firebaseDatabase';
+import { auth, storage } from '../services/config';
 
 const UploadImage = () => {
-    const [selectedImage, setSelectedImage] = useState('');
-    const [imageUrl, setImageUrl] = useState(undefined);
-
-
-    const submitData = () => {
-        console.log("CHECK: selectedImage: ", selectedImage);
-        const imageRef = storageRef(storage, `images/${selectedImage}`);
-
-        uploadBytes(imageRef, selectedImage)
-            .then((snapshot) => {
-            if (selectedImage === '')
-                throw Error('WARNING: please chose an image from library');
-
-            console.log('INFO: Uploaded an image!', snapshot.metadata);
-            setSelectedImage('');
-            getDownloadURL(snapshot.ref)
-                .then((url) => saveUrl(url))
-                .catch((error) => console.log(error.message));
-        }).catch((error) => console.log(error.message));
-    };
+    const [imageUrl, setImageUrl] = useState('');
 
     const chooseImage = async () => {
         const options = {
@@ -41,15 +22,44 @@ const UploadImage = () => {
         } else if (response.errorCode) {
             console.log('WARNING: ImagePicker Error: ', response.errorMessage);
         } else {
-            const imageUri = response.uri || response.assets?.[0]?.uri;
-            setSelectedImage(imageUri);
+            const uri = response.assets?.[0]?.uri;
+            setImageUrl(uri);
+        }
+    };
+
+    const submitData = async () => {
+
+        if (!imageUrl) {
+            console.warn('WARNING: Please choose an image from the library');
+            return;
+        }
+
+        const imageRef = storageRef(storage, `images/${imageUrl}`);
+
+        try {
+            const blob = await fetch(imageUrl).then((res) => res.blob());
+            console.log('INFO: Successfully fetched photo using URL');
+
+            const snapshot = await uploadBytes(imageRef, blob);
+            console.log('INFO: Uploaded an image!', snapshot.metadata);
+
+            setImageUrl('');
+
+            const url = await getDownloadURL(snapshot.ref);
+            await saveUrl(url);
+        } catch (error) {
+            console.error('ERROR: Failed to upload image', error.message);
         }
     };
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity onPress={chooseImage}><Text>Choose Image</Text></TouchableOpacity>
-            <TouchableOpacity onPress={submitData}><Text>Upload Photo</Text></TouchableOpacity>
+            <TouchableOpacity onPress={chooseImage}>
+                <Text>Choose Image</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={submitData}>
+                <Text>Upload Photo</Text>
+            </TouchableOpacity>
         </View>
     );
 };
