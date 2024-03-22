@@ -6,17 +6,29 @@ import {
     TextInput,
     TouchableOpacity,
     View,
+    Pressable,
+    useWindowDimensions,
+    StyleSheet,
+    I18nManager 
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {login, emailVerification} from '../services/auth';
 import styles from '../cssStyles/commonStyles';
 import Loader from '../services/loadingIndicator';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const LoginScreen = () => {
-    const [email, setEmail] = useState('gfg@gmaim.com');
-    const [password, setPassword] = useState('123456');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [showEmailMessage, setShowEmailMessage] = useState(false);
+
+    const { width, height } = useWindowDimensions();
+    const isRTL = I18nManager.isRTL;
+
+    // Define constants for image dimensions
+    const FIELD_WIDTH = width * 0.7;
+    const FIELD_HEIGHT = height * 0.6;
 
     const navigation = useNavigation();
 
@@ -41,52 +53,108 @@ const LoginScreen = () => {
         } finally {setLoading(false);}
     };
 
-    return (
-        <KeyboardAvoidingView style={styles.container} behavior="padding">
-            <View style={styles.content}>
-                <Image source={require('../assets/logo.png')} style={styles.image}/>
-                <Text style={styles.title}>Login</Text>
+    return(
 
-                {showEmailMessage ? (
-                    <Text style={{color: 'red', paddingVertical: 5}}>
-                        Email verification required. Please check your email inbox and
-                        follow the instructions to verify your email address.
-                    </Text>
-                ) : null}
+<View style={{ flex: 1, backgroundColor: 'white' }}>
+      <View style={{ alignItems: 'center' }}>
+        <Image source={require('../assets/logo_small.png')} style={{ width: width * 0.6, height: height * 0.15, margin: 20}} />
+      </View>
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    value={email}
-                    onChangeText={setEmail}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    secureTextEntry
-                    autoCapitalize="none"
-                    value={password}
-                    onChangeText={setPassword}
-                />
+      <View style={{
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: 20,
+      }}>
+        
+        <View style={{ marginBottom: 20 }}>
+          <Text style={pageStyles.label}>Email address</Text>
+          <TextInput
+            style={[pageStyles.input, { width: FIELD_WIDTH }]}
+            placeholder="Enter your email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
+          />
+        </View>
 
-                {loading ? (
-                    <Loader/>
-                ) : (
-                    <TouchableOpacity
-                        style={styles.buttonContainer}
-                        onPress={handleLogin}>
-                        <Text style={styles.buttonText}>Login</Text>
-                    </TouchableOpacity>
-                )}
+        <View style={{ marginBottom: 20 }}>
+          <Text style={pageStyles.label}>Password</Text>
+          <TextInput
+            style={[pageStyles.input, { width: FIELD_WIDTH }]}
+            placeholder="Enter your password"
+            secureTextEntry
+            autoCapitalize="none"
+            value={password}
+            onChangeText={setPassword}
+          />
+        </View>
 
-                <TouchableOpacity style={styles.title5box} onPress={handleNavigation}>
-                    <Text style={styles.title5}>Don't have an account? SignUp here.</Text>
+        <View style={{marginTop: 20, height: 50}}>
+            {loading ? (
+                        <Loader/>
+                    ) : (
+                        <TouchableOpacity
+                            
+                            onPress={handleLogin}>
+                            <Text style={[pageStyles.buttonText, { width: FIELD_WIDTH }]}>Login</Text>
+                        </TouchableOpacity>
+                    )}
+        </View>
+
+        <View style={{
+            marginTop: 10,
+            flexDirection: "row",
+            }}>
+            {isRTL ? (
+                <>
+                <TouchableOpacity onPress={handleNavigation}>
+                    <Text style={{ fontWeight: 'bold' }}>SignUp</Text>
                 </TouchableOpacity>
-            </View>
-        </KeyboardAvoidingView>
+                <Text>Don't have an account? </Text>
+                </>
+            ) : (
+                <>
+                <Text>Don't have an account? </Text>
+                <TouchableOpacity onPress={handleNavigation}>
+                    <Text style={{ fontWeight: 'bold' }}>SignUp</Text>
+                </TouchableOpacity>
+                </>
+            )}
+        </View>
+      </View>
+    </View>
+
     );
 };
+
+const pageStyles = StyleSheet.create({
+    input: {
+      borderWidth: 2,
+      borderColor: 'gray',
+      borderRadius: 12,
+      padding: 7,
+      fontSize: 16,
+      color: 'black',
+      
+    },
+    label: {
+        fontSize: 16,
+        marginBottom: 5,
+        color: 'black',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+        borderRadius: 12,
+        borderColor: 'black',
+        borderWidth: 1,
+        padding: 12,
+        backgroundColor: '#a4cdbd',
+        textAlign: 'center'
+    }
+  });
 
 export default LoginScreen;
