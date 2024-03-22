@@ -9,8 +9,10 @@ import {
     Pressable,
     useWindowDimensions,
     StyleSheet,
-    I18nManager 
+    I18nManager,
+    PixelRatio
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
 import {login, emailVerification} from '../services/auth';
 import styles from '../cssStyles/commonStyles';
@@ -22,10 +24,16 @@ const LoginScreen = () => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [showEmailMessage, setShowEmailMessage] = useState(false);
+    const pixelDensity = PixelRatio.get();
+    const logoSize = 30;
 
     const { width, height } = useWindowDimensions();
     const isRTL = I18nManager.isRTL;
 
+    // Calculate the scaled width and height based on the desired dimensions in dp
+    const scaledWidth = pixelDensity * 1.98 * logoSize;
+    const scaledHeight = pixelDensity * 1 * logoSize;
+        
     // Define constants for image dimensions
     const FIELD_WIDTH = width * 0.7;
     const FIELD_HEIGHT = height * 0.6;
@@ -55,77 +63,92 @@ const LoginScreen = () => {
 
     return(
 
-<View style={{ flex: 1, backgroundColor: 'white' }}>
-      <View style={{ alignItems: 'center' }}>
-        <Image source={require('../assets/logo_small.png')} style={{ width: width * 0.6, height: height * 0.15, margin: 20}} />
-      </View>
-
-      <View style={{
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: 20,
-      }}>
-        
-        <View style={{ marginBottom: 20 }}>
-          <Text style={pageStyles.label}>Email address</Text>
-          <TextInput
-            style={[pageStyles.input, { width: FIELD_WIDTH }]}
-            placeholder="Enter your email"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={setEmail}
-          />
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
+      <LinearGradient
+        colors={[
+          '#FFFFFF', '#FFFFFF', '#FFFFFF',
+          '#a4cdbd', '#a4cdbd', '#a4cdbd',
+          '#f06478', '#f06478', '#f06478',
+        ]}
+        start={{ x: 0.9, y: 0 }}
+     
+        style={{ flex: 1, alignItems: 'center' }}>
+    
+        <View style={{ alignItems: 'center', paddingBottom: '10%' }}>
+          <Image source={require('../assets/logo_small.png')} style={{ width: scaledWidth, height: scaledHeight }} />
         </View>
-
-        <View style={{ marginBottom: 20 }}>
-          <Text style={pageStyles.label}>Password</Text>
-          <TextInput
-            style={[pageStyles.input, { width: FIELD_WIDTH }]}
-            placeholder="Enter your password"
-            secureTextEntry
-            autoCapitalize="none"
-            value={password}
-            onChangeText={setPassword}
-          />
-        </View>
-
-        <View style={{marginTop: 20, height: 50}}>
-            {loading ? (
-                        <Loader/>
-                    ) : (
-                        <TouchableOpacity
-                            
-                            onPress={handleLogin}>
-                            <Text style={[pageStyles.buttonText, { width: FIELD_WIDTH }]}>Login</Text>
-                        </TouchableOpacity>
-                    )}
-        </View>
-
+    
         <View style={{
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: 30,
+          width: '90%',
+          borderRadius: 20,
+          borderColor: 'grey',
+          borderWidth: 1,
+          backgroundColor: 'rgba(255, 255, 255, 0.75)',
+        }}>
+    
+          <View style={{ margin: 10 }}>
+            <Text style={pageStyles.label}>Email address</Text>
+            <TextInput
+              style={[pageStyles.input, { width: FIELD_WIDTH }]}
+              placeholder="Enter your email"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              value={email}
+              onChangeText={setEmail}
+            />
+          </View>
+    
+          <View style={{ margin: 10 }}>
+            <Text style={pageStyles.label}>Password</Text>
+            <TextInput
+              style={[pageStyles.input, { width: FIELD_WIDTH }]}
+              placeholder="Enter your password"
+              secureTextEntry
+              autoCapitalize="none"
+              value={password}
+              onChangeText={setPassword}
+            />
+          </View>
+    
+          <View style={{ marginTop: 40, height: 50 }}>
+            {loading ? (
+              <Loader />
+            ) : (
+              <TouchableOpacity
+                onPress={handleLogin}>
+                <Text style={[pageStyles.buttonText, { width: FIELD_WIDTH }]}>Login</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+    
+          <View style={{
             marginTop: 10,
             flexDirection: "row",
-            }}>
+          }}>
             {isRTL ? (
-                <>
+              <>
                 <TouchableOpacity onPress={handleNavigation}>
-                    <Text style={{ fontWeight: 'bold' }}>SignUp</Text>
+                  <Text style={{ fontWeight: 'bold' }}>SignUp</Text>
                 </TouchableOpacity>
                 <Text>Don't have an account? </Text>
-                </>
+              </>
             ) : (
-                <>
+              <>
                 <Text>Don't have an account? </Text>
                 <TouchableOpacity onPress={handleNavigation}>
-                    <Text style={{ fontWeight: 'bold' }}>SignUp</Text>
+                  <Text style={{ fontWeight: 'bold' }}>SignUp</Text>
                 </TouchableOpacity>
-                </>
+              </>
             )}
+          </View>
         </View>
-      </View>
+        
+      </LinearGradient>
     </View>
-
+    
     );
 };
 
@@ -137,7 +160,7 @@ const pageStyles = StyleSheet.create({
       padding: 7,
       fontSize: 16,
       color: 'black',
-      
+      backgroundColor: 'white'
     },
     label: {
         fontSize: 16,

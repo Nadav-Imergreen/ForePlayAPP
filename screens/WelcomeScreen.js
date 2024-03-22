@@ -13,6 +13,7 @@ const Welcome = () => {
     const pixelDensity = PixelRatio.get();
     const vw = width / 100;
     const vh = height / 100;
+    const logoSize = 30;
 
     // Function to calculate consistent position based on container width
     const calculatePosition = (percentage) => {
@@ -25,8 +26,8 @@ const Welcome = () => {
     };
 
     // Calculate the scaled width and height based on the desired dimensions in dp
-    const scaledWidth = getImageSize(width * 0.16);
-    const scaledHeight = getImageSize(height * 0.04);
+    const scaledWidth = pixelDensity * 1.98 * logoSize;
+    const scaledHeight = pixelDensity * 1 * logoSize;
     
     // Calculates font size in logical pixels (dp) based on viewport width (vw).
     const vwFontSize = (size) => {
@@ -44,7 +45,7 @@ const Welcome = () => {
             '#f06478', '#f06478', '#f06478', 
           ]}
           start={{ x: 0.9, y: 0 }}
-          style={styles.gradient}>
+          style={{flex: 1}}>
 
             <View style={styles.logo}>
                 <Image source={require('../assets/logo_small.png')} style={{ width: scaledWidth, height: scaledHeight}} />
@@ -100,7 +101,7 @@ const Welcome = () => {
             
 
             <View style={{
-                paddingHorizontal: 22,
+                paddingHorizontal: 20,
                 top: '-20%',
                 flex: 1
             }}>
@@ -132,14 +133,10 @@ const Welcome = () => {
                 </View>
             </View>
 
-            <View style={{flex: 1, paddingHorizontal: 22}}>
+            <View style={{flex: 1, paddingHorizontal: 20, }}>
                     <Button
                         title="Join Now"
                         onPress={() => navigation.navigate("Register")}
-                        style={{
-                            marginTop: 22,
-                            width: "100%"
-                        }}
                     />
 
                     <View style={{
@@ -153,19 +150,19 @@ const Welcome = () => {
                                 style={{ flexDirection: 'row', alignItems: 'center', marginRight: 4 }}
                             >
                                 <Text style={{
-                                    fontSize: 16,
+                                    fontSize: vwFontSize(4),
                                     color: COLORS.white,
                                     fontWeight: "bold",
                                 }}>Login</Text>
-                                <Text style={{ fontSize: 16, color: COLORS.white }}>Already have an account? </Text>
+                                <Text style={{ fontSize: vwFontSize(4), color: COLORS.white }}>Already have an account? </Text>
                             </Pressable>
                         ) : (
                             <Pressable
                                 onPress={() => navigation.navigate("Login")}
                                 style={{ flexDirection: 'row', alignItems: 'center' }}
                             >
-                                <Text style={{ fontSize: 16, color: COLORS.white }}>Already have an account? </Text>
-                                <Text style={{ fontSize: 16, color: COLORS.white, fontWeight: 'bold', marginLeft: 4 }}>Login</Text>
+                                <Text style={{ fontSize: vwFontSize(4), color: COLORS.white }}>Already have an account? </Text>
+                                <Text style={{ fontSize: vwFontSize(4), color: COLORS.white, fontWeight: 'bold', marginLeft: 4 }}>Login</Text>
                             </Pressable>
                         )}
                     </View>
@@ -182,7 +179,7 @@ const styles = StyleSheet.create({
     },
     logo: {
       alignItems: 'center',
-      paddingTop: 10
+      paddingTop: 0
     },
   });
 
