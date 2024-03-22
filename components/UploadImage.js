@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { saveUrl } from '../services/firebaseDatabase';
-import { auth, storage } from '../services/config';
+import { storage } from '../services/config';
 
 const UploadImage = () => {
     const [imageUrl, setImageUrl] = useState('');
@@ -30,7 +30,7 @@ const UploadImage = () => {
     const submitData = async () => {
 
         if (!imageUrl) {
-            console.warn('WARNING: Please choose an image from the library');
+            alert('WARNING: Please choose an image from the library');
             return;
         }
 
@@ -41,7 +41,7 @@ const UploadImage = () => {
             console.log('INFO: Successfully fetched photo using URL');
 
             const snapshot = await uploadBytes(imageRef, blob);
-            console.log('INFO: Uploaded an image!', snapshot.metadata);
+            console.log('INFO: Uploaded an image!', snapshot.metadata.name);
 
             setImageUrl('');
 
@@ -55,22 +55,30 @@ const UploadImage = () => {
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={chooseImage}>
-                <Text>Choose Image</Text>
+                <Text style={styles.buttonText}>Choose Image</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={submitData}>
-                <Text>Upload Photo</Text>
+                <Text style={styles.buttonText}>Upload Photo</Text>
             </TouchableOpacity>
         </View>
     );
-};
+}
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-});
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: 'white',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        buttonText: {
+            fontSize: 18,
+            color: 'black',
+            textAlign: 'center',
+            padding: 10,
+            marginBottom: 10,
+        },
+    });
+
 
 export default UploadImage;

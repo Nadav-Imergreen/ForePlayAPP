@@ -5,6 +5,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './screens/loginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import UserInfoScreen from './screens/UserInfoScreen';
+import MatchesScreen from './screens/MatchesScreen';
 import HomeScreen from './screens/HomeScreen';
 import {onAuthStateChanged} from 'firebase/auth';
 import {auth} from './services/config';
@@ -41,6 +42,7 @@ export default function App() {
                     <>
                         <Stack.Screen name="Home" component={HomeScreen}/>
                         <Stack.Screen name="UserInfo" component={UserInfoScreen}/>
+                        <Stack.Screen name="Matches" component={MatchesScreen}/>
                     </>
                 ) : (
                     <>

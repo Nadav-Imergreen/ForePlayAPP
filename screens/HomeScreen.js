@@ -1,51 +1,20 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Text, Button, TouchableOpacity, Image} from 'react-native';
-import {handleSignOut} from '../services/auth'; // Import handleSignOut function
+import React from 'react';
+import {StyleSheet, View, Text, Button} from 'react-native';
+import {handleSignOut} from '../services/auth';
 import {useNavigation} from '@react-navigation/native';
-import {getAllUsers, getUserData} from "../services/firebaseDatabase";
 
 const HomeScreen = () => {
     const navigation = useNavigation(); // Get navigation object
 
-    const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
-
-// Fetch user data and suggested users from Firestore
-    useEffect(() => {
-        const fetchData = async () => {
-
-                const currentUser = await getUserData();
-                if (currentUser.sex){
-                    const usersSnapshot = await getAllUsers(currentUser.sex);
-                    const usersData = usersSnapshot.docs.map(doc => ({
-                        ...doc.data()
-                    }));
-                    setSuggestedUsers(usersData);
-                    usersData.map(user => (
-                        console.log('CHECK: SuggestedUsers ', user)
-                    ));
-                }
-                else throw Error('user preference are not filled');
-        };
-
-        fetchData().catch((e)=> console.error('WARNING: failed to fetch suggested users:', e));
-    }, []);
-
-
-    // Handle navigation to UserInfoScreen when "Fill Info" button is pressed
+    // Handle navigation to various screens when buttons are pressed
     const infoScreenNavigation = () => navigation.navigate('UserInfo');
+    const handleSeeMatches = () => navigation.navigate('Matches');
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Suggested Users</Text>
+            <Button title="see Maches" onPress={handleSeeMatches}/>
             <Button title="Fill Info" onPress={infoScreenNavigation}/>
             <Button title="Sign Out" onPress={handleSignOut}/>
-            {/* Render suggested users */}
-            {suggestedUsers.length > 0 && suggestedUsers.map((user) => (
-                <TouchableOpacity key={user.userId} style={styles.userContainer}>
-                    {user.url && <Image style={styles.logo} source={{uri: user.url,}}/>}
-                    <Text style={styles.userName}>{user.firstName}</Text>
-                </TouchableOpacity>
-            ))}
         </View>
     );
 };
