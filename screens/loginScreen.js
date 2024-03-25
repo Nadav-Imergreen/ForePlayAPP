@@ -164,7 +164,7 @@ const pageStyles = StyleSheet.create({
     },
     label: {
         fontSize: 16,
-        marginBottom: 5,
+        marginBottom: 2,
         color: 'black',
     },
     buttonText: {

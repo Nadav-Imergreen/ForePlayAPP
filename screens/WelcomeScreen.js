@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Image, StyleSheet, useWindowDimensions, I18nManager, PixelRatio } from 'react-native'
+import { View, Text, TouchableOpacity, Image, StyleSheet, useWindowDimensions, I18nManager, PixelRatio } from 'react-native'
 import React from 'react'
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
@@ -35,6 +35,7 @@ const Welcome = () => {
         return PixelRatio.roundToNearestPixel(scaledFontSize);
     };
 
+    
     return (
 
     <View style={{ flex: 1, flexDirection: 'row'}}>
@@ -145,25 +146,29 @@ const Welcome = () => {
                         justifyContent: "center",
                     }}>
                         {isRTL ? (
-                            <Pressable
+                            <>
+                                <TouchableOpacity
                                 onPress={() => navigation.navigate("Login")}
-                                style={{ flexDirection: 'row', alignItems: 'center', marginRight: 4 }}
-                            >
+                                style={{ flexDirection: 'row', alignItems: 'center', marginRight: 4 }}>
                                 <Text style={{
                                     fontSize: vwFontSize(4),
                                     color: COLORS.white,
                                     fontWeight: "bold",
                                 }}>Login</Text>
-                                <Text style={{ fontSize: vwFontSize(4), color: COLORS.white }}>Already have an account? </Text>
-                            </Pressable>
+                                </TouchableOpacity>
+                                <Text style={{ fontSize: vwFontSize(4), color: COLORS.white }}>Already have an account?</Text>
+                            </>
                         ) : (
-                            <Pressable
-                                onPress={() => navigation.navigate("Login")}
-                                style={{ flexDirection: 'row', alignItems: 'center' }}
-                            >
-                                <Text style={{ fontSize: vwFontSize(4), color: COLORS.white }}>Already have an account? </Text>
-                                <Text style={{ fontSize: vwFontSize(4), color: COLORS.white, fontWeight: 'bold', marginLeft: 4 }}>Login</Text>
-                            </Pressable>
+                            <>
+                                <Text style={{ fontSize: vwFontSize(4), color: COLORS.white }}>Already have an account?</Text>
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate("Login")}
+                                    style={{ flexDirection: 'row', alignItems: 'center' }}
+                                >
+                                    
+                                    <Text style={{ fontSize: vwFontSize(4), color: COLORS.white, fontWeight: 'bold', marginLeft: 4 }}>Login</Text>
+                                </TouchableOpacity>   
+                            </>
                         )}
                     </View>
                 </View>
@@ -171,6 +176,7 @@ const Welcome = () => {
         </LinearGradient>
     </View>
     )
+    
 }
 
 const styles = StyleSheet.create({
