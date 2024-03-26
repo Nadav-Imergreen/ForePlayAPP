@@ -11,6 +11,7 @@ MERGED from [:react-native-firebase_auth] /Users/nadavimergreen/ForePlayAPP/node
 MERGED from [:react-native-firebase_app] /Users/nadavimergreen/ForePlayAPP/node_modules/@react-native-firebase/app/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-30:12
 MERGED from [:react-native-google-signin_google-signin] /Users/nadavimergreen/ForePlayAPP/node_modules/@react-native-google-signin/google-signin/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-fbsdk] /Users/nadavimergreen/ForePlayAPP/node_modules/react-native-fbsdk/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:21:1-26:12
+MERGED from [:react-native-fbsdk-next] /Users/nadavimergreen/ForePlayAPP/node_modules/react-native-fbsdk-next/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:21:1-26:12
 MERGED from [:react-native-gesture-handler] /Users/nadavimergreen/ForePlayAPP/node_modules/react-native-gesture-handler/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-image-picker] /Users/nadavimergreen/ForePlayAPP/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-19:12
 MERGED from [:react-native-linear-gradient] /Users/nadavimergreen/ForePlayAPP/node_modules/react-native-linear-gradient/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
@@ -303,6 +304,8 @@ MERGED from [:react-native-google-signin_google-signin] /Users/nadavimergreen/Fo
 MERGED from [:react-native-google-signin_google-signin] /Users/nadavimergreen/ForePlayAPP/node_modules/@react-native-google-signin/google-signin/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-fbsdk] /Users/nadavimergreen/ForePlayAPP/node_modules/react-native-fbsdk/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:24:5-44
 MERGED from [:react-native-fbsdk] /Users/nadavimergreen/ForePlayAPP/node_modules/react-native-fbsdk/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:24:5-44
+MERGED from [:react-native-fbsdk-next] /Users/nadavimergreen/ForePlayAPP/node_modules/react-native-fbsdk-next/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:24:5-44
+MERGED from [:react-native-fbsdk-next] /Users/nadavimergreen/ForePlayAPP/node_modules/react-native-fbsdk-next/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:24:5-44
 MERGED from [:react-native-gesture-handler] /Users/nadavimergreen/ForePlayAPP/node_modules/react-native-gesture-handler/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-gesture-handler] /Users/nadavimergreen/ForePlayAPP/node_modules/react-native-gesture-handler/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-image-picker] /Users/nadavimergreen/ForePlayAPP/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44

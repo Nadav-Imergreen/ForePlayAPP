@@ -8,8 +8,7 @@ import {
 } from 'firebase/auth';
 import {auth} from './config';
 import {GoogleSignin} from "@react-native-google-signin/google-signin";
-import { AccessToken } from 'react-native-fbsdk';
-
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 export const signup = async (email, password) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(
@@ -64,27 +63,23 @@ export const googleSignIn = async () => {
 
 export const signInWithFB = async () => {
 
-    const {idToken} = await AccessToken.getCurrentAccessToken();
+    const result = await LoginManager.logInWithPermissions(['public_profile', 'email']);
 
-    console.log('CHECK: idToken:', idToken);
+    if (result.isCancelled) throw 'User cancelled the login process';
 
-    const facebookCredential = FacebookAuthProvider.credential(idToken.accessToken);
+    // Once signed in, get the users AccessToken
+    const data = await AccessToken.getCurrentAccessToken();
+
+    if (!data) throw 'Something went wrong obtaining access token';
+
+    // Create a Firebase credential with the AccessToken
+    const facebookCredential = FacebookAuthProvider.credential(data.accessToken);
+
+    // Sign-in the user with the credential
     return ((await signInWithCredential(auth, facebookCredential)).user);
 }
 
 export const handleSignOut = () => {
     signOut(auth).catch((error) => console.error('Sign out error:', error.message))
 };
-
-//
-// export const facebookSignIn = async () => {
-//     // Get the users ID token
-//
-//     const provider = new FacebookAuthProvider();
-//     provider.addScope('user_birthday');
-//
-//
-//     // const credential = FacebookAuthProvider.credentialFromResult(result);
-//     // const accessToken = credential.accessToken;
-// }
 
