@@ -4,9 +4,11 @@ import {
     sendEmailVerification,
     signInWithCredential,
     signInWithEmailAndPassword, signOut,
+    FacebookAuthProvider
 } from 'firebase/auth';
 import {auth} from './config';
 import {GoogleSignin} from "@react-native-google-signin/google-signin";
+import { AccessToken } from 'react-native-fbsdk';
 
 export const signup = async (email, password) => {
     try {
@@ -60,8 +62,29 @@ export const googleSignIn = async () => {
     return (await signInWithCredential(auth, credential)).user;
 }
 
+export const signInWithFB = async () => {
+
+    const {idToken} = await AccessToken.getCurrentAccessToken();
+
+    console.log('CHECK: idToken:', idToken);
+
+    const facebookCredential = FacebookAuthProvider.credential(idToken.accessToken);
+    return ((await signInWithCredential(auth, facebookCredential)).user);
+}
+
 export const handleSignOut = () => {
     signOut(auth).catch((error) => console.error('Sign out error:', error.message))
 };
 
+//
+// export const facebookSignIn = async () => {
+//     // Get the users ID token
+//
+//     const provider = new FacebookAuthProvider();
+//     provider.addScope('user_birthday');
+//
+//
+//     // const credential = FacebookAuthProvider.credentialFromResult(result);
+//     // const accessToken = credential.accessToken;
+// }
 

@@ -11,7 +11,7 @@ import {
     useWindowDimensions
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {googleSignIn, signup} from '../services/auth';
+import {facebookSignIn, googleSignIn, signInWithFB, signup} from '../services/auth';
 import {saveUser} from '../services/firebaseDatabase';
 import Loader from '../services/loadingIndicator';
 import styles from '../cssStyles/commonStyles';
@@ -81,6 +81,14 @@ const RegisterScreen = () => {
         } finally {setLoading(false)}
     };
 
+    const handleFacebookSignup = async () => {
+        setLoading(true);
+        try {
+            const user = await signInWithFB();
+            if (user) await saveUser(user.uid, user.email);
+        } catch (error) {console.log('WARNING: facebook registration fails', error);
+        } finally {setLoading(false)}
+    };
 
     return(
         <View style={{ flex: 1, backgroundColor: 'white' }}>
@@ -169,7 +177,7 @@ const RegisterScreen = () => {
                     justifyContent: 'center'
                 }}>
                     <TouchableOpacity
-                        onPress={() => console.log("Pressed")}
+                        onPress={handleFacebookSignup}
                         style={{
                             flex: 1,
                             alignItems: 'center',
