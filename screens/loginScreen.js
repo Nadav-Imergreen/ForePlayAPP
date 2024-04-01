@@ -10,7 +10,9 @@ import {
     useWindowDimensions,
     StyleSheet,
     I18nManager,
-    PixelRatio
+    PixelRatio,
+    Dimensions,
+    ImageBackground
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useNavigation} from '@react-navigation/native';
@@ -38,6 +40,15 @@ const LoginScreen = () => {
     const FIELD_WIDTH = width * 0.7;
     const FIELD_HEIGHT = height * 0.6;
 
+    // Determine text order based on text direction
+    const renderTextOrder = () => {
+      if (I18nManager.isRTL) {
+        return { flexDirection: 'row-reverse' };
+      } else {
+        return { flexDirection: 'row' };
+      }
+    };
+
     const navigation = useNavigation();
 
     const handleNavigation = async () => {
@@ -64,15 +75,7 @@ const LoginScreen = () => {
     return(
 
     <View style={{ flex: 1, backgroundColor: 'white' }}>
-      <LinearGradient
-        colors={[
-          '#FFFFFF', '#FFFFFF', '#FFFFFF',
-          '#a4cdbd', '#a4cdbd', '#a4cdbd',
-          '#f06478', '#f06478', '#f06478',
-        ]}
-        start={{ x: 0.9, y: 0 }}
-     
-        style={{ flex: 1, alignItems: 'center' }}>
+      <ImageBackground source={require('../assets/background.png')} style={pageStyles.backgroundStyle}>
     
         <View style={{ alignItems: 'center', paddingBottom: '10%' }}>
           <Image source={require('../assets/logo_small.png')} style={{ width: scaledWidth, height: scaledHeight }} />
@@ -126,27 +129,17 @@ const LoginScreen = () => {
     
           <View style={{
             marginTop: 10,
-            flexDirection: "row",
+            ...renderTextOrder()
           }}>
-            {isRTL ? (
-              <>
-                <TouchableOpacity onPress={handleNavigation}>
-                  <Text style={{ fontWeight: 'bold' }}>SignUp</Text>
-                </TouchableOpacity>
-                <Text>Don't have an account? </Text>
-              </>
-            ) : (
-              <>
                 <Text>Don't have an account? </Text>
                 <TouchableOpacity onPress={handleNavigation}>
                   <Text style={{ fontWeight: 'bold' }}>SignUp</Text>
                 </TouchableOpacity>
-              </>
-            )}
+    
           </View>
         </View>
         
-      </LinearGradient>
+      </ImageBackground>
     </View>
     
     );
@@ -177,6 +170,12 @@ const pageStyles = StyleSheet.create({
         padding: 12,
         backgroundColor: '#a4cdbd',
         textAlign: 'center'
+    },
+    backgroundStyle: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+        resizeMode: 'stretch',
+        alignItems: 'center'
     }
   });
 

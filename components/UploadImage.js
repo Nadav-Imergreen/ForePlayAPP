@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { saveUrl } from '../services/firebaseDatabase';
-import { storage } from '../services/config';
 
-const UploadImage = () => {
-    const [imageUrl, setImageUrl] = useState('');
+
+const UploadImage = ({ setImageUrl }) => {
+    const [imageUri, setImageUri] = useState('');
 
     const chooseImage = async () => {
         const options = {
@@ -23,62 +21,41 @@ const UploadImage = () => {
             console.log('WARNING: ImagePicker Error: ', response.errorMessage);
         } else {
             const uri = response.assets?.[0]?.uri;
-            setImageUrl(uri);
-        }
-    };
-
-    const submitData = async () => {
-
-        if (!imageUrl) {
-            alert('WARNING: Please choose an image from the library');
-            return;
-        }
-
-        const imageRef = storageRef(storage, `images/${imageUrl}`);
-
-        try {
-            const blob = await fetch(imageUrl).then((res) => res.blob());
-            console.log('INFO: Successfully fetched photo using URL');
-
-            const snapshot = await uploadBytes(imageRef, blob);
-            console.log('INFO: Uploaded an image!', snapshot.metadata.name);
-
-            setImageUrl('');
-
-            const url = await getDownloadURL(snapshot.ref);
-            await saveUrl(url);
-        } catch (error) {
-            console.error('ERROR: Failed to upload image', error.message);
+            setImageUri(uri);
+            setImageUrl(uri); // Update the image URL state in the parent component
         }
     };
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity onPress={chooseImage}>
-                <Text style={styles.buttonText}>Choose Image</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={submitData}>
-                <Text style={styles.buttonText}>Upload Photo</Text>
-            </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={chooseImage} style={styles.imageContainer}>
+            {imageUri ? (
+                <Image source={{ uri: imageUri }} style={styles.image} />
+            ) : (
+                <Text style={styles.addPhotoText}>Add Photo</Text>
+            )}
+        </TouchableOpacity>
     );
-}
+};
 
-    const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            backgroundColor: 'white',
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
-        buttonText: {
-            fontSize: 18,
-            color: 'black',
-            textAlign: 'center',
-            padding: 10,
-            marginBottom: 10,
-        },
-    });
-
+const styles = StyleSheet.create({
+    imageContainer: {
+        width: 150,
+        height: 150,
+        borderRadius: 75,
+        backgroundColor: 'lightgray',
+        justifyContent: 'center',
+        alignItems: 'center',
+        overflow: 'hidden',
+    },
+    image: {
+        width: '100%',
+        height: '100%',
+        resizeMode: 'cover',
+    },
+    addPhotoText: {
+        fontSize: 16,
+        color: 'black',
+    },
+});
 
 export default UploadImage;

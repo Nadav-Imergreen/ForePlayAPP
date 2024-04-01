@@ -8,7 +8,12 @@ import {
     PixelRatio,
     StyleSheet,
     I18nManager,
-    useWindowDimensions
+    useWindowDimensions,
+    KeyboardAvoidingView,
+    TouchableWithoutFeedback,
+    Keyboard,
+    Dimensions,
+    ImageBackground
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {facebookSignIn, googleSignIn, signInWithFB, signup} from '../services/auth';
@@ -32,6 +37,7 @@ const RegisterScreen = () => {
     const logoSize = 30;
     const { width, height } = useWindowDimensions();
     const isRTL = I18nManager.isRTL;
+    const vw = width / 100;
 
     
     // Define constants dimensions
@@ -41,6 +47,12 @@ const RegisterScreen = () => {
     // Calculate the scaled width and height based on the desired dimensions in dp
     const scaledWidth = pixelDensity * 1.98 * logoSize;
     const scaledHeight = pixelDensity * 1 * logoSize;
+
+    // Calculates font size in logical pixels (dp) based on viewport width (vw).
+    const vwFontSize = (size) => {
+        const scaledFontSize = vw * size;
+        return PixelRatio.roundToNearestPixel(scaledFontSize);
+    };
 
     // Checks if the passwords are the same
     const passwordsMatch = () => {
@@ -90,203 +102,128 @@ const RegisterScreen = () => {
         } finally {setLoading(false)}
     };
 
+
+
     return(
-        <View style={{ flex: 1, backgroundColor: 'white' }}>
-        <LinearGradient
-          colors={[
-            '#FFFFFF', '#FFFFFF', '#FFFFFF',
-            '#a4cdbd', '#a4cdbd', '#a4cdbd',
-            '#f06478', '#f06478', '#f06478',
-          ]}
-          start={{ x: 0.9, y: 0 }}
-       
-          style={{ flex: 1, alignItems: 'center' }}>
-      
-          <View style={{ alignItems: 'center', paddingBottom: '10%' }}>
-            <Image source={require('../assets/logo_small.png')} style={{ width: scaledWidth, height: scaledHeight }} />
-          </View>
-      
-          <View style={{
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: 20,
-            width: '90%',
-            borderRadius: 20,
-            borderColor: 'grey',
-            borderWidth: 1,
-            backgroundColor: 'rgba(255, 255, 255, 0.75)',
-          }}>
-      
-            <View style={{ marginBottom: 10 }}>
-              <Text style={pageStyles.label}>Email address</Text>
-              <TextInput
-                style={[pageStyles.input, { width: FIELD_WIDTH }]}
-                placeholder="Enter your email"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={email}
-                onChangeText={setEmail}
-              />
-            </View>
-      
-            <View style={{ marginBottom: 10 }}>
-              <Text style={pageStyles.label}>Password</Text>
-              <TextInput
-                style={[pageStyles.input, { width: FIELD_WIDTH }]}
-                placeholder="Enter your password"
-                secureTextEntry
-                autoCapitalize="none"
-                value={password}
-                onChangeText={setPassword}
-              />
-            </View>
 
-            <View style={{ marginBottom: 10 }}>
-              <Text style={pageStyles.label}>Confirm Password</Text>
-              <TextInput
-                style={[pageStyles.input, { width: FIELD_WIDTH }]}
-                placeholder="Re-enter password to confirm"
-                secureTextEntry
-                autoCapitalize="none"
-                value={passwordConfirmation}
-                onChangeText={setPasswordConfirmation}
-              />
-            </View>
-      
-            <View style={{ marginTop: 20, height: 50 }}>
-              {loading ? (
-                <Loader />
-              ) : (
-                <TouchableOpacity
-                  onPress={handleSignup}>
-                  <Text style={[pageStyles.buttonText, { width: FIELD_WIDTH }]}>Sing Up</Text>
-                </TouchableOpacity>
-              )}
-            </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={{ flex: 1, backgroundColor: 'white' }}>
 
-            <View style={{flexDirection: 'row', alignItems: "center", marginVertical: 20}}>
-                <View style={{flex: 1, height: 1, backgroundColor: COLORS.black, marginHorizontal: 10}}
-                />
-                <Text>Or Sign Up with</Text>
-                <View style={{flex: 1, height: 1, backgroundColor: COLORS.black, marginHorizontal: 10}}
-                />
-            </View>
+            <ImageBackground source={require('../assets/background.png')} style={pageStyles.backgroundStyle}>
 
+        
+            <View style={{ alignItems: 'center', paddingBottom: '10%' }}>
+                <Image source={require('../assets/logo_small.png')} style={{ width: scaledWidth, height: scaledHeight }} />
+            </View>
+        
             <View style={{
-                    flexDirection: 'row',
-                    justifyContent: 'center'
-                }}>
-                    <TouchableOpacity
-                        onPress={handleFacebookSignup}
-                        style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexDirection: 'row',
-                            height: 52,
-                            borderWidth: 1,
-                            borderColor: COLORS.black,
-                            marginRight: 4,
-                            borderRadius: 10
-                        }}
-                    >
-                        <Image
-                            source={require("../assets/facebook.png")}
-                            style={{
-                                height: 36,
-                                width: 36,
-                                marginRight: 8
-                            }}
-                            resizeMode='contain'
-                        />
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: 20,
+                width: '90%',
+                borderRadius: 20,
+                borderColor: 'grey',
+                borderWidth: 1,
+                backgroundColor: 'rgba(255, 255, 255, 0.75)',
+            }}>
+                
 
-                        <Text>Facebook</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={handleGoogleSignup}
-                        style={{
-                            flex: 1,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexDirection: 'row',
-                            height: 52,
-                            borderWidth: 1,
-                            borderColor: COLORS.black,
-                            marginRight: 4,
-                            borderRadius: 10
-                        }}
-                    >
-                        <Image
-                            source={require("../assets/google.png")}
-                            style={{
-                                height: 36,
-                                width: 36,
-                                marginRight: 8
-                            }}
-                            resizeMode='contain'
-                        />
-
-                        <Text>Google</Text>
-                    </TouchableOpacity>
-                </View>
-
-          </View>
-          
-        </LinearGradient>
-      </View>
-
-    );
-
-    /*
-    return (
-        <ScrollView>
-            <View style={styles.container}>
-                <View style={styles.content}>
-                    <Image source={require('../assets/logo.png')} style={styles.image}/>
-                    <Text style={styles.title}>Register</Text>
-
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Email"
+        
+                <View style={{ marginBottom: 10 }}>
+                    <Text style={[pageStyles.label, { fontSize: vwFontSize(4) }]}>Email address</Text>
+                        <TextInput
+                        style={[pageStyles.input, { width: FIELD_WIDTH, fontSize: vwFontSize(4), padding: vwFontSize(1), }]}
+                        placeholder="Enter your email"
                         keyboardType="email-address"
                         autoCapitalize="none"
                         value={email}
                         onChangeText={setEmail}
-                    />
+                        />
+                </View>
+
+                <View style={{ marginBottom: 10 }}>
+                    <Text style={[pageStyles.label, { fontSize: vwFontSize(4) }]}>Password</Text>
                     <TextInput
-                        style={styles.input}
-                        placeholder="Password"
+                        style={[pageStyles.input, { width: FIELD_WIDTH, fontSize: vwFontSize(4), padding: vwFontSize(1) }]}
+                        placeholder="Enter your password"
                         secureTextEntry
                         autoCapitalize="none"
                         value={password}
                         onChangeText={setPassword}
                     />
-
-                    {loading ? (
-                        <Loader/>
-                    ) : (
-                        <TouchableOpacity
-                            style={styles.buttonContainer}
-                            onPress={handleSignup}>
-                            <Text style={styles.buttonText}>Register</Text>
-                        </TouchableOpacity>
-                    )}
-
-                    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                        <Text style={styles.title5}>
-                            Already have an account? Login here.
-                        </Text>
-
-                        <View style={styles.socialIconContainer}>
-                            <SocialIcon type="google" onPress={() => handleGoogleSignup()}/>
-                        </View>
-                    </TouchableOpacity>
                 </View>
+
+                <View style={{ marginBottom: 10 }}>
+                    <Text style={[pageStyles.label, { fontSize: vwFontSize(4) }]}>Confirm Password</Text>
+                    <TextInput
+                        style={[pageStyles.input, { width: FIELD_WIDTH, fontSize: vwFontSize(4), padding: vwFontSize(1) }]}
+                        placeholder="Re-enter password to confirm"
+                        secureTextEntry
+                        autoCapitalize="none"
+                        value={passwordConfirmation}
+                        onChangeText={setPasswordConfirmation}
+                    />
+                </View>
+        
+                <View style={{ marginTop: vwFontSize(3), height: 50 }}>
+                {loading ? (
+                    <Loader />
+                ) : (
+                    <TouchableOpacity
+                    onPress={handleSignup}>
+                    <Text style={[pageStyles.buttonText, { width: FIELD_WIDTH, fontSize: vwFontSize(4), padding: vwFontSize(2) }]}>Sing Up</Text>
+                    </TouchableOpacity>
+                )}
+                </View>
+
+                <View style={{flexDirection: 'row', alignItems: "center", marginBottom: vwFontSize(3)}}>
+                    <View style={{flex: 1, height: 1, backgroundColor: COLORS.black, marginHorizontal: 10}}
+                    />
+                    <Text>Or Sign Up with</Text>
+                    <View style={{flex: 1, height: 1, backgroundColor: COLORS.black, marginHorizontal: 10}}
+                    />
+                </View>
+
+                <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center'
+                    }}>
+                        <TouchableOpacity
+                            onPress={handleGoogleSignup}
+                            style={{
+                                flex: 1,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                flexDirection: 'row',
+                                padding: vwFontSize(1),
+                                marginHorizontal: 60,
+                                borderWidth: 1,
+                                borderColor: COLORS.black,
+                                backgroundColor: COLORS.white,
+                                borderRadius: 10
+                            }}
+                        >
+                            <Image
+                                source={require("../assets/google.png")}
+                                style={{
+                                    height: 36,
+                                    width: 36,
+                                    marginRight: 8
+                                }}
+                                resizeMode='contain'
+                            />
+
+                            <Text>Google</Text>
+                        </TouchableOpacity>
+                    </View>
+
             </View>
-        </ScrollView>
+            </ImageBackground>
+            
+        </View>
+      </TouchableWithoutFeedback>
+
     );
-    */
 };
 
 const pageStyles = StyleSheet.create({
@@ -294,27 +231,30 @@ const pageStyles = StyleSheet.create({
       borderWidth: 2,
       borderColor: 'gray',
       borderRadius: 12,
-      padding: 7,
-      fontSize: 16,
+      paddingHorizontal: 10,
       color: 'black',
       backgroundColor: 'white'
     },
     label: {
-        fontSize: 16,
         marginBottom: 2,
         color: 'black',
     },
     buttonText: {
         color: 'white',
-        fontSize: 16,
         fontWeight: 'bold',
         borderRadius: 12,
         borderColor: 'black',
         borderWidth: 1,
-        padding: 12,
         backgroundColor: '#a4cdbd',
         textAlign: 'center'
+    },
+    backgroundStyle: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+        resizeMode: 'stretch',
+        alignItems: 'center'
     }
+    
   });
 
 export default RegisterScreen;

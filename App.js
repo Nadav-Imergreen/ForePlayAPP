@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, I18nManager } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './screens/loginScreen';
@@ -35,6 +35,8 @@ export default function App() {
             </View>
         );
     }
+
+  
 
     return (
         <NavigationContainer>
