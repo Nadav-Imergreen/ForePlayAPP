@@ -61,3 +61,10 @@ logs/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Built application files
+*.apk
+*.aar
+*.ap_
+*.aab
+*.build
