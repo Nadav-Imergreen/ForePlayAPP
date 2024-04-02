@@ -1,6 +1,7 @@
 //firebaseDatabase.js
 import {auth, db} from './config'; // Update the path
 import {collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where} from 'firebase/firestore';
+import {deleteUserAccount} from "./auth";
 
 export async function saveUser(userId, email) {
 
@@ -19,10 +20,14 @@ export async function saveUser(userId, email) {
     const usersRef = collection(db, 'users');
     await setDoc(doc(usersRef, userId), data)
         .then(() => console.log('INFO: User', email, 'saved to Firestore'))
-        .catch((error) => console.error('WARNING: Error saving user to Firestore:', error));
+        .catch((error) => {
+            console.error('WARNING: Error saving user to Firestore:', error);
+            deleteUserAccount();
+            alert('WARNING: User not registered, due to error in saving user info to database');
+        });
 }
 
-export async function saveUserInfo(firstName, lastName, age, sex, hometown, occupation, desireMatch) {
+export async function saveUserInfo(firstName, lastName, age, sex, hometown, occupation, desireMatch, aboutMe) {
     // Update the document with the new user information
     const userId = auth.currentUser.uid;
     await updateDoc(doc(db, 'users', userId), {
@@ -32,6 +37,7 @@ export async function saveUserInfo(firstName, lastName, age, sex, hometown, occu
         sex: sex,
         hometown: hometown,
         occupation: occupation,
+        aboutMe: aboutMe,
         desireMatch: desireMatch
     }).then(() => console.log('INFO: User data updated successfully'))
         .catch((error) => console.error('WARNING: Error updating user data:', error))

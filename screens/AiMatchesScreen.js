@@ -17,8 +17,8 @@ const HomeScreen = ({ navigation }) => {
                 alert('WARNING: you need to fill your gender in order to match to other people');
             // If additional info is not filled, setAdditionalInfoFilled true
             setAdditionalInfoFilled((currentUser.desireMatch && currentUser.occupation));
-
-            const usersSnapshot = await getAllUsers(currentUser.sex).catch((e)=> console.log(e.message));
+            const gender2seek = currentUser.sex === 'Male'? 'Female' : 'Male';
+            const usersSnapshot = await getAllUsers(gender2seek).catch((e)=> console.log(e.message));
             const usersData = usersSnapshot.docs.map((doc) => ({
                 ...doc.data(),
                 id: doc.id, // Add unique id for each user
@@ -26,11 +26,11 @@ const HomeScreen = ({ navigation }) => {
             setSuggestedUsers(usersData);
 
             await matchAI(currentUser, usersSnapshot)
-                    .then((res)=> console.log('CHECK: AI message: ', res));
+                    .then((score)=> console.log('CHECK: AI message: ', score));
         }
 
         fetchData().catch((e)=> console.error("Failed to fetch suggested users:", e.message));
-    }, [additionalInfoFilled]); // Include additionalInfoFilled in dependency array
+    }, []); // Include additionalInfoFilled in dependency array
 
     // Function to handle navigation to the next user
     const nextUser = () => {

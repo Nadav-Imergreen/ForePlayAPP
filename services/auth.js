@@ -4,7 +4,8 @@ import {
     sendEmailVerification,
     signInWithCredential,
     signInWithEmailAndPassword, signOut,
-    FacebookAuthProvider
+    FacebookAuthProvider,
+    deleteUser
 } from 'firebase/auth';
 import {auth} from './config';
 import {GoogleSignin} from "@react-native-google-signin/google-signin";
@@ -81,6 +82,11 @@ export const signInWithFB = async () => {
 }
 
 export const handleSignOut = () => {
-    signOut(auth).catch((error) => console.error('Sign out error:', error.message))
+    signOut(auth).catch((error) => console.error('WARNING: Sign out error:', error.message))
 };
+
+export const deleteUserAccount = () => {
+    deleteUser(auth.currentUser).catch((error) => console.error('WARNING: Delete user account:', error.message))
+};
+
 

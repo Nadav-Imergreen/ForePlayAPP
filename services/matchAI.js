@@ -35,18 +35,20 @@ import OpenAI from "openai";
 export async function matchAI(user, userSuggestions) {
     try {
         // Initialize the OpenAI API client with your API key and correct url
-        const openai = new OpenAI({ apiKey: 'OPENAI_API_KEY' });
+        const openai = new OpenAI({ apiKey: 'OPEN_AI_KEY' });
         const path = '/chat/completions';
         openai.baseURL = 'https://api.openai.com/v1';
         openai.buildURL = () => `${openai.baseURL}${path}`;
 
         // Construct the conversation prompt
-        const prompt = `${user.occupation}, ${user.desireMatch}, ${user.age}, ${userSuggestions.docs[0].name}, ${userSuggestions.docs[0].hometown}, ${userSuggestions.docs[0].age}`;
+        const firstUser = user; // Assuming user is the first user object
+        const secondUserDoc = userSuggestions.docs[0].data(); // Assuming userSuggestions.docs contains documents
+        const prompt = `first user: ${firstUser.firstName}, ${firstUser.age}, ${firstUser.occupation}, about me: ${firstUser.aboutMe}, desire match: ${firstUser.desireMatch}. second user: ${secondUserDoc.firstName}, ${secondUserDoc.age}, ${secondUserDoc.occupation}, about me: ${secondUserDoc.aboutMe}, desire match: ${secondUserDoc.desireMatch}`;
 
         // Send a request to the OpenAI API to generate completions for the conversation prompt
         const completion = await openai.chat.completions.create({
             messages: [
-                { role: 'system', content: 'Please rate these two people\'s dating match on a scale from 1 to 10.' },
+                { role: 'system', content: 'Please rate these two people\'s dating match on a scale from 1 to 10.'},
                 { role: 'user', content: prompt },
                 { role: "assistant", content: "those tow people match rate is 7.5"},
             ],
