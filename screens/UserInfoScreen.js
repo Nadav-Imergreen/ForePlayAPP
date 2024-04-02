@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { saveUserInfo } from '../services/firebaseDatabase';
@@ -7,7 +7,8 @@ import UploadImage from '../components/UploadImage';
 import { handleSignOut } from '../services/auth';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../services/config';
-import { saveUrl } from '../services/firebaseDatabase';
+import { saveUrl, getUserData } from '../services/firebaseDatabase';
+import { HeaderBackButton } from 'react-navigation';
 
 
 
@@ -15,51 +16,108 @@ const UserInfoScreen = () => {
     const navigation = useNavigation(); // Get navigation object
 
     const [loading, setLoading] = useState(false);
+    const [userData, setUserData] = useState(null);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [age, setAge] = useState('');
     const [sex, setSex] = useState('Male'); // Default to Male
     const [hometown, setHometown] = useState('');
-    const [imageUrl, setImageUrl] = useState('');
+    const [imageUrls, setImageUrls] = useState([]);
     const [occupation, setOccupation] = useState('');
     const [desireMatch, setDesireMatch] = useState('');
     const [aboutMe, setAboutMe] = useState('');
 
-    console.log('hello');
+    useEffect(() => {
+        fetchUserData();
+    }, []);
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('beforeRemove', () => {
+            handleSaveUserInfo();
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
+    const fetchUserData = async () => {
+        try {
+            const userData = await getUserData();
+            if (userData) {
+                setUserData(userData);
+                setFirstName(userData.firstName || '');
+                setLastName(userData.lastName || '');
+                setAge(userData.age || '');
+                setSex(userData.sex || 'Male');
+                setHometown(userData.hometown || '');
+                setOccupation(userData.occupation || '');
+                setDesireMatch(userData.desireMatch || '');
+                setAboutMe(userData.aboutMe || '');
+                setImageUrls(userData.images || []);
+
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error.message);
+        }
+    };
 
     const handleSaveUserInfo = async () => {
         setLoading(true);
-        savePhoto();
         await saveUserInfo(firstName, lastName, age, sex, hometown)
-            .then(() => {})
+            .then(() => {
+                savePhoto(); // Move savePhoto() inside the then block to ensure it's executed after saving user info
+            })
             .catch((error) => console.error('Error saving user data:', error.message))
             .finally(() => setLoading(false));
     };
+    
+   const savePhoto = async () => {
+    if (!imageUrls || imageUrls.length === 0) {
+        alert('WARNING: Please choose an image from the library');
+        return;
+    }
 
-    const savePhoto = async () => {
+    try {
+        // Get the previous imageUrls from userData or set it as an empty array
+        const previousImageUrls = userData ? userData.images || [] : [];
 
-        if (!imageUrl) {
-            alert('WARNING: Please choose an image from the library');
-            return;
+        // Filter out the URLs that already exist in previousImageUrls
+        const newImageUrls = imageUrls.filter(url => !previousImageUrls.includes(url));
+
+        // Check if there are new image URLs to upload
+        if (newImageUrls.length > 0) {
+            // Collect the download URLs in an array
+            const downloadURLs = [];
+
+            // Loop through each new image URL and upload it to storage
+            for (const imageUrl of newImageUrls) {
+                const imageRef = storageRef(storage, `images/${imageUrl}`);
+                const blob = await fetch(imageUrl).then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Failed to fetch image');
+                    }
+                    return res.blob();
+                });
+                console.log('INFO: Successfully fetched photo using URL');
+
+                const snapshot = await uploadBytes(imageRef, blob);
+                console.log('INFO: Uploaded an image!', snapshot.metadata.name);
+
+                const url = await getDownloadURL(snapshot.ref);
+                downloadURLs.push(url); // Collect the download URL
+            }
+
+            // Call saveUrl with the array of download URLs
+            await saveUrl(downloadURLs);
+
+            setImageUrls([]); // Clear imageUrls after uploading
+        } else {
+            // If there are no new image URLs, no need to update the Firestore document
+            console.log('INFO: No new image URLs to upload');
         }
-
-        const imageRef = storageRef(storage, `images/${imageUrl}`);
-
-        try {
-            const blob = await fetch(imageUrl).then((res) => res.blob());
-            console.log('INFO: Successfully fetched photo using URL');
-
-            const snapshot = await uploadBytes(imageRef, blob);
-            console.log('INFO: Uploaded an image!', snapshot.metadata.name);
-
-            setImageUrl('');
-
-            const url = await getDownloadURL(snapshot.ref);
-            await saveUrl(url);
-        } catch (error) {
-            console.error('ERROR: Failed to upload image', error.message);
-        }
-    };
+    } catch (error) {
+        console.error('ERROR: Failed to fetch image or upload:', error.message);
+    }
+};
 
     const homeScreenNavigation = () => navigation.navigate('Home');
 
@@ -126,7 +184,8 @@ const UserInfoScreen = () => {
                 value={aboutMe}
                 onChangeText={setAboutMe}
             />
-            <UploadImage setImageUrl={setImageUrl} />
+            <UploadImage setImageUrls={setImageUrls} imageUrls={imageUrls}
+/>
             {loading ? (
                 <Loader />
             ) : (
