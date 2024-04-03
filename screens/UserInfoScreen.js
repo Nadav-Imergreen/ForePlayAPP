@@ -31,12 +31,12 @@ const UserInfoScreen = () => {
 
     useEffect(() => {
         fetchUserData();
-        setDataFetched(true);
     }, []);
 
     useEffect(() => {
-        if (dataFetched)
+        if (dataFetched){
             setImageUrlsChanged(true);
+        }
     }, [imageUrls]);
 
     useEffect( () => {
@@ -46,15 +46,14 @@ const UserInfoScreen = () => {
                                         {...props}
                                         onPress={() => {
                                             handleSaveUserInfo();
-                                            navigation.navigate('Home');
                                         }}
                                     />
                                 )
                               });
     } );
 
-
     const fetchUserData = async () => {
+        setLoading(true);
         try {
             const userData = await getUserData();
             if (userData) {
@@ -68,73 +67,80 @@ const UserInfoScreen = () => {
                 setDesireMatch(userData.desireMatch || '');
                 setAboutMe(userData.aboutMe || '');
                 setImageUrls(userData.images || []);
-
             }
         } catch (error) {
             console.error('Error fetching user data:', error.message);
+        } finally {
+            setDataFetched(true);
+            setLoading(false);
         }
     };
 
     const handleSaveUserInfo = async () => {
         setLoading(true);
-        await saveUserInfo(firstName, lastName, age, sex, hometown)
-            .then(() => {
-                savePhoto(); // Move savePhoto() inside the then block to ensure it's executed after saving user info
-            })
-            .catch((error) => console.error('Error saving user data:', error.message))
-            .finally(() => setLoading(false));
+        try {
+            await savePhoto();
+            await saveUserInfo(firstName, lastName, age, sex, hometown);
+            
+        } catch (error) {
+            console.error('Error saving user data:', error.message);
+        } finally {
+            setLoading(false);
+            navigation.navigate('Home');
+        }
     };
     
    const savePhoto = async () => {
-    if (!imageUrlsChanged) {
-        console.log('INFO: No changes in image URLs');
-        return;
-    }
-
-    if (!imageUrls || imageUrls.length === 0) {
-        alert('WARNING: Please choose an image from the library');
-        return;
-    }
-
-    try {
-        // Get the previous imageUrls from userData or set it as an empty array
-        const previousImageUrls = userData ? userData.images || [] : [];
-
-        // Filter out the URLs that already exist in previousImageUrls
-        const newImageUrls = imageUrls.filter(url => !previousImageUrls.includes(url));
-
-        // Check if there are new image URLs to upload
-        
-        // Collect the download URLs in an array
-        const downloadURLs = [];
-
-        // Loop through each new image URL and upload it to storage
-        for (const imageUrl of imageUrls) {
-            const imageRef = storageRef(storage, `images/${imageUrl}`);
-            const blob = await fetch(imageUrl).then((res) => {
-                if (!res.ok) {
-                    throw new Error('Failed to fetch image');
-                }
-                return res.blob();
-            });
-            console.log('INFO: Successfully fetched photo using URL');
-
-            const snapshot = await uploadBytes(imageRef, blob);
-            console.log('INFO: Uploaded an image!', snapshot.metadata.name);
-
-            const url = await getDownloadURL(snapshot.ref);
-            downloadURLs.push(url); // Collect the download URL
+        if (!imageUrlsChanged) {
+            console.log('INFO: No changes in image URLs');
+            return;
         }
 
-        // Call saveUrl with the array of download URLs
-        await saveUrl(downloadURLs);
+        if (!imageUrls || imageUrls.length === 0) {
+            alert('WARNING: Please choose an image from the library');
+            return;
+        }
 
-        setImageUrlsChanged(false); // Reset imageUrlsChanged after uploading
-      
-    } catch (error) {
-        console.error('ERROR: Failed to fetch image or upload:', error.message);
-    }
-};
+        try {
+            // Get the previous imageUrls from userData or set it as an empty array
+            const previousImageUrls = userData ? userData.images || [] : [];
+
+            // Filter out the URLs that already exist in previousImageUrls
+            const newImageUrls = imageUrls.filter(url => !previousImageUrls.includes(url));
+
+            // Check if there are new image URLs to upload
+            
+            // Collect the download URLs in an array
+            const downloadURLs = [];
+
+            // Loop through each new image URL and upload it to storage
+            for (const imageUrl of imageUrls) {
+                console.log(imageUrl);
+                const imageRef = storageRef(storage, `images/${imageUrl}`);
+                const blob = await fetch(imageUrl).then((res) => {
+                    if (!res.ok) {
+                        throw new Error('Failed to fetch image');
+                    }
+                    return res.blob();
+                });
+                console.log('INFO: Successfully fetched photo using URL');
+
+                const snapshot = await uploadBytes(imageRef, blob);
+                console.log('INFO: Uploaded an image!', snapshot.metadata.name);
+
+                const url = await getDownloadURL(snapshot.ref);
+                downloadURLs.push(url); // Collect the download URL
+            }
+
+            // Call saveUrl with the array of download URLs
+            await saveUrl(downloadURLs);
+
+            setImageUrlsChanged(false); // Reset imageUrlsChanged after uploading
+        
+        } catch (error) {
+            console.error('ERROR: Failed to fetch image or upload:', error.message);
+        }
+    };
 
     const homeScreenNavigation = () => navigation.navigate('Home');
 
@@ -202,10 +208,10 @@ const UserInfoScreen = () => {
                 />
                 
               
-                {loading && <Loader /> && (
+                {loading && (
                 <View style={styles.loaderContainer}>
                     <View style={styles.loaderBackground}>
-                        <ActivityIndicator size="large" color="#0000ff" />
+                        <ActivityIndicator size={50} color="#0000ff" />
                     </View>
                 </View>
                 )}
@@ -260,8 +266,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     loaderBackground: {
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
-        padding: 20,
+        ...StyleSheet.absoluteFillObject, // Cover the entire screen
+        backgroundColor: 'rgba(215, 215, 215, 0.5)',
+        justifyContent: 'center', // Center the content vertically
+        alignItems: 'center', // Center the content horizontally
         borderRadius: 10,
     },
 });
