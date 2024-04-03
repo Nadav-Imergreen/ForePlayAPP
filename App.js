@@ -43,7 +43,7 @@ export default function App() {
                 {user ? (
                     <>
                         <Stack.Screen name="Home" component={HomeScreen}/>
-                        <Stack.Screen name="UserInfo" component={UserInfoScreen}/>
+                        <Stack.Screen name="Edit profile" component={UserInfoScreen}/>
                         <Stack.Screen name="Matches" component={MatchesScreen}/>
                         <Stack.Screen name="AiMatches" component={AiMatchesScreen}/>
                     </>

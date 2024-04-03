@@ -39,11 +39,24 @@ const UploadImage = ({ setImageUrls, imageUrls }) => {
             {Array.from({ length: 6 }, (_, index) => {
                 const uri = imageUrls[index];
                 return (
-                    <TouchableOpacity key={index} onPress={uri ? () => deleteImage(index) : chooseImage} style={styles.imageContainer}>
+                    <TouchableOpacity 
+                        key={index} 
+                        onPress={uri ? null : () => chooseImage(index)} // Disable onPress when there's a photo
+                        disabled={!!uri} // Disable TouchableOpacity when there's a photo
+                        style={[
+                            styles.imageContainer, 
+                            uri && { borderWidth: 0 }, // Remove border when uri is present
+                        ]}
+                    >
                         {uri ? (
-                            <Image source={{ uri }} style={styles.image} />
+                            <>
+                                <Image source={{ uri }} style={styles.image} />
+                                <TouchableOpacity onPress={() => deleteImage(index)} style={styles.deleteButton}>
+                                    <Text style={styles.pickedPlus}>+</Text>
+                                </TouchableOpacity>
+                            </>
                         ) : (
-                            <View style={styles.placeholder}>
+                            <View style={styles.addButton}>
                                 <Text style={styles.plus}>+</Text>
                             </View>
                         )}
@@ -56,33 +69,63 @@ const UploadImage = ({ setImageUrls, imageUrls }) => {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         flexDirection: 'row',
         flexWrap: 'wrap',
+        justifyContent: 'center',    
+        paddingBottom: 20 
     },
     imageContainer: {
         width: 100,
-        height: 100,
+        height: 150,
         margin: 5,
-        borderWidth: 1,
+        borderWidth: 2,
         borderColor: 'lightgray',
-        borderRadius: 5,
+        borderRadius: 10,
+        borderStyle: 'dashed', 
         justifyContent: 'center',
         alignItems: 'center',
     },
     image: {
         width: '100%',
         height: '100%',
-        borderRadius: 5,
+        borderRadius: 10,
     },
-    placeholder: {
-        width: '100%',
-        height: '100%',
+    addButton: {
+        width: 35,
+        height: 35,
+        borderRadius: 25,
+        backgroundColor: '#f06478',
+        borderWidth: 2,
+        borderColor: "white",
+        textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center',
     },
     plus: {
-        fontSize: 40,
-        color: 'red',
+        fontSize: 25,
+        fontWeight: 'bold',
+        color: 'white',
+    },
+    deleteButton:{
+        width: 35,
+        height: 35,
+        borderRadius: 25,
+        backgroundColor: '#a4cdbd',
+        borderWidth: 2,
+        borderColor: "white",
+        textAlign: 'center',
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute', // Add position absolute to allow precise positioning
+        bottom: -10, // Adjust bottom position as needed
+        left: -10, // Adjust left position as needed
+    },
+    pickedPlus: {
+        transform: [{ rotate: '45deg' }],
+        fontSize: 25,
+        fontWeight: 'bold',
+        color: 'white',
     },
 });
 

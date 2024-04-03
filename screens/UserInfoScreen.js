@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { saveUserInfo } from '../services/firebaseDatabase';
 import Loader from '../services/loadingIndicator';
@@ -8,7 +8,7 @@ import { handleSignOut } from '../services/auth';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../services/config';
 import { saveUrl, getUserData } from '../services/firebaseDatabase';
-import { HeaderBackButton } from 'react-navigation';
+import { HeaderBackButton } from '@react-navigation/elements';
 
 
 
@@ -39,7 +39,20 @@ const UserInfoScreen = () => {
             setImageUrlsChanged(true);
     }, [imageUrls]);
 
-    
+    useEffect( () => {
+        navigation.setOptions({ headerShown: true,
+                                headerLeft: (props) => (
+                                    <HeaderBackButton
+                                        {...props}
+                                        onPress={() => {
+                                            handleSaveUserInfo();
+                                            navigation.navigate('Home');
+                                        }}
+                                    />
+                                )
+                              });
+    } );
+
 
     const fetchUserData = async () => {
         try {
@@ -126,107 +139,130 @@ const UserInfoScreen = () => {
     const homeScreenNavigation = () => navigation.navigate('Home');
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Welcome to the Home Screen</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="First Name"
-                value={firstName}
-                onChangeText={setFirstName}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Last Name"
-                value={lastName}
-                onChangeText={setLastName}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Age"
-                value={age}
-                onChangeText={setAge}
-                keyboardType="numeric"
-            />
-            <View style={styles.radioGroup}>
-                <Text>Sex:</Text>
-                <View style={styles.radioOption}>
-                    <Button
-                        title="Male"
-                        onPress={() => setSex('Male')}
-                        color={sex === 'Male' ? 'blue' : 'gray'}
-                    />
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.container}>
+                <Text style={styles.media}>Media</Text>
+                <UploadImage setImageUrls={setImageUrls} imageUrls={imageUrls} />
+
+                <TextInput
+                    style={styles.input}
+                    placeholder="First Name"
+                    value={firstName}
+                    onChangeText={setFirstName}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Last Name"
+                    value={lastName}
+                    onChangeText={setLastName}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Age"
+                    value={age}
+                    onChangeText={setAge}
+                    keyboardType="numeric"
+                />
+                <View style={styles.radioGroup}>
+                    <Text>Sex:</Text>
+                    <TouchableOpacity
+                        style={[styles.sexButton, sex === 'Male' && styles.activeSexButton]}
+                        onPress={() => setSex('Male')}>
+                        <Text style={styles.sexButtonText}>Male</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.sexButton, sex === 'Female' && styles.activeSexButton]}
+                        onPress={() => setSex('Female')}>
+                        <Text style={styles.sexButtonText}>Female</Text>
+                    </TouchableOpacity>
                 </View>
-                <View style={styles.radioOption}>
-                    <Button
-                        title="Female"
-                        onPress={() => setSex('Female')}
-                        color={sex === 'Female' ? 'blue' : 'gray'}
-                    />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Hometown"
+                    value={hometown}
+                    onChangeText={setHometown}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Occupation"
+                    value={occupation}
+                    onChangeText={setOccupation}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Desire match"
+                    value={desireMatch}
+                    onChangeText={setDesireMatch}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="About me"
+                    value={aboutMe}
+                    onChangeText={setAboutMe}
+                />
+                
+              
+                {loading && <Loader /> && (
+                <View style={styles.loaderContainer}>
+                    <View style={styles.loaderBackground}>
+                        <ActivityIndicator size="large" color="#0000ff" />
+                    </View>
                 </View>
+                )}
+
             </View>
-            <TextInput
-                style={styles.input}
-                placeholder="Hometown"
-                value={hometown}
-                onChangeText={setHometown}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Occupation"
-                value={occupation}
-                onChangeText={setOccupation}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Desire match"
-                value={desireMatch}
-                onChangeText={setDesireMatch}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="About me"
-                value={aboutMe}
-                onChangeText={setAboutMe}
-            />
-            <UploadImage setImageUrls={setImageUrls} imageUrls={imageUrls}
-/>
-            {loading ? (
-                <Loader />
-            ) : (
-                <Button title="Save User Info" onPress={handleSaveUserInfo} />
-            )}
-            <Button title="Back" onPress={homeScreenNavigation} />
-        </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
         padding: 20,
     },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-    },
     input: {
-        height: 40,
-        width: '100%',
-        borderColor: 'gray',
         borderWidth: 1,
-        marginBottom: 10,
+        borderColor: 'gray',
+        borderRadius: 12,
         paddingHorizontal: 10,
+        margin: 5,
+        color: 'black',
+        backgroundColor: 'white',
+    },
+    media: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: 'black'
     },
     radioGroup: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
+        margin: 10,
     },
-    radioOption: {
-        marginLeft: 10,
+    sexButton: {
+        backgroundColor: '#ddd',
+        borderRadius: 5,
+        paddingVertical: 8,
+        paddingHorizontal: 20,
+        marginRight: 10,
+    },
+    activeSexButton: {
+        backgroundColor: '#f06478',
+    },
+    sexButtonText: {
+        color: 'black',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    loaderContainer: {
+        ...StyleSheet.absoluteFillObject,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loaderBackground: {
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        padding: 20,
+        borderRadius: 10,
     },
 });
 

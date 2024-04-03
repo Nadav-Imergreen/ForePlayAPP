@@ -7,7 +7,7 @@ const HomeScreen = () => {
     const navigation = useNavigation(); // Get navigation object
 
     // Handle navigation to various screens when buttons are pressed
-    const infoScreenNavigation = () => navigation.navigate('UserInfo');
+    const infoScreenNavigation = () => navigation.navigate('Edit profile');
     const handleSeeMatches = () => navigation.navigate('Matches');
     const handleSeeAiMatches = () => navigation.navigate('AiMatches');
 
