@@ -26,18 +26,20 @@ const UserInfoScreen = () => {
     const [occupation, setOccupation] = useState('');
     const [desireMatch, setDesireMatch] = useState('');
     const [aboutMe, setAboutMe] = useState('');
+    const [imageUrlsChanged, setImageUrlsChanged] = useState(false);
+    const [dataFetched, setDataFetched] = useState(false);
 
     useEffect(() => {
         fetchUserData();
+        setDataFetched(true);
     }, []);
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('beforeRemove', () => {
-            handleSaveUserInfo();
-        });
+        if (dataFetched)
+            setImageUrlsChanged(true);
+    }, [imageUrls]);
 
-        return unsubscribe;
-    }, [navigation]);
+    
 
     const fetchUserData = async () => {
         try {
@@ -71,6 +73,11 @@ const UserInfoScreen = () => {
     };
     
    const savePhoto = async () => {
+    if (!imageUrlsChanged) {
+        console.log('INFO: No changes in image URLs');
+        return;
+    }
+
     if (!imageUrls || imageUrls.length === 0) {
         alert('WARNING: Please choose an image from the library');
         return;
@@ -84,36 +91,33 @@ const UserInfoScreen = () => {
         const newImageUrls = imageUrls.filter(url => !previousImageUrls.includes(url));
 
         // Check if there are new image URLs to upload
-        if (newImageUrls.length > 0) {
-            // Collect the download URLs in an array
-            const downloadURLs = [];
+        
+        // Collect the download URLs in an array
+        const downloadURLs = [];
 
-            // Loop through each new image URL and upload it to storage
-            for (const imageUrl of newImageUrls) {
-                const imageRef = storageRef(storage, `images/${imageUrl}`);
-                const blob = await fetch(imageUrl).then((res) => {
-                    if (!res.ok) {
-                        throw new Error('Failed to fetch image');
-                    }
-                    return res.blob();
-                });
-                console.log('INFO: Successfully fetched photo using URL');
+        // Loop through each new image URL and upload it to storage
+        for (const imageUrl of imageUrls) {
+            const imageRef = storageRef(storage, `images/${imageUrl}`);
+            const blob = await fetch(imageUrl).then((res) => {
+                if (!res.ok) {
+                    throw new Error('Failed to fetch image');
+                }
+                return res.blob();
+            });
+            console.log('INFO: Successfully fetched photo using URL');
 
-                const snapshot = await uploadBytes(imageRef, blob);
-                console.log('INFO: Uploaded an image!', snapshot.metadata.name);
+            const snapshot = await uploadBytes(imageRef, blob);
+            console.log('INFO: Uploaded an image!', snapshot.metadata.name);
 
-                const url = await getDownloadURL(snapshot.ref);
-                downloadURLs.push(url); // Collect the download URL
-            }
-
-            // Call saveUrl with the array of download URLs
-            await saveUrl(downloadURLs);
-
-            setImageUrls([]); // Clear imageUrls after uploading
-        } else {
-            // If there are no new image URLs, no need to update the Firestore document
-            console.log('INFO: No new image URLs to upload');
+            const url = await getDownloadURL(snapshot.ref);
+            downloadURLs.push(url); // Collect the download URL
         }
+
+        // Call saveUrl with the array of download URLs
+        await saveUrl(downloadURLs);
+
+        setImageUrlsChanged(false); // Reset imageUrlsChanged after uploading
+      
     } catch (error) {
         console.error('ERROR: Failed to fetch image or upload:', error.message);
     }
