@@ -35,10 +35,8 @@ export async function saveUserInfo(firstName, lastName, age, sex, hometown, occu
         lastName: lastName,
         age: age,
         sex: sex,
-        hometown: hometown,
-        occupation: occupation,
-        aboutMe: aboutMe,
-        desireMatch: desireMatch
+        hometown: hometown
+
     }).then(() => console.log('INFO: User data updated successfully'))
         .catch((error) => console.error('WARNING: Error updating user data:', error))
 }
@@ -61,12 +59,30 @@ export async function getAllUsers(gender) {
     }catch {throw Error("WARNING: Docs not found!")}
 }
 
-export async function saveUrl(url) {
-    const userId = auth.currentUser.uid;
-    await updateDoc(doc(db, 'users', userId), {
-        url: url
-    }).then(() => console.log('INFO: User data updated successfully'))
-        .catch((error) => console.error('WARNING: Error updating user data:', error))
+export async function saveUrl(urls) {
+    const userId = auth.currentUser.uid; // Get the current user's ID
+    const userDocRef = doc(db, 'users', userId); // Reference to the user document
+
+    try {
+        // Get the existing data of the user document
+        const userDocSnap = await getDoc(userDocRef);
+        const userData = userDocSnap.data();
+
+        // Combine the existing image URLs with the new URLs
+        const updatedImageUrls = [...(userData.images || []), ...urls];
+
+        // Update the user document with the updated image URLs
+        const updatedUserData = {
+            ...userData,
+            images: updatedImageUrls,
+        };
+
+        // Update the user document with the updated data
+        await updateDoc(userDocRef, updatedUserData);
+        console.log('INFO: Image URLs saved successfully');
+    } catch (error) {
+        console.error('ERROR: Failed to save image URLs:', error.message);
+    }
 }
 
 export async function saveAdditionalInfo( occupation, desireMatch) {
