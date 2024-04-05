@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { StyleSheet, Text, View, Button, TextInput, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { RadioButton } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { saveUserInfo } from '../services/firebaseDatabase';
 import Loader from '../services/loadingIndicator';
@@ -9,6 +10,7 @@ import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage
 import { storage } from '../services/config';
 import { saveUrl, getUserData } from '../services/firebaseDatabase';
 import { HeaderBackButton } from '@react-navigation/elements';
+import SwitchSelector from "react-native-switch-selector";
 
 
 
@@ -144,68 +146,90 @@ const UserInfoScreen = () => {
 
     const homeScreenNavigation = () => navigation.navigate('Home');
 
-    return (
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <View style={styles.container}>
-                <Text style={styles.media}>Media</Text>
-                <UploadImage setImageUrls={setImageUrls} imageUrls={imageUrls} />
+    const switchColor = sex === 'Male' ? '#a4cdbd' : '#f06478';
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="First Name"
-                    value={firstName}
-                    onChangeText={setFirstName}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Last Name"
-                    value={lastName}
-                    onChangeText={setLastName}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Age"
-                    value={age}
-                    onChangeText={setAge}
-                    keyboardType="numeric"
-                />
-                <View style={styles.radioGroup}>
-                    <Text>Sex:</Text>
-                    <TouchableOpacity
-                        style={[styles.sexButton, sex === 'Male' && styles.activeSexButton]}
-                        onPress={() => setSex('Male')}>
-                        <Text style={styles.sexButtonText}>Male</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.sexButton, sex === 'Female' && styles.activeSexButton]}
-                        onPress={() => setSex('Female')}>
-                        <Text style={styles.sexButtonText}>Female</Text>
-                    </TouchableOpacity>
+    return (
+        <ScrollView>
+            <View style={styles.container}>
+                <Text style={styles.labels}>Media</Text>
+
+                <View style={styles.section}>
+                    <UploadImage setImageUrls={setImageUrls} imageUrls={imageUrls} />
                 </View>
-                <TextInput
-                    style={styles.input}
-                    placeholder="Hometown"
-                    value={hometown}
-                    onChangeText={setHometown}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Occupation"
-                    value={occupation}
-                    onChangeText={setOccupation}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Desire match"
-                    value={desireMatch}
-                    onChangeText={setDesireMatch}
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="About me"
-                    value={aboutMe}
-                    onChangeText={setAboutMe}
-                />
+                
+                <Text style={styles.labels}>Basic Information</Text>
+                
+                <View style={styles.section}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="First Name"
+                        value={firstName}
+                        onChangeText={setFirstName}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Last Name"
+                        value={lastName}
+                        onChangeText={setLastName}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Age"
+                        value={age}
+                        onChangeText={setAge}
+                        keyboardType="numeric"
+                    />
+                    <View style={styles.sexSelector}>
+                        <View style={{ width: 200 }}>
+                        {dataFetched && (<SwitchSelector
+                                options = {[
+                                    { label: 'Male', value: 0 },
+                                    { label: 'Female', value: 1 },
+                                  ]}
+                                initial={sex === 'Male' ? 0 : 1}
+                                onPress={(value) => setSex(value === 0 ? 'Male' : 'Female')}
+                                textColor={'white'}
+                                selectedColor={'white'}
+                                buttonColor={switchColor}
+                                borderColor={'darkgrey'}
+                                backgroundColor={'darkgrey'}
+                                valuePadding={0}
+                                hasPadding
+                                style={{ marginVertical: 10 }}
+                            />)}
+                        </View>
+                        <Text>Sex</Text>
+                    </View>
+                </View>
+
+                <Text style={styles.labels}>More Information</Text>
+
+                <View style={styles.section}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Hometown"
+                        value={hometown}
+                        onChangeText={setHometown}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Occupation"
+                        value={occupation}
+                        onChangeText={setOccupation}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Desire match"
+                        value={desireMatch}
+                        onChangeText={setDesireMatch}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="About me"
+                        value={aboutMe}
+                        onChangeText={setAboutMe}
+                    />
+                </View>
                 
               
                 {loading && (
@@ -223,42 +247,28 @@ const UserInfoScreen = () => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        padding: 20,
+        flex: 1
     },
     input: {
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 12,
-        paddingHorizontal: 10,
-        margin: 5,
+        marginBottom: 10,
+        marginHorizontal: 5,
         color: 'black',
-        backgroundColor: 'white',
+        borderBottomWidth: 1,
+        height: 40,
+        textAlign: "left"
     },
-    media: {
-        fontSize: 18,
+    labels: {
+        fontSize: 20,
         fontWeight: 'bold',
-        color: 'black'
+        color: 'black',
+        marginHorizontal: 10,
+        marginVertical: 5
     },
-    radioGroup: {
+    sexSelector: {
         flexDirection: 'row',
         alignItems: 'center',
-        margin: 10,
-    },
-    sexButton: {
-        backgroundColor: '#ddd',
-        borderRadius: 5,
-        paddingVertical: 8,
-        paddingHorizontal: 20,
-        marginRight: 10,
-    },
-    activeSexButton: {
-        backgroundColor: '#f06478',
-    },
-    sexButtonText: {
-        color: 'black',
-        fontSize: 16,
-        fontWeight: 'bold',
+        justifyContent: 'space-between',
+        paddingHorizontal: 10
     },
     loaderContainer: {
         ...StyleSheet.absoluteFillObject,
@@ -272,6 +282,12 @@ const styles = StyleSheet.create({
         alignItems: 'center', // Center the content horizontally
         borderRadius: 10,
     },
+    section: {
+        backgroundColor: 'white',
+        paddingVertical: 10,
+        margin: 10,
+        borderRadius: 10,
+    }
 });
 
 export default UserInfoScreen;

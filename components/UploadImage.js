@@ -73,12 +73,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'center',    
-        paddingBottom: 20 
+
     },
     imageContainer: {
         width: 100,
         height: 150,
-        margin: 5,
+        margin: 7,
         borderWidth: 2,
         borderColor: 'lightgray',
         borderRadius: 10,
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
         width: 35,
         height: 35,
         borderRadius: 25,
-        backgroundColor: '#f06478',
+        backgroundColor: '#a4cdbd',
         borderWidth: 2,
         borderColor: "white",
         textAlign: 'center',
@@ -108,10 +108,10 @@ const styles = StyleSheet.create({
         color: 'white',
     },
     deleteButton:{
-        width: 35,
-        height: 35,
+        width: 30,
+        height: 30,
         borderRadius: 25,
-        backgroundColor: '#a4cdbd',
+        backgroundColor: '#f06478',
         borderWidth: 2,
         borderColor: "white",
         textAlign: 'center',
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     },
     pickedPlus: {
         transform: [{ rotate: '45deg' }],
-        fontSize: 25,
+        fontSize: 20,
         fontWeight: 'bold',
         color: 'white',
     },
