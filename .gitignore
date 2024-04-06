@@ -1,10 +1,25 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Node.js
+# React Native
 node_modules/
-npm-debug.log
-yarn-error.log
-yarn.lock
-package-lock.json
+metro-cache/
+.metro/
+*.log
+
+# Optional npm cache directory
+.npm
+
+# dotenv environment variables file
+.env
+
+# Built application files
+*.apk
+*.ap_
 
 # Android
 android/app/build/
@@ -12,7 +27,7 @@ android/build/
 android/gradle/
 android/gradlew
 android/gradlew.bat
-android/local.properties
+.gradle
 
 # iOS
 ios/build/
@@ -21,50 +36,32 @@ ios/Podfile.lock
 ios/*.xcworkspace
 ios/*.xcodeproj/
 
-# IDE-specific
-.DS_Store
-.idea/
-.vscode/
+# Gradle files
+.gradle/
+build/
 
-# React Native
-metro-cache/
-.metro/
-*.log
-
-# Environment-specific files
-.env*
-.env.local
-.env.development
-.env.test
-.env.production
-.env
-
-# Fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots/
-
-# BUCK
-buck-out/
-.buckd/
-*.keystore
-
-# Bundle artifacts
-*.jsbundle
-*.bundle
+# Local configuration file (sdk path, etc)
+local.properties
 
 # Miscellaneous
-build/
-dist/
-logs/
-*.log*
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+__tests__/
+.git/
+app.json
+Gemfile
+gradlew
+gradlew.bat
+local.properties
 
-# Built application files
-*.apk
-*.aar
-*.ap_
-*.aab
-*.build
+# Mac OS X clutter
+*.DS_Store
+
+# Windows clutter
+Thumbs.db
+
+# Intellij
+*.iml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/gradle.xml
+.idea/dictionaries
+.idea/libraries

@@ -16,7 +16,7 @@ const HomeScreen = () => {
             <Button title="see Maches" onPress={handleSeeMatches}/>
             <Button title="see Ai Maches" onPress={handleSeeAiMatches}/>
             <Button title="Fill Info" onPress={infoScreenNavigation}/>
-            <Button title="Sign Out" onPress={handleSignOut}/>
+            <Button title="Sign Out " onPress={handleSignOut}/>
         </View>
     );
 };
