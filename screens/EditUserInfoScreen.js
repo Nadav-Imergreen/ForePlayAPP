@@ -14,7 +14,7 @@ import SwitchSelector from "react-native-switch-selector";
 
 
 
-const UserInfoScreen = () => {
+const EditUserInfoScreen = () => {
     const navigation = useNavigation(); // Get navigation object
 
     const [loading, setLoading] = useState(false);
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'black',
         marginHorizontal: 10,
-        marginVertical: 5
+        marginVertical: 10
     },
     sexSelector: {
         flexDirection: 'row',
@@ -285,9 +285,9 @@ const styles = StyleSheet.create({
     section: {
         backgroundColor: 'white',
         paddingVertical: 10,
-        margin: 10,
+        margin: 5,
         borderRadius: 10,
     }
 });
 
-export default UserInfoScreen;
+export default EditUserInfoScreen;

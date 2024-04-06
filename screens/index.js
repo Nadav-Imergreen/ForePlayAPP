@@ -1,6 +1,6 @@
 import AiMatchesScreen from "./AiMatchesScreen";
 import MatchesScreen from "./MatchesScreen";
-import EditProfile from "./UserInfoScreen";
+import EditProfile from "./EditUserInfoScreen";
 import HomeScreen from "./HomeScreen";
 
 export {

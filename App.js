@@ -5,7 +5,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import LoginScreen from './screens/loginScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import RegisterScreen from './screens/RegisterScreen';
-import UserInfoScreen from './screens/UserInfoScreen';
+import EditUserInfoScreen from './screens/EditUserInfoScreen';
 import MatchesScreen from './screens/MatchesScreen';
 import AiMatchesScreen from './screens/AiMatchesScreen';
 import HomeScreen from './screens/HomeScreen';
@@ -44,7 +44,7 @@ export default function App() {
                 {user ? (
                     <>
                         <Stack.Screen name="Home" component={BottomTabNav} options={{headerShown: false}}/>
-                        <Stack.Screen name="Edit profile" component={UserInfoScreen}/>
+                        <Stack.Screen name="Edit profile" component={EditUserInfoScreen}/>
                         <Stack.Screen name="Matches" component={MatchesScreen}/>
                         <Stack.Screen name="AiMatches" component={AiMatchesScreen}/>
                     </>
