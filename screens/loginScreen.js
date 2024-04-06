@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {
-    KeyboardAvoidingView,
     Image,
     Text,
     TextInput,
@@ -14,12 +13,10 @@ import {
     Dimensions,
     ImageBackground
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+
 import {useNavigation} from '@react-navigation/native';
-import {login, emailVerification} from '../services/auth';
-import styles from '../cssStyles/commonStyles';
+import {login} from '../services/auth';
 import Loader from '../services/loadingIndicator';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('');

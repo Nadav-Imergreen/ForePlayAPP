@@ -14,11 +14,11 @@ import SwitchSelector from "react-native-switch-selector";
 
 
 
-const EditUserInfoScreen = () => {
-    const navigation = useNavigation(); // Get navigation object
+const EditUserInfoScreen = ({ route }) => {
 
+    const navigation = useNavigation(); // Get navigation object
+    const { userData } = route.params;
     const [loading, setLoading] = useState(false);
-    const [userData, setUserData] = useState(null);
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [age, setAge] = useState('');
@@ -31,15 +31,16 @@ const EditUserInfoScreen = () => {
     const [imageUrlsChanged, setImageUrlsChanged] = useState(false);
     const [dataFetched, setDataFetched] = useState(false);
 
+
     useEffect(() => {
         fetchUserData();
     }, []);
 
     useEffect(() => {
-        if (dataFetched){
-            setImageUrlsChanged(true);
-        }
+        setImageUrlsChanged(true);
     }, [imageUrls]);
+
+
 
     useEffect( () => {
         navigation.setOptions({ headerShown: true,
@@ -54,35 +55,29 @@ const EditUserInfoScreen = () => {
                               });
     } );
 
-    const fetchUserData = async () => {
+
+    const fetchUserData = () => {
         setLoading(true);
-        try {
-            const userData = await getUserData();
-            if (userData) {
-                setUserData(userData);
-                setFirstName(userData.firstName || '');
-                setLastName(userData.lastName || '');
-                setAge(userData.age || '');
-                setSex(userData.sex || 'Male');
-                setHometown(userData.hometown || '');
-                setOccupation(userData.occupation || '');
-                setDesireMatch(userData.desireMatch || '');
-                setAboutMe(userData.aboutMe || '');
-                setImageUrls(userData.images || []);
-            }
-        } catch (error) {
-            console.error('Error fetching user data:', error.message);
-        } finally {
-            setDataFetched(true);
-            setLoading(false);
+        if (userData) {
+            setFirstName(userData.firstName || '');
+            setLastName(userData.lastName || '');
+            setAge(userData.age || '');
+            setSex(userData.sex || 'Male');
+            setHometown(userData.hometown || '');
+            setOccupation(userData.occupation || '');
+            setDesireMatch(userData.desireMatch || '');
+            setAboutMe(userData.aboutMe || '');
+            setImageUrls(userData.images || []);
         }
+        setLoading(false);
+        setDataFetched(true);
     };
 
     const handleSaveUserInfo = async () => {
         setLoading(true);
         try {
             await savePhoto();
-            await saveUserInfo(firstName, lastName, age, sex, hometown);
+            await saveUserInfo(firstName, lastName, age, sex, hometown, occupation, desireMatch, aboutMe);
             
         } catch (error) {
             console.error('Error saving user data:', error.message);

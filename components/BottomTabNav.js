@@ -1,14 +1,13 @@
-import { View, Text, Platform } from "react-native";
+import { StyleSheet, Text, Platform } from "react-native";
 import React from "react";
-import Icon from 'react-native-vector-icons';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { EditProfile, HomeScreen, MatchesScreen, AiMatchesScreen } from "../screens";
+import { UserInfoScreen, EditUserInfoScreene, HomeScreen, MatchesScreen, AiMatchesScreen } from "../screens";
 
 const Tab = createBottomTabNavigator();
 
 const screenOptions = {
-  tabBarShowLabel: false,
+  tabBarShowLabel: true,
   headerShown: false,
   tabBarHideOnKeyboard: true,
   tabBarStyle: {
@@ -21,6 +20,9 @@ const screenOptions = {
     backgroundColor: 'white',
   },
 };
+
+
+
 const BottomTabNav = () => {
   return (
     <Tab.Navigator screenOptions={screenOptions}>
@@ -37,14 +39,11 @@ const BottomTabNav = () => {
       />
 
       <Tab.Screen
-        name="Messages"
-        component={EditProfile}
+        name="UserInfoScreen"
+        component={UserInfoScreen}
         options={{
-          tabBarIcon: ({ focused }) => {
-            return (
-              <Text>Edit profile</Text>
-            );
-          },
+          tabBarIcon: ({ focused }) => <Text>Profile</Text>,
+          unmountOnBlur: true, // Unmount UserInfoScreen on blur
         }}
       />
 
@@ -74,5 +73,7 @@ const BottomTabNav = () => {
     </Tab.Navigator>
   );
 };
+
+
 
 export default BottomTabNav;

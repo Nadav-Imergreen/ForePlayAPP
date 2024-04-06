@@ -35,7 +35,10 @@ export async function saveUserInfo(firstName, lastName, age, sex, hometown, occu
         lastName: lastName,
         age: age,
         sex: sex,
-        hometown: hometown
+        hometown: hometown,
+        occupation: occupation,
+        desireMatch, desireMatch,
+        aboutMe: aboutMe
 
     }).then(() => console.log('INFO: User data updated successfully'))
         .catch((error) => console.error('WARNING: Error updating user data:', error))

@@ -7,7 +7,7 @@ const HomeScreen = () => {
     const navigation = useNavigation(); // Get navigation object
 
     // Handle navigation to various screens when buttons are pressed
-    const infoScreenNavigation = () => navigation.navigate('Edit profile');
+    const infoScreenNavigation = () => navigation.navigate('EditProfile');
     const handleSeeMatches = () => navigation.navigate('Matches');
     const handleSeeAiMatches = () => navigation.navigate('AiMatches');
 
@@ -15,7 +15,6 @@ const HomeScreen = () => {
         <View style={styles.container}>
             <Button title="see Maches" onPress={handleSeeMatches}/>
             <Button title="see Ai Maches" onPress={handleSeeAiMatches}/>
-            <Button title="Fill Info" onPress={infoScreenNavigation}/>
             <Button title="Sign Out" onPress={handleSignOut}/>
         </View>
     );
