@@ -9,6 +9,7 @@ import UserInfoScreen from './screens/UserInfoScreen';
 import MatchesScreen from './screens/MatchesScreen';
 import AiMatchesScreen from './screens/AiMatchesScreen';
 import HomeScreen from './screens/HomeScreen';
+import BottomTabNav from './components/BottomTabNav';
 import {onAuthStateChanged} from 'firebase/auth';
 import {auth} from './services/config';
 
@@ -42,8 +43,8 @@ export default function App() {
             <Stack.Navigator>
                 {user ? (
                     <>
-                        <Stack.Screen name="Home" component={HomeScreen}/>
-                        <Stack.Screen name="UserInfo" component={UserInfoScreen}/>
+                        <Stack.Screen name="Home" component={BottomTabNav} options={{headerShown: false}}/>
+                        <Stack.Screen name="Edit profile" component={UserInfoScreen}/>
                         <Stack.Screen name="Matches" component={MatchesScreen}/>
                         <Stack.Screen name="AiMatches" component={AiMatchesScreen}/>
                     </>

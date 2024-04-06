@@ -64,21 +64,8 @@ export async function saveUrl(urls) {
     const userDocRef = doc(db, 'users', userId); // Reference to the user document
 
     try {
-        // Get the existing data of the user document
-        const userDocSnap = await getDoc(userDocRef);
-        const userData = userDocSnap.data();
-
-        // Combine the existing image URLs with the new URLs
-        const updatedImageUrls = [...(userData.images || []), ...urls];
-
-        // Update the user document with the updated image URLs
-        const updatedUserData = {
-            ...userData,
-            images: updatedImageUrls,
-        };
-
-        // Update the user document with the updated data
-        await updateDoc(userDocRef, updatedUserData);
+        // Update the user document with the received image URLs
+        await updateDoc(userDocRef, { images: urls });
         console.log('INFO: Image URLs saved successfully');
     } catch (error) {
         console.error('ERROR: Failed to save image URLs:', error.message);

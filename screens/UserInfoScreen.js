@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { RadioButton } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { saveUserInfo } from '../services/firebaseDatabase';
 import Loader from '../services/loadingIndicator';
@@ -8,7 +9,8 @@ import { handleSignOut } from '../services/auth';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '../services/config';
 import { saveUrl, getUserData } from '../services/firebaseDatabase';
-import { HeaderBackButton } from 'react-navigation';
+import { HeaderBackButton } from '@react-navigation/elements';
+import SwitchSelector from "react-native-switch-selector";
 
 
 
@@ -26,20 +28,34 @@ const UserInfoScreen = () => {
     const [occupation, setOccupation] = useState('');
     const [desireMatch, setDesireMatch] = useState('');
     const [aboutMe, setAboutMe] = useState('');
+    const [imageUrlsChanged, setImageUrlsChanged] = useState(false);
+    const [dataFetched, setDataFetched] = useState(false);
 
     useEffect(() => {
         fetchUserData();
     }, []);
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('beforeRemove', () => {
-            handleSaveUserInfo();
-        });
+        if (dataFetched){
+            setImageUrlsChanged(true);
+        }
+    }, [imageUrls]);
 
-        return unsubscribe;
-    }, [navigation]);
+    useEffect( () => {
+        navigation.setOptions({ headerShown: true,
+                                headerLeft: (props) => (
+                                    <HeaderBackButton
+                                        {...props}
+                                        onPress={() => {
+                                            handleSaveUserInfo();
+                                        }}
+                                    />
+                                )
+                              });
+    } );
 
     const fetchUserData = async () => {
+        setLoading(true);
         try {
             const userData = await getUserData();
             if (userData) {
@@ -53,43 +69,55 @@ const UserInfoScreen = () => {
                 setDesireMatch(userData.desireMatch || '');
                 setAboutMe(userData.aboutMe || '');
                 setImageUrls(userData.images || []);
-
             }
         } catch (error) {
             console.error('Error fetching user data:', error.message);
+        } finally {
+            setDataFetched(true);
+            setLoading(false);
         }
     };
 
     const handleSaveUserInfo = async () => {
         setLoading(true);
-        await saveUserInfo(firstName, lastName, age, sex, hometown)
-            .then(() => {
-                savePhoto(); // Move savePhoto() inside the then block to ensure it's executed after saving user info
-            })
-            .catch((error) => console.error('Error saving user data:', error.message))
-            .finally(() => setLoading(false));
+        try {
+            await savePhoto();
+            await saveUserInfo(firstName, lastName, age, sex, hometown);
+            
+        } catch (error) {
+            console.error('Error saving user data:', error.message);
+        } finally {
+            setLoading(false);
+            navigation.navigate('Home');
+        }
     };
     
    const savePhoto = async () => {
-    if (!imageUrls || imageUrls.length === 0) {
-        alert('WARNING: Please choose an image from the library');
-        return;
-    }
+        if (!imageUrlsChanged) {
+            console.log('INFO: No changes in image URLs');
+            return;
+        }
 
-    try {
-        // Get the previous imageUrls from userData or set it as an empty array
-        const previousImageUrls = userData ? userData.images || [] : [];
+        if (!imageUrls || imageUrls.length === 0) {
+            alert('WARNING: Please choose an image from the library');
+            return;
+        }
 
-        // Filter out the URLs that already exist in previousImageUrls
-        const newImageUrls = imageUrls.filter(url => !previousImageUrls.includes(url));
+        try {
+            // Get the previous imageUrls from userData or set it as an empty array
+            const previousImageUrls = userData ? userData.images || [] : [];
 
-        // Check if there are new image URLs to upload
-        if (newImageUrls.length > 0) {
+            // Filter out the URLs that already exist in previousImageUrls
+            const newImageUrls = imageUrls.filter(url => !previousImageUrls.includes(url));
+
+            // Check if there are new image URLs to upload
+            
             // Collect the download URLs in an array
             const downloadURLs = [];
 
             // Loop through each new image URL and upload it to storage
-            for (const imageUrl of newImageUrls) {
+            for (const imageUrl of imageUrls) {
+                console.log(imageUrl);
                 const imageRef = storageRef(storage, `images/${imageUrl}`);
                 const blob = await fetch(imageUrl).then((res) => {
                     if (!res.ok) {
@@ -109,121 +137,157 @@ const UserInfoScreen = () => {
             // Call saveUrl with the array of download URLs
             await saveUrl(downloadURLs);
 
-            setImageUrls([]); // Clear imageUrls after uploading
-        } else {
-            // If there are no new image URLs, no need to update the Firestore document
-            console.log('INFO: No new image URLs to upload');
+            setImageUrlsChanged(false); // Reset imageUrlsChanged after uploading
+        
+        } catch (error) {
+            console.error('ERROR: Failed to fetch image or upload:', error.message);
         }
-    } catch (error) {
-        console.error('ERROR: Failed to fetch image or upload:', error.message);
-    }
-};
+    };
 
     const homeScreenNavigation = () => navigation.navigate('Home');
 
+    const switchColor = sex === 'Male' ? '#a4cdbd' : '#f06478';
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Welcome to the Home Screen</Text>
-            <TextInput
-                style={styles.input}
-                placeholder="First Name"
-                value={firstName}
-                onChangeText={setFirstName}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Last Name"
-                value={lastName}
-                onChangeText={setLastName}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Age"
-                value={age}
-                onChangeText={setAge}
-                keyboardType="numeric"
-            />
-            <View style={styles.radioGroup}>
-                <Text>Sex:</Text>
-                <View style={styles.radioOption}>
-                    <Button
-                        title="Male"
-                        onPress={() => setSex('Male')}
-                        color={sex === 'Male' ? 'blue' : 'gray'}
+        <ScrollView>
+            <View style={styles.container}>
+                <Text style={styles.labels}>Media</Text>
+
+                <View style={styles.section}>
+                    <UploadImage setImageUrls={setImageUrls} imageUrls={imageUrls} />
+                </View>
+                
+                <Text style={styles.labels}>Basic Information</Text>
+                
+                <View style={styles.section}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="First Name"
+                        value={firstName}
+                        onChangeText={setFirstName}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Last Name"
+                        value={lastName}
+                        onChangeText={setLastName}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Age"
+                        value={age}
+                        onChangeText={setAge}
+                        keyboardType="numeric"
+                    />
+                    <View style={styles.sexSelector}>
+                        <View style={{ width: 200 }}>
+                        {dataFetched && (<SwitchSelector
+                                options = {[
+                                    { label: 'Male', value: 0 },
+                                    { label: 'Female', value: 1 },
+                                  ]}
+                                initial={sex === 'Male' ? 0 : 1}
+                                onPress={(value) => setSex(value === 0 ? 'Male' : 'Female')}
+                                textColor={'white'}
+                                selectedColor={'white'}
+                                buttonColor={switchColor}
+                                borderColor={'darkgrey'}
+                                backgroundColor={'darkgrey'}
+                                valuePadding={0}
+                                hasPadding
+                                style={{ marginVertical: 10 }}
+                            />)}
+                        </View>
+                        <Text>Sex</Text>
+                    </View>
+                </View>
+
+                <Text style={styles.labels}>More Information</Text>
+
+                <View style={styles.section}>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Hometown"
+                        value={hometown}
+                        onChangeText={setHometown}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Occupation"
+                        value={occupation}
+                        onChangeText={setOccupation}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Desire match"
+                        value={desireMatch}
+                        onChangeText={setDesireMatch}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="About me"
+                        value={aboutMe}
+                        onChangeText={setAboutMe}
                     />
                 </View>
-                <View style={styles.radioOption}>
-                    <Button
-                        title="Female"
-                        onPress={() => setSex('Female')}
-                        color={sex === 'Female' ? 'blue' : 'gray'}
-                    />
+                
+              
+                {loading && (
+                <View style={styles.loaderContainer}>
+                    <View style={styles.loaderBackground}>
+                        <ActivityIndicator size={50} color="#0000ff" />
+                    </View>
                 </View>
+                )}
+
             </View>
-            <TextInput
-                style={styles.input}
-                placeholder="Hometown"
-                value={hometown}
-                onChangeText={setHometown}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Occupation"
-                value={occupation}
-                onChangeText={setOccupation}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="Desire match"
-                value={desireMatch}
-                onChangeText={setDesireMatch}
-            />
-            <TextInput
-                style={styles.input}
-                placeholder="About me"
-                value={aboutMe}
-                onChangeText={setAboutMe}
-            />
-            <UploadImage setImageUrls={setImageUrls} imageUrls={imageUrls}
-/>
-            {loading ? (
-                <Loader />
-            ) : (
-                <Button title="Save User Info" onPress={handleSaveUserInfo} />
-            )}
-            <Button title="Back" onPress={homeScreenNavigation} />
-        </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
+        flex: 1
     },
     input: {
-        height: 40,
-        width: '100%',
-        borderColor: 'gray',
-        borderWidth: 1,
         marginBottom: 10,
-        paddingHorizontal: 10,
+        marginHorizontal: 5,
+        color: 'black',
+        borderBottomWidth: 1,
+        height: 40,
+        textAlign: "left"
     },
-    radioGroup: {
+    labels: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'black',
+        marginHorizontal: 10,
+        marginVertical: 5
+    },
+    sexSelector: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
+        justifyContent: 'space-between',
+        paddingHorizontal: 10
     },
-    radioOption: {
-        marginLeft: 10,
+    loaderContainer: {
+        ...StyleSheet.absoluteFillObject,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
+    loaderBackground: {
+        ...StyleSheet.absoluteFillObject, // Cover the entire screen
+        backgroundColor: 'rgba(215, 215, 215, 0.5)',
+        justifyContent: 'center', // Center the content vertically
+        alignItems: 'center', // Center the content horizontally
+        borderRadius: 10,
+    },
+    section: {
+        backgroundColor: 'white',
+        paddingVertical: 10,
+        margin: 10,
+        borderRadius: 10,
+    }
 });
 
 export default UserInfoScreen;
