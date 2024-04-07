@@ -1,293 +1,179 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { RadioButton } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
-import { saveUserInfo } from '../services/firebaseDatabase';
-import Loader from '../services/loadingIndicator';
-import UploadImage from '../components/UploadImage';
-import { handleSignOut } from '../services/auth';
-import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../services/config';
-import { saveUrl, getUserData } from '../services/firebaseDatabase';
-import { HeaderBackButton } from '@react-navigation/elements';
-import SwitchSelector from "react-native-switch-selector";
-
-
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, View, Text, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { getUserData } from '../services/firebaseDatabase'; // Assuming this is the function to fetch user data
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
 
 const UserInfoScreen = () => {
-    const navigation = useNavigation(); // Get navigation object
 
-    const [loading, setLoading] = useState(false);
+    const navigation = useNavigation();
+
+    const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState(null);
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [age, setAge] = useState('');
-    const [sex, setSex] = useState('Male'); // Default to Male
-    const [hometown, setHometown] = useState('');
-    const [imageUrls, setImageUrls] = useState([]);
-    const [occupation, setOccupation] = useState('');
-    const [desireMatch, setDesireMatch] = useState('');
-    const [aboutMe, setAboutMe] = useState('');
-    const [imageUrlsChanged, setImageUrlsChanged] = useState(false);
-    const [dataFetched, setDataFetched] = useState(false);
 
-    useEffect(() => {
-        fetchUserData();
-    }, []);
 
-    useEffect(() => {
-        if (dataFetched){
-            setImageUrlsChanged(true);
-        }
-    }, [imageUrls]);
 
-    useEffect( () => {
-        navigation.setOptions({ headerShown: true,
-                                headerLeft: (props) => (
-                                    <HeaderBackButton
-                                        {...props}
-                                        onPress={() => {
-                                            handleSaveUserInfo();
-                                        }}
-                                    />
-                                )
-                              });
-    } );
+    useFocusEffect(
+        React.useCallback(() => {
+          // Fetch user data here
+          fetchUserData();
+        }, [])
+      );
 
     const fetchUserData = async () => {
         setLoading(true);
         try {
-            const userData = await getUserData();
-            if (userData) {
-                setUserData(userData);
-                setFirstName(userData.firstName || '');
-                setLastName(userData.lastName || '');
-                setAge(userData.age || '');
-                setSex(userData.sex || 'Male');
-                setHometown(userData.hometown || '');
-                setOccupation(userData.occupation || '');
-                setDesireMatch(userData.desireMatch || '');
-                setAboutMe(userData.aboutMe || '');
-                setImageUrls(userData.images || []);
+            const user = await getUserData();
+            if (user) {
+                setUserData(user);
             }
         } catch (error) {
             console.error('Error fetching user data:', error.message);
         } finally {
-            setDataFetched(true);
             setLoading(false);
         }
     };
 
-    const handleSaveUserInfo = async () => {
-        setLoading(true);
-        try {
-            await savePhoto();
-            await saveUserInfo(firstName, lastName, age, sex, hometown);
-            
-        } catch (error) {
-            console.error('Error saving user data:', error.message);
-        } finally {
-            setLoading(false);
-            navigation.navigate('Home');
-        }
-    };
-    
-   const savePhoto = async () => {
-        if (!imageUrlsChanged) {
-            console.log('INFO: No changes in image URLs');
-            return;
-        }
-
-        if (!imageUrls || imageUrls.length === 0) {
-            alert('WARNING: Please choose an image from the library');
-            return;
-        }
-
-        try {
-            // Get the previous imageUrls from userData or set it as an empty array
-            const previousImageUrls = userData ? userData.images || [] : [];
-
-            // Filter out the URLs that already exist in previousImageUrls
-            const newImageUrls = imageUrls.filter(url => !previousImageUrls.includes(url));
-
-            // Check if there are new image URLs to upload
-            
-            // Collect the download URLs in an array
-            const downloadURLs = [];
-
-            // Loop through each new image URL and upload it to storage
-            for (const imageUrl of imageUrls) {
-                console.log(imageUrl);
-                const imageRef = storageRef(storage, `images/${imageUrl}`);
-                const blob = await fetch(imageUrl).then((res) => {
-                    if (!res.ok) {
-                        throw new Error('Failed to fetch image');
-                    }
-                    return res.blob();
-                });
-                console.log('INFO: Successfully fetched photo using URL');
-
-                const snapshot = await uploadBytes(imageRef, blob);
-                console.log('INFO: Uploaded an image!', snapshot.metadata.name);
-
-                const url = await getDownloadURL(snapshot.ref);
-                downloadURLs.push(url); // Collect the download URL
-            }
-
-            // Call saveUrl with the array of download URLs
-            await saveUrl(downloadURLs);
-
-            setImageUrlsChanged(false); // Reset imageUrlsChanged after uploading
-        
-        } catch (error) {
-            console.error('ERROR: Failed to fetch image or upload:', error.message);
-        }
+    const handleEditProfile = () => {
+        navigation.navigate("EditProfile", { userData: userData });
     };
 
-    const homeScreenNavigation = () => navigation.navigate('Home');
+    const calculateCompletionPercentage = () => {
+        if (!userData) return 0;
+        const totalFields = 7;
+        let filledFields = 0;
 
-    const switchColor = sex === 'Male' ? '#a4cdbd' : '#f06478';
+        if (userData.firstName) filledFields++;
+        if (userData.lastName) filledFields++;
+        if (userData.age) filledFields++;
+        if (userData.sex) filledFields++;
+        if (userData.hometown) filledFields++;
+        if (userData.occupation) filledFields++;
+        if (userData.aboutMe) filledFields++;
+
+        return ((filledFields / totalFields) * 100).toFixed(0);
+    };
+
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </View>
+        );
+    }
 
     return (
-        <ScrollView>
-            <View style={styles.container}>
-                <Text style={styles.labels}>Media</Text>
-
-                <View style={styles.section}>
-                    <UploadImage setImageUrls={setImageUrls} imageUrls={imageUrls} />
-                </View>
-                
-                <Text style={styles.labels}>Basic Information</Text>
-                
-                <View style={styles.section}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="First Name"
-                        value={firstName}
-                        onChangeText={setFirstName}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Last Name"
-                        value={lastName}
-                        onChangeText={setLastName}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Age"
-                        value={age}
-                        onChangeText={setAge}
-                        keyboardType="numeric"
-                    />
-                    <View style={styles.sexSelector}>
-                        <View style={{ width: 200 }}>
-                        {dataFetched && (<SwitchSelector
-                                options = {[
-                                    { label: 'Male', value: 0 },
-                                    { label: 'Female', value: 1 },
-                                  ]}
-                                initial={sex === 'Male' ? 0 : 1}
-                                onPress={(value) => setSex(value === 0 ? 'Male' : 'Female')}
-                                textColor={'white'}
-                                selectedColor={'white'}
-                                buttonColor={switchColor}
-                                borderColor={'darkgrey'}
-                                backgroundColor={'darkgrey'}
-                                valuePadding={0}
-                                hasPadding
-                                style={{ marginVertical: 10 }}
-                            />)}
+        <View style={styles.container}>
+            {userData && (
+                <>
+                    <View style={styles.section}>
+                        <View>
+                            <View style={[styles.photoBorderContainer, { borderColor: userData.sex === 'Male' ? '#a4cdbd' : '#f06478' }]}>
+                                <Image source={{ uri: userData.images && userData.images.length > 0 ? userData.images[0] : null }} style={styles.photo} />
+                            </View>
+                            <TouchableOpacity style={styles.editIconContainer} onPress={handleEditProfile}>
+                                    <Image source={require('../assets/edit.png')} style={styles.editIcon} />
+                            </TouchableOpacity>
                         </View>
-                        <Text>Sex</Text>
+                        <View style={styles.userInfo}>
+                            <Text style={styles.name}>{userData.firstName} {userData.lastName}</Text>
+                            <Text style={styles.age}>{userData.age}</Text>
+                        </View>
+                        <View style={styles.progressContainer}>
+                            <Text style={styles.progressLabel}>Profile Completion</Text>
+                            <View style={styles.progressBar}>
+                                <View style={[styles.progressFill, { width: `${calculateCompletionPercentage()}%` }]} />
+                            </View>
+                            <Text style={styles.progressPercentage}>{calculateCompletionPercentage()}%</Text>
+                        </View>
                     </View>
-                </View>
-
-                <Text style={styles.labels}>More Information</Text>
-
-                <View style={styles.section}>
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Hometown"
-                        value={hometown}
-                        onChangeText={setHometown}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Occupation"
-                        value={occupation}
-                        onChangeText={setOccupation}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Desire match"
-                        value={desireMatch}
-                        onChangeText={setDesireMatch}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="About me"
-                        value={aboutMe}
-                        onChangeText={setAboutMe}
-                    />
-                </View>
-                
-              
-                {loading && (
-                <View style={styles.loaderContainer}>
-                    <View style={styles.loaderBackground}>
-                        <ActivityIndicator size={50} color="#0000ff" />
-                    </View>
-                </View>
-                )}
-
-            </View>
-        </ScrollView>
+                </>
+            )}
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        marginTop: 50,
     },
-    input: {
-        marginBottom: 10,
-        marginHorizontal: 5,
-        color: 'black',
-        borderBottomWidth: 1,
-        height: 40,
-        textAlign: "left"
-    },
-    labels: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        color: 'black',
-        marginHorizontal: 10,
-        marginVertical: 5
-    },
-    sexSelector: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 10
-    },
-    loaderContainer: {
-        ...StyleSheet.absoluteFillObject,
+    loadingContainer: {
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    loaderBackground: {
-        ...StyleSheet.absoluteFillObject, // Cover the entire screen
-        backgroundColor: 'rgba(215, 215, 215, 0.5)',
-        justifyContent: 'center', // Center the content vertically
-        alignItems: 'center', // Center the content horizontally
+    section: {
+        alignItems: 'center',
+        backgroundColor: 'white',
+        paddingVertical: 30,
+        margin: 5,
         borderRadius: 10,
     },
-    section: {
+    photoBorderContainer: {
+        width: 150,
+        height: 150,
+        borderRadius: 75,
+        borderWidth: 3,
+        overflow: 'hidden',
+        position: 'relative', // Add position relative for absolute positioning of edit icon
+    },
+    photo: {
+        width: '100%',
+        height: '100%',
+    },
+    editIconContainer: {
+        position: 'absolute',
         backgroundColor: 'white',
-        paddingVertical: 10,
-        margin: 10,
+        borderRadius: 20,
+        padding: 10,
+        shadowColor: '#000',
+        elevation: 5,
+        bottom: 1,
+        right: 1,
+    },
+    editIcon: {
+        width: 15,
+        height: 15,
+        resizeMode: 'contain',
+    },
+    userInfo: {
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    name: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    age: {
+        fontSize: 16,
+        marginTop: 5,
+    },
+    progressContainer: {
+        marginTop: 20,
+        width: '80%',
+    },
+    progressLabel: {
+        fontSize: 16,
+        marginBottom: 5,
+        textAlign: 'center',
+    },
+    progressBar: {
+        height: 20,
+        backgroundColor: '#ddd',
         borderRadius: 10,
-    }
+        overflow: 'hidden',
+        shadowColor: '#000',
+        elevation: 5,
+    },
+    progressFill: {
+        height: '100%',
+        backgroundColor: '#007AFF',
+    },
+    progressPercentage: {
+        marginTop: 5,
+        fontSize: 16,
+        textAlign: 'center',
+    },
 });
 
 export default UserInfoScreen;
