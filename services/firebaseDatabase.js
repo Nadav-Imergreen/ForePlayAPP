@@ -1,6 +1,8 @@
 //firebaseDatabase.js
 import {auth, db} from './config'; // Update the path
 import {collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where} from 'firebase/firestore';
+import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage } from '../services/config';
 import {deleteUserAccount} from "./auth";
 
 export async function saveUser(userId, email) {
@@ -62,6 +64,69 @@ export async function getAllUsers(gender) {
     }catch {throw Error("WARNING: Docs not found!")}
 }
 
+export async function uploadImageToStorage(imageUrl) {
+    try {
+        const imageRef = storageRef(storage, `images/${imageUrl}`);
+        const blob = await fetch(imageUrl).then((res) => {
+            if (!res.ok) {
+                throw new Error('Failed to fetch image');
+            }
+            return res.blob();
+        });
+
+        const snapshot = await uploadBytes(imageRef, blob);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+
+        return downloadURL;
+    } catch (error) {
+        console.error('Error uploading image to storage:', error.message);
+        throw error; // Propagate the error to the caller
+    }
+};
+
+export async function deletePhoto(index) {
+    const userId = auth.currentUser.uid; // Get the current user's ID
+    const userDocRef = doc(db, 'users', userId); // Reference to the user document
+
+    try {
+        // Get the existing images array from the user document
+        const userDoc = await getDoc(userDocRef);
+        const existingUrls = userDoc.data().images || [];
+
+        // Remove the URL at the specified index
+        const updatedUrls = existingUrls.filter((_, i) => i !== index);
+
+        // Update the user document with the updated image URLs
+        await updateDoc(userDocRef, { images: updatedUrls });
+        console.log('INFO: Image URL deleted successfully');
+    } catch (error) {
+        console.error('ERROR: Failed to delete image URL:', error.message);
+    }
+}
+
+export async function saveUrl(url) {
+
+    const userId = auth.currentUser.uid; // Get the current user's ID
+    const userDocRef = doc(db, 'users', userId); // Reference to the user document
+
+    try {
+        // Get the current user's data
+        const userData = await getUserData();
+        
+        // Get the existing images array from the user data
+        const existingUrls = userData.images || [];
+
+        // Append the new URL to the existing URLs
+        const updatedUrls = [...existingUrls, url];
+
+        // Update the user document with the updated image URLs
+        await updateDoc(userDocRef, { images: updatedUrls });
+        console.log('INFO: Image URL saved successfully');
+    } catch (error) {
+        console.error('ERROR: Failed to save image URL:', error.message);
+    }
+}
+/*
 export async function saveUrl(urls) {
     const userId = auth.currentUser.uid; // Get the current user's ID
     const userDocRef = doc(db, 'users', userId); // Reference to the user document
@@ -73,7 +138,7 @@ export async function saveUrl(urls) {
     } catch (error) {
         console.error('ERROR: Failed to save image URLs:', error.message);
     }
-}
+}*/
 
 export async function saveAdditionalInfo( occupation, desireMatch) {
     const userId = auth.currentUser.uid;

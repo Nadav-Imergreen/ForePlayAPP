@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { StyleSheet, TouchableOpacity, Text, Image, View } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { saveUrl, uploadImageToStorage, deletePhoto } from '../services/firebaseDatabase';
 
 const UploadImage = ({ setImageUrls, imageUrls }) => {
-   
 
     const chooseImage = async () => {
         const options = {
@@ -20,10 +20,9 @@ const UploadImage = ({ setImageUrls, imageUrls }) => {
             console.log('WARNING: ImagePicker Error: ', response.errorMessage);
         } else {
             const uri = response.assets?.[0]?.uri;
-    
-           
             setImageUrls([...imageUrls, uri]); // Update the image URLs state in the parent component
-      
+            const uploadedURL = await uploadImageToStorage(uri)
+            saveUrl(uploadedURL);
         }
     };
 
@@ -32,6 +31,7 @@ const UploadImage = ({ setImageUrls, imageUrls }) => {
         newImageUris.splice(index, 1);
     
         setImageUrls(newImageUris); // Update the image URLs state in the parent component
+        deletePhoto(index);
     };
 
     return (
