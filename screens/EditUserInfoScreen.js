@@ -76,7 +76,7 @@ const EditUserInfoScreen = ({ route }) => {
     const handleSaveUserInfo = async () => {
         setLoading(true);
         try {
-            await savePhoto();
+            //await savePhoto();
             await saveUserInfo(firstName, lastName, age, sex, hometown, occupation, desireMatch, aboutMe);
             
         } catch (error) {
@@ -112,7 +112,7 @@ const EditUserInfoScreen = ({ route }) => {
 
             // Loop through each new image URL and upload it to storage
             for (const imageUrl of imageUrls) {
-                console.log(imageUrl);
+                
                 const imageRef = storageRef(storage, `images/${imageUrl}`);
                 const blob = await fetch(imageUrl).then((res) => {
                     if (!res.ok) {

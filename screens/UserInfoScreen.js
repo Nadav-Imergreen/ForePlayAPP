@@ -68,7 +68,17 @@ const UserInfoScreen = () => {
                     <View style={styles.section}>
                         <View>
                             <View style={[styles.photoBorderContainer, { borderColor: userData.sex === 'Male' ? '#a4cdbd' : '#f06478' }]}>
-                                <Image source={{ uri: userData.images && userData.images.length > 0 ? userData.images[0] : null }} style={styles.photo} />
+                                {userData && userData.images && userData.images.length > 0 ? (
+                                    <Image
+                                    source={{ uri: userData.images[0] }}
+                                    style={styles.photo}
+                                    />
+                                ) : (
+                                    <Image
+                                    source={require('../assets/default_user_icon.jpg')}
+                                    style={styles.photo} 
+                                    />
+                                )}
                             </View>
                             <TouchableOpacity style={styles.editIconContainer} onPress={handleEditProfile}>
                                     <Image source={require('../assets/edit.png')} style={styles.editIcon} />

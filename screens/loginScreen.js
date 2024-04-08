@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     Image,
     Text,
     TextInput,
     TouchableOpacity,
+    TouchableWithoutFeedback,
+    Keyboard,
     View,
     Pressable,
     useWindowDimensions,
@@ -13,10 +15,11 @@ import {
     Dimensions,
     ImageBackground
 } from 'react-native';
-
+import { FloatingLabelInput } from 'react-native-floating-label-input';
 import {useNavigation} from '@react-navigation/native';
 import {login} from '../services/auth';
 import Loader from '../services/loadingIndicator';
+import CustomFloatingLabelInput from '../components/CustomFloatingLabelInput'
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
@@ -36,6 +39,11 @@ const LoginScreen = () => {
     // Define constants for image dimensions
     const FIELD_WIDTH = width * 0.7;
     const FIELD_HEIGHT = height * 0.6;
+
+    const [cont, setCont] = useState('');
+    const [show, setShow] = useState(false);
+  
+
 
     // Determine text order based on text direction
     const renderTextOrder = () => {
@@ -70,75 +78,69 @@ const LoginScreen = () => {
     };
 
     return(
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={{ flex: 1, backgroundColor: 'white' }}>
+                <ImageBackground source={require('../assets/background.png')} style={pageStyles.backgroundStyle}>
 
-        <View style={{ flex: 1, backgroundColor: 'white' }}>
-            <ImageBackground source={require('../assets/background.png')} style={pageStyles.backgroundStyle}>
-
-                <View style={{ alignItems: 'center', paddingBottom: '10%' }}>
-                    <Image source={require('../assets/logo_small.png')} style={{ width: scaledWidth, height: scaledHeight }} />
-                </View>
-
-                <View style={{
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: 30,
-                    width: '90%',
-                    borderRadius: 20,
-                    borderColor: 'grey',
-                    borderWidth: 1,
-                    backgroundColor: 'rgba(255, 255, 255, 0.75)',
-                }}>
-
-                    <View style={{ margin: 10 }}>
-                        <Text style={pageStyles.label}>Email address</Text>
-                        <TextInput
-                            style={[pageStyles.input, { width: FIELD_WIDTH }]}
-                            placeholder="Enter your email"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                            value={email}
-                            onChangeText={setEmail}
-                        />
-                    </View>
-
-                    <View style={{ margin: 10 }}>
-                        <Text style={pageStyles.label}>Password</Text>
-                        <TextInput
-                            style={[pageStyles.input, { width: FIELD_WIDTH }]}
-                            placeholder="Enter your password"
-                            secureTextEntry
-                            autoCapitalize="none"
-                            value={password}
-                            onChangeText={setPassword}
-                        />
-                    </View>
-
-                    <View style={{ marginTop: 40, height: 50 }}>
-                        {loading ? (
-                            <Loader />
-                        ) : (
-                            <TouchableOpacity
-                                onPress={handleLogin}>
-                                <Text style={[pageStyles.buttonText, { width: FIELD_WIDTH }]}>Login</Text>
-                            </TouchableOpacity>
-                        )}
+                    <View style={{ alignItems: 'center', paddingBottom: '10%' }}>
+                        <Image source={require('../assets/logo_small.png')} style={{ width: scaledWidth, height: scaledHeight }} />
                     </View>
 
                     <View style={{
-                        marginTop: 10,
-                        ...renderTextOrder()
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: 30,
+                        width: '90%',
+                        borderRadius: 20,
+                        borderColor: 'grey',
+                        borderWidth: 1,
+                        backgroundColor: 'rgba(255, 255, 255, 0.75)',
                     }}>
-                        <Text>Don't have an account? </Text>
-                        <TouchableOpacity onPress={handleNavigation}>
-                            <Text style={{ fontWeight: 'bold' }}>SignUp</Text>
-                        </TouchableOpacity>
 
+
+                       
+                        <CustomFloatingLabelInput
+                                    label="Email Address"
+                                    value={email}
+                                    onChangeText={setEmail}
+                                />
+                    
+
+                    
+                        <CustomFloatingLabelInput
+                                    label="Password"
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    secureTextEntry={true}
+                                />
+                        
+
+                        <View style={{ marginTop: 40, height: 50 }}>
+                            {loading ? (
+                                <Loader />
+                            ) : (
+                                <TouchableOpacity
+                                    onPress={handleLogin}>
+                                    <Text style={[pageStyles.buttonText, { width: FIELD_WIDTH }]}>Login</Text>
+                                </TouchableOpacity>
+                            )}
+                        </View>
+
+                        <View style={{
+                            marginTop: 10,
+                            ...renderTextOrder()
+                        }}>
+                            <Text>Don't have an account? </Text>
+                            <TouchableOpacity onPress={handleNavigation}>
+                                <Text style={{ fontWeight: 'bold' }}>SignUp</Text>
+                            </TouchableOpacity>
+
+                        </View>
                     </View>
-                </View>
 
-            </ImageBackground>
-        </View>
-
+                </ImageBackground>
+            </View>
+        </TouchableWithoutFeedback>
     );
 };
 
