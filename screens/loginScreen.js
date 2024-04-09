@@ -104,7 +104,13 @@ const LoginScreen = () => {
                                     value={email}
                                     onChangeText={setEmail}
                                 />
-                    
+
+
+                       <CustomFloatingLabelInput
+                                    label="Email Address"
+                                    value={email}
+                                    onChangeText={setEmail}
+                                />
 
                     
                         <CustomFloatingLabelInput
