@@ -142,8 +142,7 @@ const RegisterScreen = () => {
                         </View>
 
                         <View style={{ marginBottom: 10 }}>
-                            <Text style={[pageStyles.label, { fontSize: vwFontSize(4) }]}>Passwordff</Text>
-          		    <Text style={[pageStyles.label, { fontSize: vwFontSize(4) }]}>Passwordff</Text>
+                            <Text style={[pageStyles.label, { fontSize: vwFontSize(4) }]}>Password</Text>
                             <TextInput
                                 style={[pageStyles.input, { width: FIELD_WIDTH, fontSize: vwFontSize(4), padding: vwFontSize(1) }]}
                                 placeholder="Enter your password"
