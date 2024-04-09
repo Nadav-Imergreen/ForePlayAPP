@@ -6,13 +6,14 @@ import LoginScreen from './screens/loginScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import EditUserInfoScreen from './screens/EditUserInfoScreen';
-import UserInfoScreen from './screens/EditUserInfoScreen';
+import EditUserPreferenceScreen from './screens/EditUserPreferenceScreen';
 import MatchesScreen from './screens/MatchesScreen';
 import AiMatchesScreen from './screens/AiMatchesScreen';
 import HomeScreen from './screens/HomeScreen';
 import BottomTabNav from './components/BottomTabNav';
 import {onAuthStateChanged} from 'firebase/auth';
 import {auth} from './services/config';
+
 
 export default function App() {
     const Stack = createNativeStackNavigator();
@@ -29,6 +30,7 @@ export default function App() {
 
     useEffect(() => {
         return onAuthStateChanged(auth, onAuthStateChangedHandler);
+        
     }, []);
 
     if (initializing) {
@@ -44,8 +46,9 @@ export default function App() {
             <Stack.Navigator>
                 {user ? (
                     <>
-                        <Stack.Screen name="Home" component={BottomTabNav} options={{headerShown: false}}/>
+                        <Stack.Screen name="TabNavigator" component={BottomTabNav} options={{headerShown: false}}/>
                         <Stack.Screen name="EditProfile" component={EditUserInfoScreen}/>
+                        <Stack.Screen name="EditUserPreferenceScreen" component={EditUserPreferenceScreen}/>
                         <Stack.Screen name="Matches" component={MatchesScreen}/>
                         <Stack.Screen name="AiMatches" component={AiMatchesScreen}/>
                     </>

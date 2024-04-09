@@ -16,15 +16,12 @@ import {
     ImageBackground
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {facebookSignIn, googleSignIn, signInWithFB, signup} from '../services/auth';
+import {googleSignIn, signInWithFB, signup} from '../services/auth';
 import {saveUser} from '../services/firebaseDatabase';
 import Loader from '../services/loadingIndicator';
-import styles from '../cssStyles/commonStyles';
-import {SocialIcon} from 'react-native-elements';
-import LinearGradient from 'react-native-linear-gradient';
 import COLORS from '../constants/colors';
-import GoogleIcon from '@mui/icons-material/Google';
-import ShopIcon from '@mui/icons-material/Shop';
+import CustomFloatingLabelInput from '../components/CustomFloatingLabelInput'
+
 
 const RegisterScreen = () => {
 
@@ -41,7 +38,7 @@ const RegisterScreen = () => {
 
 
     // Define constants dimensions
-    const FIELD_WIDTH = width * 0.7;
+    const FIELD_WIDTH = width * 0.8;
     const FIELD_HEIGHT = height * 0.6;
 
     // Calculate the scaled width and height based on the desired dimensions in dp
@@ -129,49 +126,34 @@ const RegisterScreen = () => {
 
 
 
-                        <View style={{ marginBottom: 10 }}>
-                            <Text style={[pageStyles.label, { fontSize: vwFontSize(4) }]}>Email address</Text>
-                            <TextInput
-                                style={[pageStyles.input, { width: FIELD_WIDTH, fontSize: vwFontSize(4), padding: vwFontSize(1), }]}
-                                placeholder="Enter your email"
-                                keyboardType="email-address"
-                                autoCapitalize="none"
-                                value={email}
-                                onChangeText={setEmail}
-                            />
-                        </View>
+                        <CustomFloatingLabelInput
+                                    label="Email Address"
+                                    value={email}
+                                    onChangeText={setEmail}
+                                />
 
-                        <View style={{ marginBottom: 10 }}>
-                            <Text style={[pageStyles.label, { fontSize: vwFontSize(4) }]}>Password</Text>
-                            <TextInput
-                                style={[pageStyles.input, { width: FIELD_WIDTH, fontSize: vwFontSize(4), padding: vwFontSize(1) }]}
-                                placeholder="Enter your password"
-                                secureTextEntry
-                                autoCapitalize="none"
-                                value={password}
-                                onChangeText={setPassword}
-                            />
-                        </View>
+                        <CustomFloatingLabelInput
+                                    label="Password"
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    secureTextEntry={true}
+                                />
 
-                        <View style={{ marginBottom: 10 }}>
-                            <Text style={[pageStyles.label, { fontSize: vwFontSize(4) }]}>Confirm Password</Text>
-                            <TextInput
-                                style={[pageStyles.input, { width: FIELD_WIDTH, fontSize: vwFontSize(4), padding: vwFontSize(1) }]}
-                                placeholder="Re-enter password to confirm"
-                                secureTextEntry
-                                autoCapitalize="none"
-                                value={passwordConfirmation}
-                                onChangeText={setPasswordConfirmation}
-                            />
-                        </View>
+                        <CustomFloatingLabelInput
+                                    label="Confirm Password"
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    secureTextEntry={true}
+                                />
 
-                        <View style={{ marginTop: vwFontSize(3), height: 50 }}>
+
+                        <View style={{ marginVertical: vwFontSize(4), height: 50 }}>
                             {loading ? (
                                 <Loader />
                             ) : (
                                 <TouchableOpacity
                                     onPress={handleSignup}>
-                                    <Text style={[pageStyles.buttonText, { width: FIELD_WIDTH, fontSize: vwFontSize(4), padding: vwFontSize(2) }]}>Sing Up</Text>
+                                    <Text style={[pageStyles.buttonText, { width: FIELD_WIDTH, fontSize: vwFontSize(4), padding: vwFontSize(3) }]}>Sing Up</Text>
                                 </TouchableOpacity>
                             )}
                         </View>
@@ -186,7 +168,8 @@ const RegisterScreen = () => {
 
                         <View style={{
                             flexDirection: 'row',
-                            justifyContent: 'center'
+                            justifyContent: 'center',
+                            marginTop: vwFontSize(3),
                         }}>
                             <TouchableOpacity
                                 onPress={handleGoogleSignup}
@@ -196,7 +179,7 @@ const RegisterScreen = () => {
                                     justifyContent: 'center',
                                     flexDirection: 'row',
                                     padding: vwFontSize(1),
-                                    marginHorizontal: 60,
+                                    marginHorizontal: vwFontSize(1),
                                     borderWidth: 1,
                                     borderColor: COLORS.black,
                                     backgroundColor: COLORS.white,
@@ -214,6 +197,33 @@ const RegisterScreen = () => {
                                 />
 
                                 <Text>Google</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={handleGoogleSignup}
+                                style={{
+                                    flex: 1,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    flexDirection: 'row',
+                                    padding: vwFontSize(1),
+                                    marginHorizontal: vwFontSize(1),
+                                    borderWidth: 1,
+                                    borderColor: COLORS.black,
+                                    backgroundColor: COLORS.white,
+                                    borderRadius: 10
+                                }}
+                            >
+                                <Image
+                                    source={require("../assets/facebook.png")}
+                                    style={{
+                                        height: 36,
+                                        width: 36,
+                                        marginRight: 8
+                                    }}
+                                    resizeMode='contain'
+                                />
+
+                                <Text>Facebook</Text>
                             </TouchableOpacity>
                         </View>
 

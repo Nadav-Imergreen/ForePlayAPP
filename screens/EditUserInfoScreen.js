@@ -13,7 +13,6 @@ import { HeaderBackButton } from '@react-navigation/elements';
 import SwitchSelector from "react-native-switch-selector";
 
 
-
 const EditUserInfoScreen = ({ route }) => {
 
     const navigation = useNavigation(); // Get navigation object
@@ -39,7 +38,6 @@ const EditUserInfoScreen = ({ route }) => {
     useEffect(() => {
         setImageUrlsChanged(true);
     }, [imageUrls]);
-
 
 
     useEffect( () => {
@@ -83,7 +81,7 @@ const EditUserInfoScreen = ({ route }) => {
             console.error('Error saving user data:', error.message);
         } finally {
             setLoading(false);
-            navigation.navigate('Home');
+            navigation.navigate('UserInfoScreen');
         }
     };
     

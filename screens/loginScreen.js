@@ -97,16 +97,12 @@ const LoginScreen = () => {
                         backgroundColor: 'rgba(255, 255, 255, 0.75)',
                     }}>
 
-
-                       
                         <CustomFloatingLabelInput
                                     label="Email Address"
                                     value={email}
                                     onChangeText={setEmail}
                                 />
 
-
-                    
                         <CustomFloatingLabelInput
                                     label="Password"
                                     value={password}

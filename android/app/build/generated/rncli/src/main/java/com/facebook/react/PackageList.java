@@ -13,12 +13,18 @@ import java.util.ArrayList;
 
 // @react-native-async-storage/async-storage
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+// @react-native-community/geolocation
+import com.reactnativecommunity.geolocation.GeolocationPackage;
+// @react-native-community/slider
+import com.reactnativecommunity.slider.ReactSliderPackage;
 // @react-native-firebase/app
 import io.invertase.firebase.app.ReactNativeFirebaseAppPackage;
 // @react-native-firebase/auth
 import io.invertase.firebase.auth.ReactNativeFirebaseAuthPackage;
 // @react-native-google-signin/google-signin
 import com.reactnativegooglesignin.RNGoogleSigninPackage;
+// @react-native-picker/picker
+import com.reactnativecommunity.picker.RNCPickerPackage;
 // react-native-fbsdk-next
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
 // react-native-gesture-handler
@@ -27,6 +33,8 @@ import com.swmansion.gesturehandler.RNGestureHandlerPackage;
 import com.imagepicker.ImagePickerPackage;
 // react-native-linear-gradient
 import com.BV.LinearGradient.LinearGradientPackage;
+// react-native-reanimated
+import com.swmansion.reanimated.ReanimatedPackage;
 // react-native-safe-area-context
 import com.th3rdwave.safeareacontext.SafeAreaContextPackage;
 // react-native-screens
@@ -79,13 +87,17 @@ public class PackageList {
     return new ArrayList<>(Arrays.<ReactPackage>asList(
       new MainReactPackage(mConfig),
       new AsyncStoragePackage(),
+      new GeolocationPackage(),
+      new ReactSliderPackage(),
       new ReactNativeFirebaseAppPackage(),
       new ReactNativeFirebaseAuthPackage(),
       new RNGoogleSigninPackage(),
+      new RNCPickerPackage(),
       new FBSDKPackage(),
       new RNGestureHandlerPackage(),
       new ImagePickerPackage(),
       new LinearGradientPackage(),
+      new ReanimatedPackage(),
       new SafeAreaContextPackage(),
       new RNScreensPackage(),
       new VectorIconsPackage()
