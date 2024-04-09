@@ -46,6 +46,23 @@ export async function saveUserInfo(firstName, lastName, age, sex, hometown, occu
         .catch((error) => console.error('WARNING: Error updating user data:', error))
 }
 
+export async function saveUserLocation(location) {
+    try {
+        // Get the current user's ID
+        const userId = auth.currentUser.uid;
+
+        // Reference to the user document
+        const userDocRef = doc(db, 'users', userId);
+
+        // Update the user document with the provided location
+        await updateDoc(userDocRef, { location: location });
+
+        console.log('INFO: User location saved successfully');
+    } catch (error) {
+        console.error('ERROR: Failed to save user location:', error.message);
+    }
+}
+
 export async function getUserData() {
     try {
         const userId = auth.currentUser.uid;
@@ -126,19 +143,6 @@ export async function saveUrl(url) {
         console.error('ERROR: Failed to save image URL:', error.message);
     }
 }
-/*
-export async function saveUrl(urls) {
-    const userId = auth.currentUser.uid; // Get the current user's ID
-    const userDocRef = doc(db, 'users', userId); // Reference to the user document
-
-    try {
-        // Update the user document with the received image URLs
-        await updateDoc(userDocRef, { images: urls });
-        console.log('INFO: Image URLs saved successfully');
-    } catch (error) {
-        console.error('ERROR: Failed to save image URLs:', error.message);
-    }
-}*/
 
 export async function saveAdditionalInfo( occupation, desireMatch) {
     const userId = auth.currentUser.uid;

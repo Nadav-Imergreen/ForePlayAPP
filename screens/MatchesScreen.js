@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { getAllUsers, getUserData } from "../services/firebaseDatabase";
+import { getAllUsers, getUserData, saveUserLocation } from "../services/firebaseDatabase";
+import { PermissionsAndroid, Platform } from 'react-native';
+import Geolocation from '@react-native-community/geolocation';
+import getLocation from '../services/getLocation';
 
-const HomeScreen = () => {
+const MatchesScreen = () => {
+
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
-    const [currentIndex, setCurrentIndex] = useState(0); // State to track current index
+    const [currentIndex, setCurrentIndex] = useState(0); // State to track current index 
+
+    const { currentLocation } = getLocation();
+
+    useEffect(() => {
+        saveUserLocation(currentLocation);
+    }, [currentLocation]);
 
     // Fetch user data and suggested users from Firestore
     useEffect(() => {
@@ -23,7 +33,7 @@ const HomeScreen = () => {
         }
 
         fetchData().catch((e)=> console.error("Failed to fetch suggested users:", e.message));
-    }, []);
+    }, [currentLocation]);
 
     // Function to handle navigation to the next user
     const nextUser = () => {
@@ -90,4 +100,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default HomeScreen;
+export default MatchesScreen;

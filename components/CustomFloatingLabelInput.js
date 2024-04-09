@@ -25,11 +25,11 @@ const CustomFloatingLabelInput = ({ label, value, onChangeText, secureTextEntry 
   const floatingLabelStyle = {
     top: floatingLabelAnimation.interpolate({
       inputRange: [0, 1],
-      outputRange: [10, -5],
+      outputRange: [16, -5],
     }),
     fontSize: floatingLabelAnimation.interpolate({
       inputRange: [0, 1],
-      outputRange: [18, 10],
+      outputRange: [16, 10],
     }),
   };
 

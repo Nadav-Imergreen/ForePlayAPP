@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Image, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Image, ActivityIndicator, TouchableOpacity, Button } from 'react-native';
 import { getUserData } from '../services/firebaseDatabase'; // Assuming this is the function to fetch user data
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 
@@ -7,10 +7,8 @@ const UserInfoScreen = () => {
 
     const navigation = useNavigation();
 
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [userData, setUserData] = useState(null);
-
-
 
     useFocusEffect(
         React.useCallback(() => {
@@ -18,6 +16,7 @@ const UserInfoScreen = () => {
           fetchUserData();
         }, [])
       );
+
 
     const fetchUserData = async () => {
         setLoading(true);
@@ -34,6 +33,7 @@ const UserInfoScreen = () => {
     };
 
     const handleEditProfile = () => {
+        console.log(location);
         navigation.navigate("EditProfile", { userData: userData });
     };
 
@@ -65,7 +65,7 @@ const UserInfoScreen = () => {
         <View style={styles.container}>
             {userData && (
                 <>
-                    <View style={styles.section}>
+                    <View style={[styles.section, { alignItems: 'center' }]}>
                         <View>
                             <View style={[styles.photoBorderContainer, { borderColor: userData.sex === 'Male' ? '#a4cdbd' : '#f06478' }]}>
                                 {userData && userData.images && userData.images.length > 0 ? (
@@ -96,6 +96,17 @@ const UserInfoScreen = () => {
                             <Text style={styles.progressPercentage}>{calculateCompletionPercentage()}%</Text>
                         </View>
                     </View>
+
+                    <View style={styles.section}>
+                        
+                        <Text style={styles.preferences}>Gender</Text><Text></Text>
+                        <Text style={styles.preferences}>Age</Text><Text></Text>
+                        <Text style={styles.preferences}>Radius</Text><Text></Text>
+                        <Button
+                            title="Edit"
+                            onPress={() => navigation.navigate("EditUserPreferenceScreen")}
+                        />
+                    </View>
                 </>
             )}
         </View>
@@ -113,9 +124,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     section: {
-        alignItems: 'center',
         backgroundColor: 'white',
-        paddingVertical: 30,
+        paddingVertical: 20,
         margin: 5,
         borderRadius: 10,
     },
@@ -184,6 +194,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
     },
+    preferences: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        padding: 10
+    }
 });
 
 export default UserInfoScreen;
