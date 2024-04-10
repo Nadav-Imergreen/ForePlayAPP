@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { View, Image, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { getAllUsers, getUserData, saveUserLocation } from "../services/firebaseDatabase";
-import { PermissionsAndroid, Platform } from 'react-native';
-import Geolocation from '@react-native-community/geolocation';
+import { getAllUsers, getUserData, saveUserLocation, getUsersBy } from "../services/firebaseDatabase";
 import getLocation from '../services/getLocation';
 
 const MatchesScreen = () => {
 
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
     const [currentIndex, setCurrentIndex] = useState(0); // State to track current index 
+    const [preferedSex, setPreferedSex] = useState('');
+    const [preferedAge, setPreferedAge] = useState([]);
 
     const { currentLocation } = getLocation();
 
@@ -21,19 +21,30 @@ const MatchesScreen = () => {
         const fetchData = async () => {
             // get current user info
             const currentUser = await getUserData().catch((e)=> console.error(e.message));
-            const usersSnapshot = await getAllUsers(currentUser.sex).catch((e) => {
+            setUserData(currentUser);
+
+            const usersSnapshot = await getUsersBy(preferedSex, preferedAge[0], preferedAge[1]).catch((e) => {
                 console.log(e.message);
                 alert('WARNING: need more user info in order to match to other people');
             });
-            const usersData = usersSnapshot.docs.map((doc) => ({
-                ...doc.data(),
-                id: doc.id, // Add unique id for each user
-            }));
-            setSuggestedUsers(usersData);
+            if (usersSnapshot){
+                const usersData = usersSnapshot.docs.map((doc) => ({
+                    ...doc.data(),
+                    id: doc.id, // Add unique id for each user
+                }));
+                setSuggestedUsers(usersData);
+            }
         }
 
         fetchData().catch((e)=> console.error("Failed to fetch suggested users:", e.message));
-    }, [currentLocation]);
+    }, []);
+
+    const setUserData = (userData) => {
+        if (userData){
+            setPreferedSex(userData.partner_gender);
+            setPreferedAge([userData.partner_age_bottom_limit, userData.partner_age_upper_limit]);
+        }
+    };
 
     // Function to handle navigation to the next user
     const nextUser = () => {
@@ -52,9 +63,10 @@ const MatchesScreen = () => {
                 <View>
                     <TouchableOpacity style={styles.userContainer}>
                         {suggestedUsers[currentIndex].url && (
-                            <Image style={styles.logo} source={{ uri: suggestedUsers[currentIndex].url }} />
+                            <Image style={styles.logo} source={{ uri: suggestedUsers[currentIndex].images[0] }} />
                         )}
-                        <Text style={styles.userName}>{suggestedUsers[currentIndex].firstName}</Text>
+                        <Text style={styles.userName}>{suggestedUsers[currentIndex].firstName} </Text>
+                        <Text style={styles.userName}>{suggestedUsers[currentIndex].lastName}</Text>
                     </TouchableOpacity>
                     <View style={styles.buttonContainer}>
                         <TouchableOpacity onPress={previousUser}>

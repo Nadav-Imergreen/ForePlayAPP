@@ -33,8 +33,11 @@ const UserInfoScreen = () => {
     };
 
     const handleEditProfile = () => {
-        console.log(location);
         navigation.navigate("EditProfile", { userData: userData });
+    };
+
+    const handleEditPreferences = () => {
+        navigation.navigate("EditUserPreferenceScreen", { userData: userData });
     };
 
     const calculateCompletionPercentage = () => {
@@ -65,6 +68,7 @@ const UserInfoScreen = () => {
         <View style={styles.container}>
             {userData && (
                 <>
+                    <Text style={styles.labels}>My profile</Text>
                     <View style={[styles.section, { alignItems: 'center' }]}>
                         <View>
                             <View style={[styles.photoBorderContainer, { borderColor: userData.sex === 'Male' ? '#a4cdbd' : '#f06478' }]}>
@@ -80,7 +84,7 @@ const UserInfoScreen = () => {
                                     />
                                 )}
                             </View>
-                            <TouchableOpacity style={styles.editIconContainer} onPress={handleEditProfile}>
+                            <TouchableOpacity style={styles.edit_profile} onPress={handleEditProfile}>
                                     <Image source={require('../assets/edit.png')} style={styles.editIcon} />
                             </TouchableOpacity>
                         </View>
@@ -97,15 +101,43 @@ const UserInfoScreen = () => {
                         </View>
                     </View>
 
+                    <Text style={styles.labels}>My preferences</Text>
+
                     <View style={styles.section}>
-                        
-                        <Text style={styles.preferences}>Gender</Text><Text></Text>
-                        <Text style={styles.preferences}>Age</Text><Text></Text>
-                        <Text style={styles.preferences}>Radius</Text><Text></Text>
-                        <Button
-                            title="Edit"
-                            onPress={() => navigation.navigate("EditUserPreferenceScreen")}
-                        />
+
+                        <TouchableOpacity style={styles.edit_preferences} onPress={handleEditPreferences}>
+                                <Image source={require('../assets/edit.png')} style={styles.editIcon} />
+                        </TouchableOpacity>
+
+                        <View style={styles.row}>
+                            <Text style={styles.preferences}>Gender: </Text>
+                            <Text style={styles.lable}>{userData.partner_gender}</Text>
+                        </View>
+
+                        <View style={{flexDirection: 'row', alignItems: "center", marginBottom: 10}}>
+                            <View style={{flex: 1, height: 1, backgroundColor: 'lightgrey', marginHorizontal: 10}}
+                            />
+                        </View>
+
+                        <View style={styles.row}>
+                            <Text style={styles.preferences}>Age: </Text>
+                            <Text style={styles.lable}>{userData.partner_age_bottom_limit} - {userData.partner_age_upper_limit}</Text>
+                        </View>
+
+                        <View style={{flexDirection: 'row', alignItems: "center", marginBottom: 10}}>
+                            <View style={{flex: 1, height: 1, backgroundColor: 'lightgrey', marginHorizontal: 10}}
+                            />
+                        </View>
+
+                        <View style={styles.row}>
+                            <Text style={styles.preferences}>Radius: </Text>
+                            <Text style={styles.lable}>{userData.radius} km</Text>
+                        </View>
+
+                        <View style={{flexDirection: 'row', alignItems: "center", marginBottom: 10}}>
+                            <View style={{flex: 1, height: 1, backgroundColor: 'lightgrey', marginHorizontal: 10}}
+                            />
+                        </View>
                     </View>
                 </>
             )}
@@ -116,7 +148,13 @@ const UserInfoScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 50,
+        marginTop: 10
+    },
+    labels: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: 'black',
+        marginHorizontal: 10
     },
     loadingContainer: {
         flex: 1,
@@ -126,7 +164,7 @@ const styles = StyleSheet.create({
     section: {
         backgroundColor: 'white',
         paddingVertical: 20,
-        margin: 5,
+        margin: 10,
         borderRadius: 10,
     },
     photoBorderContainer: {
@@ -141,7 +179,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
     },
-    editIconContainer: {
+    edit_profile: {
         position: 'absolute',
         backgroundColor: 'white',
         borderRadius: 20,
@@ -149,6 +187,12 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         elevation: 5,
         bottom: 1,
+        right: 1,
+    },
+    edit_preferences: {
+        position: 'absolute',
+        padding: 10,
+        top: 1,
         right: 1,
     },
     editIcon: {
@@ -195,9 +239,18 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     preferences: {
-        fontSize: 16,
+        fontSize: 18,
         fontWeight: 'bold',
-        padding: 10
+    },
+    row: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        paddingVertical: 10
+    },
+    lable: {
+        fontSize: 18,
+        paddingHorizontal: 20
     }
 });
 
