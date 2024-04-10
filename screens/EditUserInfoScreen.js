@@ -1,14 +1,8 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { RadioButton } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Button, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { saveUserInfo } from '../services/firebaseDatabase';
-import Loader from '../services/loadingIndicator';
 import UploadImage from '../components/UploadImage';
-import { handleSignOut } from '../services/auth';
-import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../services/config';
-import { saveUrl, getUserData } from '../services/firebaseDatabase';
 import { HeaderBackButton } from '@react-navigation/elements';
 import SwitchSelector from "react-native-switch-selector";
 
@@ -81,61 +75,10 @@ const EditUserInfoScreen = ({ route }) => {
             console.error('Error saving user data:', error.message);
         } finally {
             setLoading(false);
-            navigation.navigate('UserInfoScreen');
+            navigation.goBack();
         }
     };
     
-   const savePhoto = async () => {
-        if (!imageUrlsChanged) {
-            console.log('INFO: No changes in image URLs');
-            return;
-        }
-
-        if (!imageUrls || imageUrls.length === 0) {
-            alert('WARNING: Please choose an image from the library');
-            return;
-        }
-
-        try {
-            // Get the previous imageUrls from userData or set it as an empty array
-            const previousImageUrls = userData ? userData.images || [] : [];
-
-            // Filter out the URLs that already exist in previousImageUrls
-            const newImageUrls = imageUrls.filter(url => !previousImageUrls.includes(url));
-
-            // Check if there are new image URLs to upload
-            
-            // Collect the download URLs in an array
-            const downloadURLs = [];
-
-            // Loop through each new image URL and upload it to storage
-            for (const imageUrl of imageUrls) {
-                
-                const imageRef = storageRef(storage, `images/${imageUrl}`);
-                const blob = await fetch(imageUrl).then((res) => {
-                    if (!res.ok) {
-                        throw new Error('Failed to fetch image');
-                    }
-                    return res.blob();
-                });
-                console.log('INFO: Successfully fetched photo using URL');
-
-                const snapshot = await uploadBytes(imageRef, blob);
-                console.log('INFO: Uploaded an image!', snapshot.metadata.name);
-
-                const url = await getDownloadURL(snapshot.ref);
-                downloadURLs.push(url); // Collect the download URL
-            }
-
-            // Call saveUrl with the array of download URLs
-            await saveUrl(downloadURLs);
-
-            setImageUrlsChanged(false); // Reset imageUrlsChanged after uploading
-        
-        } catch (error) {
-            console.error('ERROR: Failed to fetch image or upload:', error.message);
-        }
-    };
 
     const homeScreenNavigation = () => navigation.navigate('Home');
 
@@ -173,6 +116,7 @@ const EditUserInfoScreen = ({ route }) => {
                         keyboardType="numeric"
                     />
                     <View style={styles.sexSelector}>
+                        <Text style={{fontSize: 16, color: 'black'}}>Sex</Text>
                         <View style={{ width: 200 }}>
                         {dataFetched && (<SwitchSelector
                                 options = {[
@@ -191,7 +135,6 @@ const EditUserInfoScreen = ({ route }) => {
                                 style={{ marginVertical: 10 }}
                             />)}
                         </View>
-                        <Text>Sex</Text>
                     </View>
                 </View>
 
@@ -261,7 +204,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 10
+        paddingHorizontal: 20
     },
     loaderContainer: {
         ...StyleSheet.absoluteFillObject,
