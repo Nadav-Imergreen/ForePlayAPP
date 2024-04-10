@@ -141,8 +141,8 @@ const RegisterScreen = () => {
 
                         <CustomFloatingLabelInput
                                     label="Confirm Password"
-                                    value={password}
-                                    onChangeText={setPassword}
+                                    value={passwordConfirmation}
+                                    onChangeText={setPasswordConfirmation}
                                     secureTextEntry={true}
                                 />
 

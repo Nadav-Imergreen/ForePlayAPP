@@ -94,6 +94,19 @@ export async function getAllUsers(gender) {
     }catch {throw Error("WARNING: Docs not found!")}
 }
 
+export async function getUsersBy(gender, minAge, maxAge) {
+    
+    try {
+        const coll = collection(db, "users");
+        const q = query(coll, 
+            where("sex", "==", gender),
+        );
+        return await getDocs(q);
+    } catch (error) {
+        throw Error("WARNING: Error retrieving documents: " + error.message);
+    }
+}
+
 export async function uploadImageToStorage(imageUrl) {
     try {
         const imageRef = storageRef(storage, `images/${imageUrl}`);

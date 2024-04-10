@@ -46,7 +46,7 @@ const EditUserPreferenceScreen = ({ route }) => {
         setLoading(true);
         try {
             
-            await saveUserPreferences(gender, ageRange[0], ageRange[1], radius[0]);
+            await saveUserPreferences(gender, ageRange[0], ageRange[1], radius);
             
         } catch (error) {
             console.error('Error saving user data:', error.message);
