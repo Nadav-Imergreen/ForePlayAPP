@@ -89,7 +89,6 @@ export async function getAllUsers(gender) {
     try {
         const coll = collection(db, "users");
         const q = query(coll, where("sex", "==", gender));
-        // doc.data() is never undefined for query doc snapshots
         return await getDocs(q);
     }catch {throw Error("WARNING: Docs not found!")}
 }

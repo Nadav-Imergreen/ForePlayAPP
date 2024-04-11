@@ -96,7 +96,7 @@ const MatchesScreen = () => {
         }
     };
 
-    // Function to handle navigation to the next profile
+    // Function to handle navigation to the next profile.
     const nextProfile = () => {
         setCurrentIndex(currentIndex + 1);
     };

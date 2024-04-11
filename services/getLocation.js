@@ -35,7 +35,7 @@ const getLocation = () => {
       },
       error => {
         console.log(error.code, error.message);
-        console.log('Error getting current location');
+        console.log('Error getting current location.');
       },
       { enableHighAccuracy: false, timeout: 15000, maximumAge: 100000 }
     );
