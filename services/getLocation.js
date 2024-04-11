@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PermissionsAndroid, Platform } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
+import { saveUserLocation } from "../services/firebaseDatabase";
 
 const getLocation = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
@@ -29,6 +30,7 @@ const getLocation = () => {
       position => {
         const { latitude, longitude } = position.coords;
         setCurrentLocation({ latitude, longitude });
+        saveUserLocation(currentLocation);
         console.log('Latitude:', latitude, 'Longitude:', longitude);
       },
       error => {

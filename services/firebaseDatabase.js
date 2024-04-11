@@ -94,16 +94,18 @@ export async function getAllUsers(gender) {
     }catch {throw Error("WARNING: Docs not found!")}
 }
 
-export async function getUsersBy(gender, minAge, maxAge) {
-    
+export async function getUsersBy(gender) {
     try {
         const coll = collection(db, "users");
-        const q = query(coll, 
-            where("sex", "==", gender),
-        );
+        let q;
+        if (!gender) {
+            q = query(coll);
+        } else {
+            q = query(coll, where("sex", "==", gender));
+        }
         return await getDocs(q);
     } catch (error) {
-        throw Error("WARNING: Error retrieving documents: " + error.message);
+        throw new Error("WARNING: Error retrieving documents: " + error.message);
     }
 }
 

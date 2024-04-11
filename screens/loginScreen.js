@@ -42,7 +42,6 @@ const LoginScreen = () => {
 
     const [cont, setCont] = useState('');
     const [show, setShow] = useState(false);
-  
 
 
     // Determine text order based on text direction
