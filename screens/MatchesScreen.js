@@ -104,147 +104,171 @@ const MatchesScreen = () => {
     const pan = useRef(new Animated.ValueXY()).current;
 
     const panResponder = useRef(
-        PanResponder.create({
-          onStartShouldSetPanResponder: () => true,
-          onPanResponderMove: Animated.event(
-            [
-              null,
-              { dx: pan.x, dy: pan.y }
-            ],
-            { useNativeDriver: false }
-          ),
-          onPanResponderRelease: (e, gesture) => {
-            if (gesture.dx > 120) { // Swipe right
-              Animated.timing(pan, {
-                toValue: { x: 500, y: 0 },
-                duration: 300, // Adjust the duration as needed
-                useNativeDriver: false
-              }).start(() => {
-                // After swiping out, delay and then show the new card
-                setTimeout(() => {
-                  nextProfile();
-                  Animated.timing(pan, {
-                    toValue: { x: 0, y: 0 },
-                    duration: 0, // Instantly move back to center
-                    useNativeDriver: false
-                  }).start();
-                }, 500); // Adjust the delay time as needed
-              });
-            } else if (gesture.dx < -120) { // Swipe left
-              Animated.timing(pan, {
-                toValue: { x: -500, y: 0 },
-                duration: 300, // Adjust the duration as needed
-                useNativeDriver: false
-              }).start(() => {
-                // After swiping out, delay and then show the new card
-                setTimeout(() => {
-                  nextProfile();
-                  Animated.timing(pan, {
-                    toValue: { x: 0, y: 0 },
-                    duration: 0, // Instantly move back to center
-                    useNativeDriver: false
-                  }).start();
-                }, 500); // Adjust the delay time as needed
-              });
-            } else { // Return card to center
-              Animated.spring(pan, {
-                toValue: { x: 0, y: 0 },
-                useNativeDriver: false
-              }).start();
-            }
+      PanResponder.create({
+        onStartShouldSetPanResponder: () => true,
+        onPanResponderMove: Animated.event(
+          [
+            null,
+            { dx: pan.x, dy: pan.y }
+          ],
+          { useNativeDriver: false }
+        ),
+        onPanResponderRelease: (e, gesture) => {
+          if (gesture.dx > 120) { // Swipe right
+            Animated.timing(pan, {
+              toValue: { x: 500, y: 0 },
+              duration: 300, // Adjust the duration as needed
+              useNativeDriver: false
+            }).start(() => {
+              // After swiping out, delay and then show the new card
+              setTimeout(() => {
+                nextProfile();
+                Animated.timing(pan, {
+                  toValue: { x: 0, y: 0 },
+                  duration: 0, // Instantly move back to center
+                  useNativeDriver: false
+                }).start();
+              }, 500); // Adjust the delay time as needed
+            });
+          } else if (gesture.dx < -120) { // Swipe left
+            Animated.timing(pan, {
+              toValue: { x: -500, y: 0 },
+              duration: 300, // Adjust the duration as needed
+              useNativeDriver: false
+            }).start(() => {
+              // After swiping out, delay and then show the new card
+              setTimeout(() => {
+                nextProfile();
+                Animated.timing(pan, {
+                  toValue: { x: 0, y: 0 },
+                  duration: 0, // Instantly move back to center
+                  useNativeDriver: false
+                }).start();
+              }, 500); // Adjust the delay time as needed
+            });
+          } else { // Return card to center
+            Animated.spring(pan, {
+              toValue: { x: 0, y: 0 },
+              useNativeDriver: false
+            }).start();
           }
-        })
-      ).current;
+        }
+      })
+    ).current;
   
-
-  const panStyle = {
-    transform: pan.getTranslateTransform()
-  };
-
-  return (
-    <View style={styles.container}>
-      {/* Render suggested user */}
-      { suggestedUsers.length > 0 && currentIndex < suggestedUsers.length && (
-        <Animated.View style={[styles.card, panStyle]} {...panResponder.panHandlers}>
-          {suggestedUsers[currentIndex].images[0] && (
-            <View style={styles.imageContainer}>
-              <Image style={styles.image} source={{ uri: suggestedUsers[currentIndex].images[0] }} />
-            </View>
-          )}
-          <View>
-            <Text style={styles.userName}>{suggestedUsers[currentIndex].firstName} , {suggestedUsers[currentIndex].age}</Text>
+    const rotate = pan.x.interpolate({
+      inputRange: [-500, 0, 500],
+      outputRange: ['-30deg', '0deg', '30deg']
+    });
+  
+    const panStyle = {
+      transform: [{ translateX: pan.x }, { translateY: pan.y }, { rotate: rotate }]
+    };
+  
+    return (
+      <View style={styles.container}>
+  
+        {/* Display message when end of suggestedUsers array is reached */}
+        {suggestedUsers.length === 0 && (
+          <View style={styles.noSuggestionsContainer}>
+            <Text style={styles.noSuggestionsText}>Looking for people...</Text>
           </View>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity onPress={nextProfile}>
-              <Image source={require('../assets/like.png')} style={styles.buttonImage} />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={nextProfile}>
-              <Image source={require('../assets/dislike.png')} style={styles.buttonImage} />
-            </TouchableOpacity>
-          </View>
-        </Animated.View>
-      )}
-
-      {/* Display message when end of suggestedUsers array is reached */}
-      {currentIndex >= suggestedUsers.length && (
-        <View style={[styles.card, styles.noSuggestionsContainer]}>
-            <Text style={styles.noSuggestionsText}>No more suggestions</Text>
-        </View>
         )}
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,   
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingBottom: 120
-  },
-  card: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 20,
-    elevation: 5,
-    marginTop: 40
-  },
-  imageContainer: {
-    flex: 1,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 10
-  },
-  userName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  buttonImage: {
-    width: 50,
-    height: 50,
-  },
-  noSuggestionsContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  noSuggestionsText: {
-    fontSize: 20, // Adjust the font size as needed
-    textAlign: 'center',
-  },
-});
-
-
+  
+        {/* Render suggested user */}
+        {suggestedUsers.length > 0 && currentIndex < suggestedUsers.length && (
+          <>
+          
+            <Animated.View style={[styles.card, panStyle]} {...panResponder.panHandlers}>
+              {suggestedUsers[currentIndex].images[0] && (
+                <View style={styles.imageContainer}>
+                  <Image style={styles.image} source={{ uri: suggestedUsers[currentIndex].images[0] }} />
+                </View>
+              )}
+              <View>
+                <Text style={styles.userName}>{suggestedUsers[currentIndex].firstName}, {suggestedUsers[currentIndex].age}</Text>
+              </View>
+            </Animated.View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity onPress={nextProfile}>
+                  <Image source={require('../assets/dislike.png')} style={styles.buttonImage} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={nextProfile}>
+                <Image source={require('../assets/like.png')} style={styles.buttonImage} />
+              </TouchableOpacity>
+            </View>
+          
+          </>
+        )}
+  
+        {/* Display message when end of suggestedUsers array is reached */}
+        {currentIndex >= suggestedUsers.length && currentIndex !== 0 && (
+          <View style={styles.noSuggestionsContainer}>
+            <Text style={styles.noSuggestionsText}>No more suggestions</Text>
+          </View>
+        )}
+        
+      </View>
+    );
+  };
+  
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: 'center',
+      paddingHorizontal: 20,
+      paddingBottom: 120
+    },
+    card: {
+      position: 'absolute',
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'white',
+      borderRadius: 10,
+      padding: 20,
+      elevation: 5,
+      marginTop: 40
+    },
+    matches: {
+      
+    },
+    imageContainer: {
+      flex: 1,
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+    image: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 10
+    },
+    userName: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginBottom: 10,
+    },
+    buttonContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+      paddingHorizontal: 20,
+      paddingBottom: 20,
+      position: 'absolute',
+      bottom: 30,
+    },
+    buttonImage: {
+      width: 50,
+      height: 50,
+    },
+    noSuggestionsContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    noSuggestionsText: {
+      fontSize: 20, // Adjust the font size as needed
+      textAlign: 'center',
+    },
+  });
 export default MatchesScreen;
