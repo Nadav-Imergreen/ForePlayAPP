@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Image, Text, TouchableOpacity, StyleSheet, PanResponder, Animated } from "react-native";
+import { View, Image, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated } from "react-native";
 import { getAllUsers, getUserData, saveUserLocation, getUsersBy } from "../services/firebaseDatabase";
 import getLocation from '../services/getLocation';
+import LinearGradient from 'react-native-linear-gradient';
 
 const MatchesScreen = () => {
 
@@ -29,7 +30,6 @@ const MatchesScreen = () => {
                     );
                     return;
                 }
-                //setUserPreferences(currentUser);
 
                 if (!currentUser.partner_gender || !currentUser.partner_age_bottom_limit) {
                     // If user preferences are empty, show a message encouraging the user to fill them
@@ -70,81 +70,67 @@ const MatchesScreen = () => {
         fetchData();
     }, []);
 
-    const setUserPreferences = (userData) => {
-        if (!userData) { // If no user data is available, set full default preferences
-            setPreferredSex(preferedSexDefault);
-            setPreferredAge(preferedAgeDefault);
-            return;
-        }
-    
-        const { partner_gender, partner_age_bottom_limit, partner_age_upper_limit, sex, age } = userData;
-    
-        if (!partner_gender) {
-            // Set partner gender preference based on user's gender or default to 'Both'
-            setPreferredSex(sex ? (sex === 'male' ? 'female' : 'male') : preferedSexDefault);
-        } else {
-            // Set partner gender preference if available
-            setPreferredSex(partner_gender);
-        }
-    
-        if (!partner_age_bottom_limit && !partner_age_upper_limit) {
-            // Set partner age preference based on user's age or default to [18, 60]
-            setPreferredAge(age ? [Math.max(18, age - 2), Math.min(60, age + 2)] : preferedAgeDefault);
-        } else {
-            // Set partner age preference if available
-            setPreferredAge([partner_age_bottom_limit, partner_age_upper_limit]);
-        }
-    };
-
     // Function to handle navigation to the next profile.
     const nextProfile = () => {
         setCurrentIndex(currentIndex + 1);
     };
 
     const pan = useRef(new Animated.ValueXY()).current;
+    const [likePressed, setLikePressed] = useState(false);
+    const [dislikePressed, setDislikePressed] = useState(false);
 
     const panResponder = useRef(
       PanResponder.create({
         onStartShouldSetPanResponder: () => true,
-        onPanResponderMove: Animated.event(
-          [
-            null,
-            { dx: pan.x, dy: pan.y }
-          ],
-          { useNativeDriver: false }
-        ),
+        onPanResponderMove: (e, gesture) => {
+          if (gesture.dx > 120) { // Swipe right
+            setLikePressed(true);
+          } else if (gesture.dx < -120) { // Swipe left
+            setDislikePressed(true);
+          } else { // Reset button states if swipe is not significant
+            setLikePressed(false);
+            setDislikePressed(false);
+          }
+          Animated.event(
+            [
+              null,
+              { dx: pan.x, dy: pan.y }
+            ],
+            { useNativeDriver: false }
+          )(e, gesture);
+        },
         onPanResponderRelease: (e, gesture) => {
+          setLikePressed(false);
+          setDislikePressed(false);
           if (gesture.dx > 120) { // Swipe right
             Animated.timing(pan, {
               toValue: { x: 500, y: 0 },
-              duration: 300, // Adjust the duration as needed
+              duration: 300,
               useNativeDriver: false
             }).start(() => {
-              // After swiping out, delay and then show the new card
               setTimeout(() => {
                 nextProfile();
                 Animated.timing(pan, {
                   toValue: { x: 0, y: 0 },
-                  duration: 0, // Instantly move back to center
+                  duration: 0,
                   useNativeDriver: false
                 }).start();
-              }, 500); // Adjust the delay time as needed
+              }, 500);
             });
           } else if (gesture.dx < -120) { // Swipe left
             Animated.timing(pan, {
               toValue: { x: -500, y: 0 },
-              duration: 300, // Adjust the duration as needed
+              duration: 300,
               useNativeDriver: false
             }).start(() => {
-              // After swiping out, delay and then show the new card
               setTimeout(() => {
                 nextProfile();
                 Animated.timing(pan, {
                   toValue: { x: 0, y: 0 },
-                  duration: 0, // Instantly move back to center
+                  duration: 0,
                   useNativeDriver: false
                 }).start();
-              }, 500); // Adjust the delay time as needed
+              }, 500);
             });
           } else { // Return card to center
             Animated.spring(pan, {
@@ -167,7 +153,6 @@ const MatchesScreen = () => {
   
     return (
       <View style={styles.container}>
-  
         {/* Display message when end of suggestedUsers array is reached */}
         {suggestedUsers.length === 0 && (
           <View style={styles.noSuggestionsContainer}>
@@ -178,26 +163,48 @@ const MatchesScreen = () => {
         {/* Render suggested user */}
         {suggestedUsers.length > 0 && currentIndex < suggestedUsers.length && (
           <>
-          
             <Animated.View style={[styles.card, panStyle]} {...panResponder.panHandlers}>
               {suggestedUsers[currentIndex].images[0] && (
                 <View style={styles.imageContainer}>
-                  <Image style={styles.image} source={{ uri: suggestedUsers[currentIndex].images[0] }} />
+                  <Image style={styles.image} resizeMode='contain' source={{ uri: suggestedUsers[currentIndex].images[0] }} />
                 </View>
               )}
-              <View>
+              <View style={styles.overlayContainer}>
+              <LinearGradient
+                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)']} // Gradient colors from white to black
+                    style={styles.gradientOverlay}
+                  />
                 <Text style={styles.userName}>{suggestedUsers[currentIndex].firstName}, {suggestedUsers[currentIndex].age}</Text>
               </View>
             </Animated.View>
+  
             <View style={styles.buttonContainer}>
-              <TouchableOpacity onPress={nextProfile}>
-                  <Image source={require('../assets/dislike.png')} style={styles.buttonImage} />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={nextProfile}>
-                <Image source={require('../assets/like.png')} style={styles.buttonImage} />
-              </TouchableOpacity>
+              <TouchableWithoutFeedback
+                  onPressIn={() => setDislikePressed(true)}
+                  onPressOut={() => setDislikePressed(false)}
+                  onPress={nextProfile}
+                >
+                  <Animated.View style={[styles.buttonBody, { backgroundColor: dislikePressed ? '#f06478' : '#ffffff', transform: [{ scale: dislikePressed ? 1.2 : 1 }] }]}>
+                    <Image
+                      source={dislikePressed ? require('../assets/dislike.png') : require('../assets/dislike_pressed.png')}
+                      style={styles.buttonImage}
+                    />
+                  </Animated.View>
+                </TouchableWithoutFeedback>
+
+                <TouchableWithoutFeedback
+                  onPressIn={() => setLikePressed(true)}
+                  onPressOut={() => setLikePressed(false)}
+                  onPress={nextProfile}
+                >
+                  <Animated.View style={[styles.buttonBody, { backgroundColor: likePressed ? '#a4cdbd' : '#ffffff', transform: [{ scale: likePressed ? 1.2 : 1 }] }]}>
+                    <Image
+                      source={likePressed ? require('../assets/like.png') : require('../assets/like_pressed.png')}
+                      style={styles.buttonImage}
+                    />
+                  </Animated.View>
+                </TouchableWithoutFeedback>
             </View>
-          
           </>
         )}
   
@@ -207,7 +214,6 @@ const MatchesScreen = () => {
             <Text style={styles.noSuggestionsText}>No more suggestions</Text>
           </View>
         )}
-        
       </View>
     );
   };
@@ -216,8 +222,8 @@ const MatchesScreen = () => {
     container: {
       flex: 1,
       alignItems: 'center',
-      paddingHorizontal: 20,
-      paddingBottom: 120
+      paddingHorizontal: 10,
+      paddingBottom: 110
     },
     card: {
       position: 'absolute',
@@ -225,41 +231,61 @@ const MatchesScreen = () => {
       height: '100%',
       backgroundColor: 'white',
       borderRadius: 10,
-      padding: 20,
       elevation: 5,
-      marginTop: 40
-    },
-    matches: {
-      
+      marginTop: 20,
     },
     imageContainer: {
-      flex: 1,
-      alignItems: 'center',
-      marginBottom: 20,
+      flex: 1, // Allow the image container to expand to fill the available space
+      alignItems: 'center', // Center the image horizontally
+      overflow: 'hidden', // Clip the image if it exceeds the container's boundaries
+      borderRadius: 10, // Apply border radius to match the card's border radius
+      paddingBottom: 60
     },
     image: {
+      flex: 1,
       width: '100%',
-      height: '100%',
-      borderRadius: 10
+      aspectRatio: 1,
+    },
+    overlayContainer: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      height: '60%', // Half the height of the card
+      borderRadius: 10, // Apply border radius to match the card's border radius
+      justifyContent: 'flex-end', // Align the overlay content at the bottom
+    },
+    gradientOverlay: {
+      ...StyleSheet.absoluteFillObject, // Position the gradient overlay to cover the whole overlayContainer
+      borderRadius: 10, // Apply border radius to match the card's border radius
     },
     userName: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      textAlign: 'center',
-      marginBottom: 10,
+      position: 'absolute',
+      bottom: 60, // Adjust the positioning as needed
+      left: 20, // Adjust the positioning as needed
+      color: 'white',
+      fontSize: 24,
+      fontStyle: 'italic'
     },
     buttonContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       width: '100%',
-      paddingHorizontal: 20,
+      paddingHorizontal: 50,
       paddingBottom: 20,
       position: 'absolute',
-      bottom: 30,
+      bottom: 40,
     },
     buttonImage: {
-      width: 50,
-      height: 50,
+      width: 40,
+      height: 40,
+    },
+    buttonBody: {
+      borderWidth: 1,
+      borderColor: 'transparent',
+      borderRadius: 50,
+      padding: 10,
+      backgroundColor: '#a4cdbd'
     },
     noSuggestionsContainer: {
       flex: 1,
@@ -271,4 +297,5 @@ const MatchesScreen = () => {
       textAlign: 'center',
     },
   });
+
 export default MatchesScreen;
