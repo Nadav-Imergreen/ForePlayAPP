@@ -7,6 +7,7 @@ import { saveUserPreferences } from '../services/firebaseDatabase';
 import { HeaderBackButton } from '@react-navigation/elements';
 
 const EditUserPreferenceScreen = ({ route }) => {
+
     const navigation = useNavigation();
 
     const [gender, setGender] = useState('Female'); // Default gender
@@ -15,6 +16,7 @@ const EditUserPreferenceScreen = ({ route }) => {
     const [loading, setLoading] = useState(false);
     const { userData } = route.params;
 
+
     useEffect(() => {
         fetchUserData();
     }, []);
@@ -22,9 +24,11 @@ const EditUserPreferenceScreen = ({ route }) => {
     const fetchUserData = () => {
         setLoading(true);
         if (userData) {
-            setGender(userData.partner_gender || '');
-            setAgeRange([userData.partner_age_bottom_limit, userData.partner_age_upper_limit] || []);
-            setRadius(userData.radius || '');
+            setGender(userData.partner_gender || 'Female');
+            const bottomLimit = userData.partner_age_bottom_limit || 18;
+            const upperLimit = userData.partner_age_upper_limit || 25;
+            setAgeRange([bottomLimit, upperLimit]);
+            setRadius(userData.radius || 10);
         }
         setLoading(false);
     };
@@ -71,6 +75,7 @@ const EditUserPreferenceScreen = ({ route }) => {
                 </Picker>
             </View>
 
+            {console.log("ageRange:", ageRange)}
             <View style={styles.section}>
                 <View style={styles.rowContainer}>
                     <Text style={styles.label}>Age Range:</Text>

@@ -52,7 +52,8 @@ const CustomFloatingLabelInput = ({ label, value, onChangeText, secureTextEntry 
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    alignItems: 'flex-end',
+    //alignItems: 'flex-end',
+    alignItems: 'flex-start',
     marginVertical: 10
   },
   input: {

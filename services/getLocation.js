@@ -30,7 +30,7 @@ const getLocation = () => {
       position => {
         const { latitude, longitude } = position.coords;
         setCurrentLocation({ latitude, longitude });
-        saveUserLocation(currentLocation);
+        saveUserLocation({ latitude, longitude });
         console.log('Latitude:', latitude, 'Longitude:', longitude);
       },
       error => {
