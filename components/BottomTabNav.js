@@ -85,9 +85,9 @@ const styles = StyleSheet.create({
     height: '100%', // Make sure the logoContainer fills the header vertically
   },
   icon: {
-    width: 24,
-    height: 24,
-  }
+    width: 28,
+    height: 28,
+  } 
 });
 
 export default BottomTabNav;

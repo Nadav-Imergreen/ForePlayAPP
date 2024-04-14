@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Image, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated } from "react-native";
+import { View, Image, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
 import { getAllUsers, getUserData, saveUserLocation, getUsersBy } from "../services/firebaseDatabase";
 import getLocation from '../services/getLocation';
 import LinearGradient from 'react-native-linear-gradient';
@@ -8,10 +8,7 @@ const MatchesScreen = () => {
 
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
     const [currentIndex, setCurrentIndex] = useState(0); // State to track current index 
-    const [preferredSex, setPreferredSex] = useState();
-    const [preferredAge, setPreferredAge] = useState([]);    
-    const [preferedSexDefault, setPreferedSexDefault] = useState('Both');
-    const [preferedAgeDefault, setPreferedAgeDefault] = useState([18, 60]);
+    const [noResults, setNoResults] = useState(false); // State to track current index 
 
     const { currentLocation } = getLocation();
 
@@ -40,7 +37,6 @@ const MatchesScreen = () => {
                         { cancelable: false }
                     );
                 }
-
                 // Only proceed to fetch suggested users if preferences are available
                 const usersSnapshot = await getUsersBy(currentUser.partner_gender);
                 const usersData = usersSnapshot.docs.map(doc => {
@@ -50,11 +46,14 @@ const MatchesScreen = () => {
                     };
                     return userData;
                 });
-
                 // Filter suggested users by age and distance here
                 const filteredUsers = usersData.filter(user => user.age >= currentUser.partner_age_bottom_limit && user.age <= currentUser.partner_age_upper_limit);
-
-                setSuggestedUsers(filteredUsers);
+                if (filteredUsers && filteredUsers.length > 0){
+                  setSuggestedUsers(filteredUsers);
+                }
+                else{
+                  setNoResults(true);
+                }
     
             } catch (error) {
                 console.error("Failed to fetch suggested users:", error.message);
@@ -153,10 +152,12 @@ const MatchesScreen = () => {
   
     return (
       <View style={styles.container}>
-        {/* Display message when end of suggestedUsers array is reached */}
+        {/* Display message when waiting for data */}
         {suggestedUsers.length === 0 && (
           <View style={styles.noSuggestionsContainer}>
-            <Text style={styles.noSuggestionsText}>Looking for people...</Text>
+            <Text style={styles.noSuggestionsText}>
+              {noResults ? "No people in your area" : "Looking for people..."}
+            </Text>
           </View>
         )}
   
