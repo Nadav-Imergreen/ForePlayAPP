@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, ActivityIndicator, TouchableOpacity, Button } from 'react-native';
-import { getUserData } from '../services/firebaseDatabase'; // Assuming this is the function to fetch user data
+import { getCurrentUser } from '../services/firebaseDatabase'; // Assuming this is the function to fetch user data
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 
 const UserInfoScreen = () => {
@@ -12,19 +12,17 @@ const UserInfoScreen = () => {
 
     useFocusEffect(
         React.useCallback(() => {
-          // Fetch user data here
-          fetchUserData();
+            // Fetch user data here
+            fetchUserData();
         }, [])
       );
-
 
     const fetchUserData = async () => {
         setLoading(true);
         try {
-            const user = await getUserData();
-            if (user) {
+            const user = await getCurrentUser();
+            if (user)
                 setUserData(user);
-            }
         } catch (error) {
             console.error('Error fetching user data:', error.message);
         } finally {

@@ -22,7 +22,7 @@ const UploadImage = ({ setImageUrls, imageUrls }) => {
             const uri = response.assets?.[0]?.uri;
             setImageUrls([...imageUrls, uri]); // Update the image URLs state in the parent component
             const uploadedURL = await uploadImageToStorage(uri)
-            saveUrl(uploadedURL);
+            await saveUrl(uploadedURL);
         }
     };
 
