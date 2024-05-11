@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Image, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
-import { getAllUsers, getUserData, saveUserLocation, getUsersBy } from "../services/firebaseDatabase";
+import { getAllUsers, getCurrentUser, saveUserLocation, getUsersBy, saveSeen, saveLike, saveLikeMe, checkForMatch } from "../services/firebaseDatabase";
 import getLocation from '../services/getLocation';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -9,6 +9,7 @@ const MatchesScreen = () => {
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
     const [currentIndex, setCurrentIndex] = useState(0); // State to track current index 
     const [noResults, setNoResults] = useState(false); // State to track current index 
+    const currentIndexRef = useRef(0); // Using a ref to keep track of the current index
 
     const { currentLocation } = getLocation();
 
@@ -16,7 +17,7 @@ const MatchesScreen = () => {
         const fetchData = async () => {
             try {
                 // get current user info
-                const currentUser = await getUserData();
+                const currentUser = await getCurrentUser();
                 if (!currentUser) {
                     // If user data couldn't be retrieved, show alert and provide retry option
                     Alert.alert(
@@ -70,8 +71,29 @@ const MatchesScreen = () => {
 
     // Function to handle navigation to the next profile.
     const nextProfile = () => {
-        setCurrentIndex(currentIndex + 1);
+        const newIndex = currentIndexRef.current + 1; // Get the next index
+        currentIndexRef.current = newIndex; // Update the current index using ref
+        setCurrentIndex(newIndex);
     };
+
+    // Function to handle navigation to the next profile.
+    const handleLike = () => {
+      nextProfile();
+      const likedUser = suggestedUsers[currentIndex].userId;
+      saveSeen(likedUser)
+          .then(() => saveLike(likedUser)
+              .then(() => saveLikeMe(likedUser)
+                  .then(() => {
+                      
+                      checkForMatch(likedUser);
+                  })))
+  };
+
+  // Function to handle navigation to the next profile.
+  const handleDislike = () => {
+      nextProfile();
+      saveSeen(suggestedUsers[currentIndex].userId);
+  };
 
     const pan = useRef(new Animated.ValueXY()).current;
     const [likePressed, setLikePressed] = useState(false);
@@ -107,12 +129,13 @@ const MatchesScreen = () => {
               useNativeDriver: false
             }).start(() => {
               setTimeout(() => {
-                nextProfile();
+                
                 Animated.timing(pan, {
                   toValue: { x: 0, y: 0 },
                   duration: 0,
                   useNativeDriver: false
                 }).start();
+                nextProfile();
               }, 500);
             });
           } else if (gesture.dx < -120) { // Swipe left
@@ -122,12 +145,13 @@ const MatchesScreen = () => {
               useNativeDriver: false
             }).start(() => {
               setTimeout(() => {
-                nextProfile();
+                
                 Animated.timing(pan, {
                   toValue: { x: 0, y: 0 },
                   duration: 0,
                   useNativeDriver: false
                 }).start();
+                nextProfile();
               }, 500);
             });
           } else { // Return card to center
