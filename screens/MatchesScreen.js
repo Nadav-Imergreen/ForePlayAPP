@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { View, Image, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
 import { getAllUsers, getUserData, saveUserLocation, getUsersBy } from "../services/firebaseDatabase";
 import getLocation from '../services/getLocation';
@@ -17,6 +17,7 @@ const MatchesScreen = () => {
             try {
                 // get current user info
                 const currentUser = await getUserData();
+                console.log('currentUser: ' + currentUser)
                 if (!currentUser) {
                     // If user data couldn't be retrieved, show alert and provide retry option
                     Alert.alert(
@@ -69,10 +70,9 @@ const MatchesScreen = () => {
         fetchData();
     }, []);
 
-    // Function to handle navigation to the next profile.
-    const nextProfile = () => {
-        setCurrentIndex(currentIndex + 1);
-    };
+    const nextProfile = useCallback(() => {
+      setCurrentIndex(prevIndex => prevIndex + 1);
+    }, []);
 
     const pan = useRef(new Animated.ValueXY()).current;
     const [likePressed, setLikePressed] = useState(false);

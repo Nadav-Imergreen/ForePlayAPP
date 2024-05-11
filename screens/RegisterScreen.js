@@ -123,30 +123,23 @@ const RegisterScreen = () => {
                         borderWidth: 1,
                         backgroundColor: 'rgba(255, 255, 255, 0.75)',
                     }}>
-
-
-
                         <CustomFloatingLabelInput
                                     label="Email Address"
                                     value={email}
                                     onChangeText={setEmail}
                                 />
-
                         <CustomFloatingLabelInput
                                     label="Password"
                                     value={password}
                                     onChangeText={setPassword}
                                     secureTextEntry={true}
                                 />
-
                         <CustomFloatingLabelInput
                                     label="Confirm Password"
                                     value={passwordConfirmation}
                                     onChangeText={setPasswordConfirmation}
                                     secureTextEntry={true}
                                 />
-
-
                         <View style={{ marginVertical: vwFontSize(4), height: 50 }}>
                             {loading ? (
                                 <Loader />
