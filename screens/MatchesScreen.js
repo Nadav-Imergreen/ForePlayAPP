@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { View, Image, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
 import { getAllUsers, getUserData, saveUserLocation, getUsersBy } from "../services/firebaseDatabase";
 import getLocation from '../services/getLocation';
@@ -17,14 +17,13 @@ const MatchesScreen = () => {
             try {
                 // get current user info
                 const currentUser = await getUserData();
-                console.log('currentUser: ' + currentUser)
                 if (!currentUser) {
                     // If user data couldn't be retrieved, show alert and provide retry option
                     Alert.alert(
                         "Error",
                         "Failed to fetch user data. Please try again.",
                         [{ text: "Retry", onPress: fetchData }],
-                        { cancelable: false }
+                        { cancelable: true }
                     );
                     return;
                 }
@@ -41,16 +40,15 @@ const MatchesScreen = () => {
                 // Only proceed to fetch suggested users if preferences are available
                 const usersSnapshot = await getUsersBy(currentUser.partner_gender);
                 const usersData = usersSnapshot.docs.map(doc => {
-                    const userData = {
+                    return {
                         id: doc.id,
                         ...doc.data()
                     };
-                    return userData;
                 });
                 // Filter suggested users by age and distance here
                 const filteredUsers = usersData.filter(user => user.age >= currentUser.partner_age_bottom_limit && user.age <= currentUser.partner_age_upper_limit);
                 if (filteredUsers && filteredUsers.length > 0){
-                  setSuggestedUsers(filteredUsers);
+                  setSuggestedUsers(usersData);
                 }
                 else{
                   setNoResults(true);
@@ -70,9 +68,10 @@ const MatchesScreen = () => {
         fetchData();
     }, []);
 
-    const nextProfile = useCallback(() => {
-      setCurrentIndex(prevIndex => prevIndex + 1);
-    }, []);
+    // Function to handle navigation to the next profile.
+    const nextProfile = () => {
+        setCurrentIndex(currentIndex + 1);
+    };
 
     const pan = useRef(new Animated.ValueXY()).current;
     const [likePressed, setLikePressed] = useState(false);
@@ -183,7 +182,7 @@ const MatchesScreen = () => {
               <TouchableWithoutFeedback
                   onPressIn={() => setDislikePressed(true)}
                   onPressOut={() => setDislikePressed(false)}
-                  onPress={nextProfile}
+                  onPress={handleDislike}
                 >
                   <Animated.View style={[styles.buttonBody, { backgroundColor: dislikePressed ? '#f06478' : '#ffffff', transform: [{ scale: dislikePressed ? 1.2 : 1 }] }]}>
                     <Image
@@ -196,7 +195,7 @@ const MatchesScreen = () => {
                 <TouchableWithoutFeedback
                   onPressIn={() => setLikePressed(true)}
                   onPressOut={() => setLikePressed(false)}
-                  onPress={nextProfile}
+                  onPress={handleLike}
                 >
                   <Animated.View style={[styles.buttonBody, { backgroundColor: likePressed ? '#a4cdbd' : '#ffffff', transform: [{ scale: likePressed ? 1.2 : 1 }] }]}>
                     <Image

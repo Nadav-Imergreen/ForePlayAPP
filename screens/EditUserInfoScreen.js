@@ -68,8 +68,18 @@ const EditUserInfoScreen = ({ route }) => {
     const handleSaveUserInfo = async () => {
         setLoading(true);
         try {
+            const data = {
+                firstName: firstName,
+                lastName: lastName,
+                age: age,
+                sex: sex,
+                hometown: hometown,
+                occupation: occupation,
+                desireMatch: desireMatch,
+                aboutMe: aboutMe
+            };
             //await savePhoto();
-            await saveUserInfo(firstName, lastName, age, sex, hometown, occupation, desireMatch, aboutMe);
+            await saveUserInfo(data);
             
         } catch (error) {
             console.error('Error saving user data:', error.message);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {View, Image, Text, TouchableOpacity, StyleSheet, Button} from "react-native";
-import { getAllUsers, getUserData } from "../services/firebaseDatabase";
+import { getAllUsers, getCurrentUser } from "../services/firebaseDatabase";
 import { matchAI } from "../services/matchAI";
 
 const HomeScreen = ({ navigation }) => {
@@ -12,7 +12,7 @@ const HomeScreen = ({ navigation }) => {
     useEffect(() => {
         const fetchData = async () => {
             // Get current user info
-            const currentUser = await getUserData().catch((e)=> console.error(e.message));
+            const currentUser = await getCurrentUser().catch((e)=> console.error(e.message));
             if (!currentUser.sex)
                 alert('WARNING: you need to fill your gender in order to match to other people');
             // If additional info is not filled, setAdditionalInfoFilled true

@@ -1,14 +1,13 @@
 //firebaseDatabase.js
-import {auth, db} from './config'; // Update the path
+import {auth, db, storage} from './config';
 import {collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where} from 'firebase/firestore';
-import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../services/config';
+import {getDownloadURL, ref as storageRef, uploadBytes} from 'firebase/storage';
 import {deleteUserAccount} from "./auth";
 
 export async function saveUser(userId, email) {
 
     // check if user exist in database - skip this function
-    const userData = await getUserData();
+    const userData = await getCurrentUser();
     if (userData) {
         console.log('INFO: User', email, 'already exists in Firestore');
         return;
@@ -30,20 +29,12 @@ export async function saveUser(userId, email) {
         });
 }
 
-export async function saveUserInfo(firstName, lastName, age, sex, hometown, occupation, desireMatch, aboutMe) {
+export async function saveUserInfo(data) {
     // Update the document with the new user information
     const userId = auth.currentUser.uid;
-    await updateDoc(doc(db, 'users', userId), {
-        firstName: firstName,
-        lastName: lastName,
-        age: age,
-        sex: sex,
-        hometown: hometown,
-        occupation: occupation,
-        desireMatch, desireMatch,
-        aboutMe: aboutMe
-
-    }).then(() => console.log('INFO: User data updated successfully'))
+    const userDocRef = doc(db, 'users', userId);
+    await updateDoc(userDocRef, data)
+        .then(() => console.log('INFO: User data updated successfully'))
         .catch((error) => console.error('WARNING: Error updating user data:', error))
 }
 
@@ -77,10 +68,18 @@ export async function saveUserLocation(location) {
     }
 }
 
-export async function getUserData() {
+export async function getCurrentUser() {
     try {
         const userId = auth.currentUser.uid;
         const docRef = doc(db, "users", userId);
+        const docSnap = await getDoc(docRef);
+        return docSnap.data();
+    } catch {throw Error("WARNING: Doc not found!")}
+}
+
+async function getUser(uid) {
+    try {
+        const docRef = doc(db, "users", uid);
         const docSnap = await getDoc(docRef);
         return docSnap.data();
     } catch {throw Error("WARNING: Doc not found!")}
@@ -120,9 +119,7 @@ export async function uploadImageToStorage(imageUrl) {
         });
 
         const snapshot = await uploadBytes(imageRef, blob);
-        const downloadURL = await getDownloadURL(snapshot.ref);
-
-        return downloadURL;
+        return await getDownloadURL(snapshot.ref);
     } catch (error) {
         console.error('Error uploading image to storage:', error.message);
         throw error; // Propagate the error to the caller
@@ -156,7 +153,7 @@ export async function saveUrl(url) {
 
     try {
         // Get the current user's data
-        const userData = await getUserData();
+        const userData = await getCurrentUser();
         
         // Get the existing images array from the user data
         const existingUrls = userData.images || [];
@@ -170,6 +167,78 @@ export async function saveUrl(url) {
     } catch (error) {
         console.error('ERROR: Failed to save image URL:', error.message);
     }
+}
+
+export async function saveLike(uid) {
+    const currentUser = auth.currentUser.uid;
+    const currentUserRef = doc(db, 'users',currentUser); // Reference to the user document
+
+    try {
+        // Get the current user's data
+        const currentUser = await getCurrentUser();
+
+        // Get the existing images array from the user data
+        const LikedList = currentUser.likedUsers || [];
+
+        // Append the new URL to the existing URLs
+        const updatedLikedList = [...LikedList].includes(uid)? [...LikedList] : [...LikedList, uid];
+
+        // Update the user document with the updated image URLs
+        await updateDoc(currentUserRef, { likedUsers: updatedLikedList });
+
+        console.log('INFO: new like saved successfully')
+    } catch (error) {
+        console.error('ERROR: Failed to save new like:', error.message);
+    }
+}
+
+
+export async function
+saveSeen(uid) {
+    const currentUser = auth.currentUser.uid;
+    const currentUserRef = doc(db, 'users',currentUser); // Reference to the user document
+
+    try {
+        // Get the current user's data
+        const currentUser = await getCurrentUser();
+
+        // Get the existing images array from the user data
+        const SeenList = currentUser.seenUsers || [];
+
+        // Append the new URL to the existing URLs
+        const updatedSeenList = [...SeenList].includes(uid)? [...SeenList] : [...SeenList, uid];
+
+        // Update the user document with the updated image URLs
+        await updateDoc(currentUserRef, { seenUsers: updatedSeenList });
+
+        console.log('INFO: seen user saved successfully')
+    } catch (error) {
+        console.error('ERROR: Failed to save seen user:', error.message);
+    }
+}
+
+export async function saveLikeMe(uid) {
+    const likedUserRef = doc(db, 'users', uid); // Reference to the user document
+    const currentUser = auth.currentUser.uid;
+
+    try {
+    const likedUser = await getUser(uid);
+    const LikedMeList = likedUser.likedMeUsers || [];
+    const updatedLikedMeList = [...LikedMeList].includes(currentUser)? [...LikedMeList] : [...LikedMeList, currentUser];
+    await updateDoc(likedUserRef, { likedMeUsers: updatedLikedMeList});
+        console.log('INFO: new likeMe saved successfully')
+    } catch (error) {
+        console.error('ERROR: Failed to save new like:', error.message);
+    }
+}
+
+export async function checkForMatch(likedUser) {
+    const currentUser = await getCurrentUser();
+    console.log('INFO: in check match: likedUser = ', likedUser);
+    const LikedMeList = currentUser.likedMeUsers || [];
+    console.log('INFO: LikedMeList = ', LikedMeList);
+    if (LikedMeList.includes(likedUser))
+        console.log('INFO: its a match');
 }
 
 export async function saveAdditionalInfo( occupation, desireMatch) {
