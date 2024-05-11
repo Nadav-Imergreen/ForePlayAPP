@@ -74,8 +74,6 @@ const EditUserPreferenceScreen = ({ route }) => {
                     <Picker.Item label="Both" value="Both" />
                 </Picker>
             </View>
-
-            {console.log("ageRange:", ageRange)}
             <View style={styles.section}>
                 <View style={styles.rowContainer}>
                     <Text style={styles.label}>Age Range:</Text>

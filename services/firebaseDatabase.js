@@ -16,6 +16,7 @@ export async function saveUser(userId, email) {
     const data = {
         userId: userId,
         email: email,
+
     };
     // Reference to the 'users' collection
     const usersRef = collection(db, 'users');

@@ -6,15 +6,9 @@ import {useNavigation} from '@react-navigation/native';
 const HomeScreen = () => {
     const navigation = useNavigation(); // Get navigation object
 
-    // Handle navigation to various screens when buttons are pressed
-    const infoScreenNavigation = () => navigation.navigate('EditProfile');
-    const handleSeeMatches = () => navigation.navigate('Matches');
-    const handleSeeAiMatches = () => navigation.navigate('AiMatches');
-
     return (
         <View style={styles.container}>
-            <Button title="see Maches" onPress={handleSeeMatches}/>
-            <Button title="see Ai Maches" onPress={handleSeeAiMatches}/>
+
             <Button title="Sign Out" onPress={handleSignOut}/>
         </View>
     );

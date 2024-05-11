@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Alert, Animated, Image, PanResponder, StyleSheet, Text, TouchableWithoutFeedback, View} from "react-native";
-import {getCurrentUser, getUsersBy, saveLike, saveLikeMe, saveSeen, checkForMatch} from "../services/firebaseDatabase";
+import React, { useEffect, useState, useRef } from "react";
+import { View, Image, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
+import { getAllUsers, getUserData, saveUserLocation, getUsersBy } from "../services/firebaseDatabase";
 import getLocation from '../services/getLocation';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -16,7 +16,7 @@ const MatchesScreen = () => {
         const fetchData = async () => {
             try {
                 // get current user info
-                const currentUser = await getCurrentUser();
+                const currentUser = await getUserData();
                 if (!currentUser) {
                     // If user data couldn't be retrieved, show alert and provide retry option
                     Alert.alert(
@@ -72,24 +72,6 @@ const MatchesScreen = () => {
     const nextProfile = () => {
         setCurrentIndex(currentIndex + 1);
     };
-
-    // Function to handle navigation to the next profile.
-    const handleLike = () => {
-        const likedUser = suggestedUsers[currentIndex].userId;
-        saveSeen(likedUser)
-            .then(() => saveLike(likedUser)
-                .then(() => saveLikeMe(likedUser)
-                    .then(() => {
-                        checkForMatch(likedUser);
-                        nextProfile();
-                    })))
-    };
-
-    // Function to handle navigation to the next profile.
-    const handleDislike = () => {
-        saveSeen(suggestedUsers[currentIndex].userId).then(() => nextProfile())
-    };
-
 
     const pan = useRef(new Animated.ValueXY()).current;
     const [likePressed, setLikePressed] = useState(false);
