@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
-import {Slider} from '@miblanchard/react-native-slider';
+import { Slider } from '@miblanchard/react-native-slider';
+import Geolocation from '@react-native-community/geolocation';
 import { saveUserPreferences } from '../services/firebaseDatabase';
 import { HeaderBackButton } from '@react-navigation/elements';
+import LocationPicker from '../components/LocationPicker'; // Make sure the path is correct
 
 const EditUserPreferenceScreen = ({ route }) => {
-
     const navigation = useNavigation();
-
     const [gender, setGender] = useState('Female'); // Default gender
     const [ageRange, setAgeRange] = useState([18, 25]); // Default age range
     const [radius, setRadius] = useState(10); // Default radius
     const [loading, setLoading] = useState(false);
     const { userData } = route.params;
 
+    const [useCurrentLocation, setUseCurrentLocation] = useState(true);
+    const [location, setLocation] = useState(null);
+    const [showMap, setShowMap] = useState(false);
 
     useEffect(() => {
         fetchUserData();
@@ -29,29 +32,29 @@ const EditUserPreferenceScreen = ({ route }) => {
             const upperLimit = userData.partner_age_upper_limit || 25;
             setAgeRange([bottomLimit, upperLimit]);
             setRadius(userData.radius || 10);
+            setLocation(userData.location || null);
         }
         setLoading(false);
     };
 
-    useEffect( () => {
-        navigation.setOptions({ headerShown: true,
-                                headerLeft: (props) => (
-                                    <HeaderBackButton
-                                        {...props}
-                                        onPress={() => {
-                                            handleSave();
-                                        }}
-                                    />
-                                )
-                              });
-    } );
+    useEffect(() => {
+        navigation.setOptions({
+            headerShown: true,
+            headerLeft: (props) => (
+                <HeaderBackButton
+                    {...props}
+                    onPress={() => {
+                        handleSave();
+                    }}
+                />
+            )
+        });
+    });
 
     const handleSave = async () => {
         setLoading(true);
         try {
-            
-            await saveUserPreferences(gender, ageRange[0], ageRange[1], radius);
-            
+            await saveUserPreferences(gender, ageRange[0], ageRange[1], radius, location);
         } catch (error) {
             console.error('Error saving user data:', error.message);
         } finally {
@@ -60,6 +63,36 @@ const EditUserPreferenceScreen = ({ route }) => {
         }
     };
 
+    const getCurrentLocation = () => {
+        setLoading(true);
+        Geolocation.getCurrentPosition(
+            position => {
+                const { latitude, longitude } = position.coords;
+                setLocation({ latitude, longitude });
+                setLoading(false);
+            },
+            error => {
+                console.error(error);
+                setLoading(false);
+                let errorMessage = 'Failed to get current location. Please try again.';
+                if (error.code === 1) {
+                    errorMessage = 'Location permission denied. Please enable location services in settings.';
+                } else if (error.code === 2) {
+                    errorMessage = 'Location unavailable. Please ensure your device has a clear view of the sky.';
+                } else if (error.code === 3) {
+                    errorMessage = 'Location request timed out. Please try again.';
+                }
+                Alert.alert('Error', errorMessage);
+            },
+            { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
+        );
+    };
+
+    const handleLocationSelect = (selectedLocation) => {
+        console.log(selectedLocation);
+        setLocation(selectedLocation);
+        setShowMap(false);
+    };
 
     return (
         <View style={styles.container}>
@@ -68,15 +101,16 @@ const EditUserPreferenceScreen = ({ route }) => {
                 <Picker
                     selectedValue={gender}
                     onValueChange={(itemValue) => setGender(itemValue)}
-                    >
+                >
                     <Picker.Item label="Female" value="Female" />
                     <Picker.Item label="Male" value="Male" />
                     <Picker.Item label="Both" value="Both" />
                 </Picker>
             </View>
+
             <View style={styles.section}>
                 <View style={styles.rowContainer}>
-                    <Text style={styles.label}>Age Range:</Text>
+                    <Text style={styles.label}>Age range:</Text>
                     <Text style={styles.rangeText}>{`${ageRange[0]} - ${ageRange[1]}`}</Text>
                 </View>
                 <Slider
@@ -90,10 +124,10 @@ const EditUserPreferenceScreen = ({ route }) => {
                     onValueChange={(value) => setAgeRange(value)}
                 />
             </View>
-            
+
             <View style={styles.section}>
                 <View style={styles.rowContainer}>
-                    <Text style={styles.label}>Preferred Radius:</Text>
+                    <Text style={styles.label}>Preferred radius:</Text>
                     <Text style={styles.rangeText}>{`${radius} km`}</Text>
                 </View>
                 <Slider
@@ -107,13 +141,36 @@ const EditUserPreferenceScreen = ({ route }) => {
                 />
             </View>
 
+            <View style={styles.section}>
+                <Text style={styles.label}>Location:</Text>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={getCurrentLocation}
+                    >
+                        <Text style={styles.buttonText}>Use Current Location</Text>
+                    </TouchableOpacity>
+                    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>or</Text>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => setShowMap(true)}
+                    >
+                        <Text style={styles.buttonText}>Pick Location from Map</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            {showMap && (
+                <LocationPicker onLocationSelect={handleLocationSelect} />
+            )}
+
             {loading && (
                 <View style={styles.loaderContainer}>
                     <View style={styles.loaderBackground}>
                         <ActivityIndicator size={50} color="#0000ff" />
                     </View>
                 </View>
-                )}
+            )}
         </View>
     );
 };
@@ -121,12 +178,14 @@ const EditUserPreferenceScreen = ({ route }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        paddingTop: 10
     },
     section: {
         backgroundColor: 'white',
-        borderRadius: 10,
-        padding: 10,
-        margin: 10
+        borderRadius: 5,
+        padding: 5,
+        margin: 5,
+        marginHorizontal: 10
     },
     rowContainer: {
         flexDirection: 'row',
@@ -136,12 +195,31 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 18,
         fontWeight: 'bold',
-        padding: 5
+        padding: 5,
+        color: 'black'
+    },
+    buttonContainer: {
+        padding: 5,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center', // Align buttons and text vertically
+    },
+    button: {
+        
+        borderRadius: 10,
+        padding: 8,
+        backgroundColor: '#ff5252',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 14,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
     rangeText: {
         fontSize: 18,
         fontWeight: 'bold',
-        padding: 5
+        padding: 5,
     },
     ageRangeText: {
         textAlign: 'center',
@@ -172,6 +250,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center', // Center the content vertically
         alignItems: 'center', // Center the content horizontally
         borderRadius: 10,
+    },
+    smallTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
     },
 });
 
