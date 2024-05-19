@@ -38,14 +38,16 @@ export async function saveUserInfo(data) {
         .catch((error) => console.error('WARNING: Error updating user data:', error))
 }
 
-export async function saveUserPreferences(gender, age_bottom_limit, age_upper_limit, radius) {
+export async function saveUserPreferences(gender, age_bottom_limit, age_upper_limit, radius, location) {
     // Update the document with the new user preferences
     const userId = auth.currentUser.uid;
+    console.log(userId);
     await updateDoc(doc(db, 'users', userId), {
         partner_gender: gender,
         partner_age_bottom_limit: age_bottom_limit,
         partner_age_upper_limit: age_upper_limit,
-        radius: radius
+        radius: radius,
+        location: location
     })
     .then(() => console.log('INFO: User preferences updated successfully'))
     .catch((error) => console.error('WARNING: Error updating user preferences:', error));
@@ -193,8 +195,7 @@ export async function saveLike(uid) {
 }
 
 
-export async function
-saveSeen(uid) {
+export async function saveSeen(uid) {
     const currentUser = auth.currentUser.uid;
     const currentUserRef = doc(db, 'users',currentUser); // Reference to the user document
 

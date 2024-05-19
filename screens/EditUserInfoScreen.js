@@ -66,6 +66,7 @@ const EditUserInfoScreen = ({ route }) => {
     };
 
     const handleSaveUserInfo = async () => {
+        console.log(sex);
         setLoading(true);
         try {
             const data = {

@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Image, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
 import { getAllUsers, getCurrentUser, saveUserLocation, getUsersBy, saveSeen, saveLike, saveLikeMe, checkForMatch } from "../services/firebaseDatabase";
-import getLocation from '../services/getLocation';
+import getLocation from '../services/LocationPermissionScreen ';
 import LinearGradient from 'react-native-linear-gradient';
 
 const MatchesScreen = () => {
 
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
     const [currentIndex, setCurrentIndex] = useState(0); // State to track current index 
-    const [noResults, setNoResults] = useState(false); // State to track current index 
+    const [noResults, setNoResults] = useState(false);
     const currentIndexRef = useRef(0); // Using a ref to keep track of the current index
 
-    const { currentLocation } = getLocation();
+    //const { currentLocation } = getLocation();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -46,10 +46,20 @@ const MatchesScreen = () => {
                         ...doc.data()
                     };
                 });
-                // Filter suggested users by age and distance here
-                const filteredUsers = usersData.filter(user => user.age >= currentUser.partner_age_bottom_limit && user.age <= currentUser.partner_age_upper_limit);
+
+                // Filter suggested users by age
+                const filteredUsersByAge = usersData.filter(user => user.age >= currentUser.partner_age_bottom_limit && user.age <= currentUser.partner_age_upper_limit);
+
+                console.log('My user radius preference:', currentUser.radius[0]);
+
+                // Calculate distance between current user and each suggested user and filter by radius preference
+                const filteredUsers = filteredUsersByAge.filter(user => {
+                    const distance = calculateDistance(currentUser.location.latitude, currentUser.location.longitude, user.location.latitude, user.location.longitude);
+                    return distance <= currentUser.radius[0];
+                });
+
                 if (filteredUsers && filteredUsers.length > 0){
-                  setSuggestedUsers(usersData);
+                  setSuggestedUsers(filteredUsers);
                 }
                 else{
                   setNoResults(true);
@@ -61,13 +71,38 @@ const MatchesScreen = () => {
                     "Error",
                     "Failed to fetch suggested users. Please try again.",
                     [{ text: "Retry", onPress: fetchData }],
-                    { cancelable: false }
+                    { cancelable: true }
                 );
             }
         };
 
         fetchData();
     }, []);
+
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+
+      console.log('My user Latitude:', lat1);
+      console.log('My user Longitude:', lon1);
+      console.log('Sugested user Latitude:', lat2);
+      console.log('Sugested user Longitude:', lon2);
+
+      const R = 6371; // Radius of the Earth in kilometers
+    
+      // Convert latitude and longitude differences to radians
+      const dLat = (lat2 - lat1) * (Math.PI / 180);
+      const dLon = (lon2 - lon1) * (Math.PI / 180);
+    
+      // Convert latitudes to radians
+      const lat1Rad = lat1 * (Math.PI / 180);
+      const lat2Rad = lat2 * (Math.PI / 180);
+    
+      // Calculate distance using spherical law of cosines
+      const distance = Math.acos(Math.sin(lat1Rad) * Math.sin(lat2Rad) + Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLon)) * R;
+    
+      console.log('Distance:', distance);
+      
+      return distance;
+    };
 
     // Function to handle navigation to the next profile.
     const nextProfile = () => {
@@ -216,7 +251,7 @@ const MatchesScreen = () => {
                   </Animated.View>
                 </TouchableWithoutFeedback>
 
-                <TouchableWithoutFeedback
+                <TouchableWithoutFeedback 
                   onPressIn={() => setLikePressed(true)}
                   onPressOut={() => setLikePressed(false)}
                   onPress={handleLike}
@@ -263,7 +298,7 @@ const MatchesScreen = () => {
       alignItems: 'center', // Center the image horizontally
       overflow: 'hidden', // Clip the image if it exceeds the container's boundaries
       borderRadius: 10, // Apply border radius to match the card's border radius
-      paddingBottom: 60
+      paddingBottom: 60,
     },
     image: {
       flex: 1,
@@ -295,21 +330,19 @@ const MatchesScreen = () => {
       flexDirection: 'row',
       justifyContent: 'space-between',
       width: '100%',
-      paddingHorizontal: 50,
+      paddingHorizontal: 70,
       paddingBottom: 20,
       position: 'absolute',
       bottom: 40,
     },
     buttonImage: {
-      width: 40,
-      height: 40,
+      width: 30,
+      height: 30,
     },
     buttonBody: {
-      borderWidth: 1,
-      borderColor: 'transparent',
       borderRadius: 50,
-      padding: 10,
-      backgroundColor: '#a4cdbd'
+      padding: 16,
+      elevation: 5
     },
     noSuggestionsContainer: {
       flex: 1,
