@@ -1,20 +1,19 @@
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-yarn.lock
 
-# React Native
+# Dependency directories
 node_modules/
-package-lock.json
-metro-cache/
 .metro/
-*.log
+metro-cache/
+.npm/
 
-# Optional npm cache directory
-.npm
+# Package managers lock files
+package-lock.json
+yarn.lock
 
 # dotenv environment variables file
 .env
@@ -24,12 +23,12 @@ metro-cache/
 *.ap_
 
 # Android
+android/.gradle/
 android/app/build/
 android/build/
-android/.gradle/
+android/local.properties
 android/gradlew
 android/gradlew.bat
-.gradle
 
 # iOS
 ios/build/
@@ -50,20 +49,29 @@ __tests__/
 .git/
 app.json
 Gemfile
-gradlew
-gradlew.bat
-local.properties
+Thumbs.db
+*.DS_Store
+*.iml
+.idea/
+.vscode/
 
-# Mac OS X clutter
+# macOS
 *.DS_Store
 
-# Windows clutter
+# Windows
 Thumbs.db
 
 # Intellij
 *.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/dictionaries
-.idea/libraries
+.idea/
+
+# Avoid tracking IDE project files
+.vscode/
+.idea/
+*.iml
+
+# Android Studio
+.idea/
+*.iml
+.gradle/
+local.properties
