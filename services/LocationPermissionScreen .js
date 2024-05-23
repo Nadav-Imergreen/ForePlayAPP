@@ -2,13 +2,14 @@ import { useState, useEffect } from 'react';
 import { PermissionsAndroid, Platform, StyleSheet, View, Text, TouchableOpacity, Alert, Image, ActivityIndicator } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import { saveUserLocation } from "./firebaseDatabase";
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
+import Loader from '../services/loadingIndicator';
 
 const LocationPermissionScreen = () => {
-
   const navigation = useNavigation();
   const [currentLocation, setCurrentLocation] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [locationError, setLocationError] = useState(null);
 
   useEffect(() => {
     checkAndRequestLocationPermission();
@@ -66,41 +67,51 @@ const LocationPermissionScreen = () => {
       console.log('Error requesting location permission');
     }
   };
-  
-  const getCurrentLocation = () => {
-    setLoading(true); // Show loader/spinner
-    Geolocation.getCurrentPosition(
-        position => {
-            setLoading(false); // Hide loader/spinner
-            const { latitude, longitude } = position.coords;
-            console.log('Latitude:', latitude, 'Longitude:', longitude);
-            setCurrentLocation({ latitude, longitude });
-            saveUserLocation({ latitude, longitude });
-            navigation.navigate("TabNavigator");
-        },
-        error => {
-            setLoading(false); // Hide loader/spinner
-            console.log(error.code, error.message);
-            Alert.alert(
-                'Location Error',
-                'Failed to get your current location. Please try again later.',
-                [{ text: 'OK', onPress: () => navigation.navigate('UserInfoScreen') }]
-            );
-        },
-        { enableHighAccuracy: false, timeout: 15000, maximumAge: 100000 }
-    );
-};
 
+  const getCurrentLocation = () => {
+    setLoading(true);
+    setLocationError(null); // Clear any previous error message
+    Geolocation.getCurrentPosition(
+      position => {
+        setLoading(false);
+        const { latitude, longitude } = position.coords;
+        console.log('Latitude:', latitude, 'Longitude:', longitude);
+        setCurrentLocation({ latitude, longitude });
+        saveUserLocation({ latitude, longitude });
+
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{ name: 'TabNavigator' }],
+          })
+        );
+      },
+      error => {
+        setLoading(false);
+        console.log(error.code, error.message);
+        setLocationError('Failed to get your current location.\nPlease try again in your preferences screen.');
+      },
+      { enableHighAccuracy: false, timeout: 3000, maximumAge: 1000000 }
+    );
+  };
+
+  const handleContinue = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0, // Reset the navigation stack
+        routes: [
+          { name: 'TabNavigator', params: { screen: 'UserInfoScreen' } }
+        ],
+      })
+    );
+  };
+
+  const handleAllow = () => {
+    requestLocationPermission();
+  };
 
   return (
     <View style={styles.container}>
-      {loading && (
-        <View style={styles.loaderContainer}>
-            <View>
-                <ActivityIndicator size={50} color="#0000ff" />
-            </View>
-        </View>
-      )}
       <View style={styles.topContainer}>
         <Text style={styles.title}>So, are you from around here?</Text>
         <Text style={styles.message}>
@@ -112,10 +123,17 @@ const LocationPermissionScreen = () => {
           <Image source={require('../assets/location.png')} style={styles.locationImage} />
         </View>
       </View>
+      <View style={styles.middleContainer2}>
+        {locationError && <Text style={styles.errorText}>{locationError}</Text>}
+        {loading && <Text style={styles.loadingText}>Getting location...</Text>}
+        {loading && <Loader />}
+      </View>
       <View style={styles.bottomContainer}>
-        <TouchableOpacity style={styles.allowButton} onPress={requestLocationPermission}>
-          <Text style={styles.allowButtonText}>Allow</Text>
-        </TouchableOpacity>
+        {!loading && (
+          <TouchableOpacity style={styles.allowButton} onPress={locationError ? handleContinue : handleAllow}>
+            <Text style={styles.allowButtonText}>{locationError ? 'Continue' : 'Allow'}</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
@@ -133,7 +151,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-
+    paddingTop: 20
   },
   title: {
     fontSize: 30,
@@ -145,11 +163,16 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 16,
     textAlign: 'center',
+    fontStyle: 'italic'
   },
   middleContainer: {
     flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 18,
+    color: 'black',
   },
   locationIcon: {
     width: 140,
@@ -158,12 +181,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: "#c7d7e2",
+    elevation: 5
   },
   locationImage: {
     width: '50%',
     height: '50%',
-    resizeMode: 'contain',
+    resizeMode: 'contain'
   },
+  middleContainer2: {
+    flex: 0.5,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },  
   bottomContainer: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -174,26 +203,20 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     paddingVertical: 12,
     paddingHorizontal: 140,
-    marginBottom: 50
+    marginBottom: 50,
+    elevation: 5
   },
   allowButtonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  errorText: {
+    fontSize: 18,
+    marginTop: 16,
     textAlign: 'center'
   },
-  loaderContainer: {
-    ...StyleSheet.absoluteFillObject,
-    justifyContent: 'center',
-    alignItems: 'center',
-},
-  loaderBackground: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(215, 215, 215, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-},
 });
 
-export default LocationPermissionScreen ;
+export default LocationPermissionScreen;

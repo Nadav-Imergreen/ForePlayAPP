@@ -12,7 +12,6 @@ metro-cache/
 .npm/
 
 # Package managers lock files
-package-lock.json
 yarn.lock
 
 # dotenv environment variables file
@@ -47,7 +46,6 @@ local.properties
 # Miscellaneous
 __tests__/
 .git/
-app.json
 Gemfile
 Thumbs.db
 *.DS_Store

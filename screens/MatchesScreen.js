@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Image, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
 import { getAllUsers, getCurrentUser, saveUserLocation, getUsersBy, saveSeen, saveLike, saveLikeMe, checkForMatch } from "../services/firebaseDatabase";
-import getLocation from '../services/LocationPermissionScreen ';
+
 import LinearGradient from 'react-native-linear-gradient';
 
 const MatchesScreen = () => {
@@ -10,8 +10,7 @@ const MatchesScreen = () => {
     const [currentIndex, setCurrentIndex] = useState(0); // State to track current index 
     const [noResults, setNoResults] = useState(false);
     const currentIndexRef = useRef(0); // Using a ref to keep track of the current index
-
-    //const { currentLocation } = getLocation();
+    const [photoIndex, setPhotoIndex] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -50,8 +49,6 @@ const MatchesScreen = () => {
                 // Filter suggested users by age
                 const filteredUsersByAge = usersData.filter(user => user.age >= currentUser.partner_age_bottom_limit && user.age <= currentUser.partner_age_upper_limit);
 
-                console.log('My user radius preference:', currentUser.radius[0]);
-
                 // Calculate distance between current user and each suggested user and filter by radius preference
                 const filteredUsers = filteredUsersByAge.filter(user => {
                     const distance = calculateDistance(currentUser.location.latitude, currentUser.location.longitude, user.location.latitude, user.location.longitude);
@@ -80,12 +77,6 @@ const MatchesScreen = () => {
     }, []);
 
     const calculateDistance = (lat1, lon1, lat2, lon2) => {
-
-      console.log('My user Latitude:', lat1);
-      console.log('My user Longitude:', lon1);
-      console.log('Sugested user Latitude:', lat2);
-      console.log('Sugested user Longitude:', lon2);
-
       const R = 6371; // Radius of the Earth in kilometers
     
       // Convert latitude and longitude differences to radians
@@ -98,14 +89,13 @@ const MatchesScreen = () => {
     
       // Calculate distance using spherical law of cosines
       const distance = Math.acos(Math.sin(lat1Rad) * Math.sin(lat2Rad) + Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLon)) * R;
-    
-      console.log('Distance:', distance);
       
       return distance;
     };
 
     // Function to handle navigation to the next profile.
     const nextProfile = () => {
+        setPhotoIndex(0);
         const newIndex = currentIndexRef.current + 1; // Get the next index
         currentIndexRef.current = newIndex; // Update the current index using ref
         setCurrentIndex(newIndex);
@@ -207,6 +197,15 @@ const MatchesScreen = () => {
     const panStyle = {
       transform: [{ translateX: pan.x }, { translateY: pan.y }, { rotate: rotate }]
     };
+
+    const handlePhotoChange = (direction) => {
+      const userPhotos = suggestedUsers[currentIndex].images.length;
+      if (direction === 'next') {
+        setPhotoIndex((prevIndex) => (prevIndex + 1) % userPhotos);
+      } else {
+        setPhotoIndex((prevIndex) => (prevIndex - 1 + userPhotos) % userPhotos);
+      }
+    };
   
     return (
       <View style={styles.container}>
@@ -225,14 +224,25 @@ const MatchesScreen = () => {
             <Animated.View style={[styles.card, panStyle]} {...panResponder.panHandlers}>
               {suggestedUsers[currentIndex].images[0] && (
                 <View style={styles.imageContainer}>
-                  <Image style={styles.image} resizeMode='contain' source={{ uri: suggestedUsers[currentIndex].images[0] }} />
+                  <Image style={styles.image} resizeMode='contain' source={{ uri: suggestedUsers[currentIndex].images[photoIndex] }} />
+                  <View style={styles.photosIndicator}>
+                    {suggestedUsers[currentIndex].images.map((_, index) => (
+                      <View key={index} style={[styles.indicator, index === photoIndex ? styles.filledIndicator : styles.unfilledIndicator]} />
+                    ))}
+                  </View>
+                  <TouchableWithoutFeedback onPress={() => handlePhotoChange('prev')}>
+                    <View style={styles.prevOverlay} />
+                  </TouchableWithoutFeedback>
+                  <TouchableWithoutFeedback onPress={() => handlePhotoChange('next')}>
+                    <View style={styles.nextOverlay} />
+                  </TouchableWithoutFeedback>
                 </View>
               )}
               <View style={styles.overlayContainer}>
-              <LinearGradient
-                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)']} // Gradient colors from white to black
-                    style={styles.gradientOverlay}
-                  />
+                <LinearGradient
+                  colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)']} // Gradient colors from white to black
+                  style={styles.gradientOverlay}
+                />
                 <Text style={styles.userName}>{suggestedUsers[currentIndex].firstName}, {suggestedUsers[currentIndex].age}</Text>
               </View>
             </Animated.View>
@@ -293,12 +303,51 @@ const MatchesScreen = () => {
       elevation: 5,
       marginTop: 20,
     },
-    imageContainer: {
-      flex: 1, // Allow the image container to expand to fill the available space
-      alignItems: 'center', // Center the image horizontally
-      overflow: 'hidden', // Clip the image if it exceeds the container's boundaries
-      borderRadius: 10, // Apply border radius to match the card's border radius
-      paddingBottom: 60,
+      imageContainer: {
+        flex: 1, // Allow the image container to expand to fill the available space
+        alignItems: 'center', // Center the image horizontally
+        overflow: 'hidden', // Clip the image if it exceeds the container's boundaries
+        borderRadius: 10, // Apply border radius to match the card's border radius
+        paddingBottom: 60,
+      },
+      photosIndicator: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        height: '10%',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+      },
+      indicator: {
+        flex: 1,
+        height: 4,
+        borderRadius: 2,
+        marginTop: 5,
+        marginHorizontal: 5
+      },
+      filledIndicator: {
+        backgroundColor: 'white',
+        width: 20,
+      },
+      unfilledIndicator: {
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        width: 20,
+    },
+    prevOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      bottom: 0,
+      width: '50%', // Adjusted width to 50% of the screen width
+    },
+    nextOverlay: {
+      position: 'absolute',
+      top: 0,
+      right: 0,
+      bottom: 0,
+      width: '50%', // Adjusted width to 50% of the screen width
     },
     image: {
       flex: 1,

@@ -7,6 +7,7 @@ import Geolocation from '@react-native-community/geolocation';
 import { saveUserPreferences } from '../services/firebaseDatabase';
 import { HeaderBackButton } from '@react-navigation/elements';
 import LocationPicker from '../components/LocationPicker'; // Make sure the path is correct
+import axios from 'axios';
 
 const EditUserPreferenceScreen = ({ route }) => {
     const navigation = useNavigation();
@@ -18,6 +19,7 @@ const EditUserPreferenceScreen = ({ route }) => {
 
     const [useCurrentLocation, setUseCurrentLocation] = useState(true);
     const [location, setLocation] = useState(null);
+    const [address, setAddress] = useState(null);
     const [showMap, setShowMap] = useState(false);
 
     useEffect(() => {
@@ -66,10 +68,12 @@ const EditUserPreferenceScreen = ({ route }) => {
     const getCurrentLocation = () => {
         setLoading(true);
         Geolocation.getCurrentPosition(
-            position => {
+            async position => {
                 const { latitude, longitude } = position.coords;
                 setLocation({ latitude, longitude });
                 setLoading(false);
+                const address = await fetchAddress(latitude, longitude);
+                setAddress(address);
             },
             error => {
                 console.error(error);
@@ -84,14 +88,32 @@ const EditUserPreferenceScreen = ({ route }) => {
                 }
                 Alert.alert('Error', errorMessage);
             },
-            { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
+            { enableHighAccuracy: false, timeout: 3000, maximumAge: 100000 }
         );
     };
 
-    const handleLocationSelect = (selectedLocation) => {
-        console.log(selectedLocation);
+    const fetchAddress = async (latitude, longitude) => {
+        try {
+            const response = await axios.get(
+                `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyBtGxk9FGFoPI5WIgD5ruapcK0Mp6gZ9Nw`
+            );
+            if (response.data.results.length > 0) {
+                const address = response.data.results[0].formatted_address;
+                return address;
+            } else {
+                return 'Address not found';
+            }
+        } catch (error) {
+            console.error('Error fetching address:', error);
+            return 'Error fetching address';
+        }
+    };
+
+    const handleLocationSelect = async (selectedLocation) => {
         setLocation(selectedLocation);
         setShowMap(false);
+        const address = await fetchAddress(selectedLocation.latitude, selectedLocation.longitude);
+        setAddress(address);
     };
 
     return (
@@ -142,7 +164,12 @@ const EditUserPreferenceScreen = ({ route }) => {
             </View>
 
             <View style={styles.section}>
-                <Text style={styles.label}>Location:</Text>
+                <View style={styles.rowContainer}>
+                    <Text style={styles.label}>Location:</Text>
+                    {location && (
+                        <Text style={styles.addressText}>{address}</Text>
+                    )}
+                </View>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity
                         style={styles.button}
@@ -158,6 +185,7 @@ const EditUserPreferenceScreen = ({ route }) => {
                         <Text style={styles.buttonText}>Pick Location from Map</Text>
                     </TouchableOpacity>
                 </View>
+
             </View>
 
             {showMap && (
@@ -200,6 +228,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         padding: 5,
+        paddingTop: 15,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center', // Align buttons and text vertically
@@ -221,9 +250,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         padding: 5,
     },
-    ageRangeText: {
-        textAlign: 'center',
-        marginBottom: 15,
+    addressText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        padding: 5,
     },
     radiusText: {
         textAlign: 'center',

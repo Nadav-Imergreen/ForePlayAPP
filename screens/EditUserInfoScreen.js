@@ -36,15 +36,15 @@ const EditUserInfoScreen = ({ route }) => {
 
     useEffect( () => {
         navigation.setOptions({ headerShown: true,
-                                headerLeft: (props) => (
-                                    <HeaderBackButton
-                                        {...props}
-                                        onPress={() => {
-                                            handleSaveUserInfo();
-                                        }}
-                                    />
-                                )
-                              });
+            headerLeft: (props) => (
+                <HeaderBackButton
+                    {...props}
+                    onPress={() => {
+                        handleSaveUserInfo();
+                    }}
+                />
+            )
+            });
     } );
 
 
@@ -66,7 +66,6 @@ const EditUserInfoScreen = ({ route }) => {
     };
 
     const handleSaveUserInfo = async () => {
-        console.log(sex);
         setLoading(true);
         try {
             const data = {
