@@ -8,8 +8,8 @@ import { HeaderBackButton } from '@react-navigation/elements';
 import LocationPicker from '../components/LocationPicker'; // Make sure the path is correct
 import axios from 'axios';
 
-const EditUserPreferenceScreen = ({ route }) => {
-    const navigation = useNavigation();
+const EditUserPreferenceScreen = ({ route, navigation }) => {
+
     const [gender, setGender] = useState('Female'); // Default gender
     const [ageRange, setAgeRange] = useState([18, 25]); // Default age range
     const [radius, setRadius] = useState(10); // Default radius
