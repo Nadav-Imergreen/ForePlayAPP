@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
         alignItems: 'center', // Align buttons and text vertically
     },
     button: {
-        
+
         borderRadius: 10,
         padding: 8,
         backgroundColor: '#ff5252',

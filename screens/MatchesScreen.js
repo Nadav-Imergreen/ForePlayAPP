@@ -16,29 +16,11 @@ const MatchesScreen = () => {
         const fetchData = async () => {
             try {
                 // get current user info
-                const currentUser = await getCurrentUser();
-                if (!currentUser) {
-                    // If user data couldn't be retrieved, show alert and provide retry option
-                    Alert.alert(
-                        "Error",
-                        "Failed to fetch user data. Please try again.",
-                        [{ text: "Retry", onPress: fetchData }],
-                        { cancelable: true }
-                    );
-                    return;
-                }
+                const currentUser = await getCurrentUser().catch((err) => console.log(err));
 
-                if (!currentUser.partner_gender || !currentUser.partner_age_bottom_limit) {
-                    // If user preferences are empty, show a message encouraging the user to fill them
-                    Alert.alert(
-                        "Notice",
-                        "Please fill in your preferences to get better suggestions.",
-                        [{ text: "OK", onPress: () => console.log("OK Pressed") }],
-                        { cancelable: false }
-                    );
-                }
                 // Only proceed to fetch suggested users if preferences are available
-                const usersSnapshot = await getUsersBy(currentUser.partner_gender);
+                const usersSnapshot = await getUsersBy(currentUser);
+
                 const usersData = usersSnapshot.docs.map(doc => {
                     return {
                         id: doc.id,
@@ -78,18 +60,18 @@ const MatchesScreen = () => {
 
     const calculateDistance = (lat1, lon1, lat2, lon2) => {
       const R = 6371; // Radius of the Earth in kilometers
-    
+
       // Convert latitude and longitude differences to radians
       const dLat = (lat2 - lat1) * (Math.PI / 180);
       const dLon = (lon2 - lon1) * (Math.PI / 180);
-    
+
       // Convert latitudes to radians
       const lat1Rad = lat1 * (Math.PI / 180);
       const lat2Rad = lat2 * (Math.PI / 180);
-    
+
       // Calculate distance using spherical law of cosines
       const distance = Math.acos(Math.sin(lat1Rad) * Math.sin(lat2Rad) + Math.cos(lat1Rad) * Math.cos(lat2Rad) * Math.cos(dLon)) * R;
-      
+
       return distance;
     };
 
@@ -103,16 +85,16 @@ const MatchesScreen = () => {
 
     // Function to handle navigation to the next profile.
     const handleLike = () => {
-      nextProfile();
-      const likedUser = suggestedUsers[currentIndex].userId;
-      saveSeen(likedUser)
-          .then(() => saveLike(likedUser)
-              .then(() => saveLikeMe(likedUser)
-                  .then(() => {
-                      
-                      checkForMatch(likedUser);
-                  })))
-  };
+        const likedUser = suggestedUsers[currentIndex].userId;
+        saveSeen(likedUser)
+            .then(() => saveLike(likedUser)
+                .then(() => saveLikeMe(likedUser)
+                    .then(() => {
+                        checkForMatch(likedUser);
+                        createConversation(likedUser)
+                        nextProfile();
+                    })))
+    };
 
   // Function to handle navigation to the next profile.
   const handleDislike = () => {
@@ -154,7 +136,7 @@ const MatchesScreen = () => {
               useNativeDriver: false
             }).start(() => {
               setTimeout(() => {
-                
+
                 Animated.timing(pan, {
                   toValue: { x: 0, y: 0 },
                   duration: 0,
@@ -170,7 +152,7 @@ const MatchesScreen = () => {
               useNativeDriver: false
             }).start(() => {
               setTimeout(() => {
-                
+
                 Animated.timing(pan, {
                   toValue: { x: 0, y: 0 },
                   duration: 0,
@@ -206,7 +188,7 @@ const MatchesScreen = () => {
         setPhotoIndex((prevIndex) => (prevIndex - 1 + userPhotos) % userPhotos);
       }
     };
-  
+
     return (
       <View style={styles.container}>
         {/* Display message when waiting for data */}
@@ -261,7 +243,7 @@ const MatchesScreen = () => {
                   </Animated.View>
                 </TouchableWithoutFeedback>
 
-                <TouchableWithoutFeedback 
+                <TouchableWithoutFeedback
                   onPressIn={() => setLikePressed(true)}
                   onPressOut={() => setLikePressed(false)}
                   onPress={handleLike}

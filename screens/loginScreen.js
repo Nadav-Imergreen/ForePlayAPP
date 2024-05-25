@@ -34,7 +34,7 @@ const LoginScreen = () => {
 
     // Calculate the scaled width and height based on the desired dimensions in dp
     const scaledWidth = pixelDensity * 1.98 * logoSize;
-    const scaledHeight = pixelDensity * 1 * logoSize;
+    const scaledHeight = pixelDensity * logoSize;
 
     // Define constants for image dimensions
     const FIELD_WIDTH = width * 0.7;

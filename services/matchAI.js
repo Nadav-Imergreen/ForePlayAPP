@@ -2,10 +2,10 @@ import OpenAI from "openai";
 import { getCurrentUser } from "./firebaseDatabase";
 
 // Function to match two individuals based on provided information
-export async function matchAI(user, userSuggestions) {
+export async function matchAI(userSuggestions) {
     try {
         // Initialize the OpenAI API client with your API key and correct URL
-        const openai = new OpenAI({ apiKey: 'OPEN_AI_KEY' });
+        const openai = new OpenAI({ apiKey: 'openAI key' });
         const path = '/chat/completions';
         openai.baseURL = 'https://api.openai.com/v1';
         openai.buildURL = () => `${openai.baseURL}${path}`;
