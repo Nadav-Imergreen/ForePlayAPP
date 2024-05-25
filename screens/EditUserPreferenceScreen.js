@@ -56,7 +56,7 @@ const EditUserPreferenceScreen = ({ route }) => {
     const handleSave = async () => {
         setLoading(true);
         try {
-            await saveUserPreferences(gender, ageRange[0], ageRange[1], radius, location);
+            await saveUserPreferences(gender, ageRange[0], ageRange[1], radius);
         } catch (error) {
             console.error('Error saving user data:', error.message);
         } finally {
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
         alignItems: 'center', // Align buttons and text vertically
     },
     button: {
-        
+
         borderRadius: 10,
         padding: 8,
         backgroundColor: '#ff5252',

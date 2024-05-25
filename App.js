@@ -14,6 +14,9 @@ import LocationPermissionScreen from './services/LocationPermissionScreen ';
 import BottomTabNav from './components/BottomTabNav';
 import {onAuthStateChanged} from 'firebase/auth';
 import {auth} from './services/config';
+import ChatScreen from './screens/ChatScreen';
+import AddInfoComponent from "./screens/AddInfoScreen";
+import ConversationsScreen from "./screens/conversationsScreen";
 
 
 export default function App() {
@@ -44,7 +47,7 @@ export default function App() {
 
     return (
         <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator initialRouteName='Welcome'>
                 {user ? (
                     <>
                         <Stack.Screen name="LocationPermission" component={LocationPermissionScreen} options={{headerShown: false}}/>
@@ -54,6 +57,9 @@ export default function App() {
                         <Stack.Screen name="EditUserPreferenceScreen" component={EditUserPreferenceScreen}/>
                         <Stack.Screen name="Matches" component={MatchesScreen}/>
                         <Stack.Screen name="AiMatches" component={AiMatchesScreen}/>
+                        <Stack.Screen name="AddInfo" component={AddInfoComponent}/>
+                        <Stack.Screen name='Chat' component={ChatScreen} options={{title: 'Chat', headerBackTitle: 'Logout'}} />
+                        <Stack.Screen name='Conversations' component={ConversationsScreen} options={{title: 'Conversations', headerBackTitle: 'Logout'}} />
                     </>
                 ) : (
                     <>
