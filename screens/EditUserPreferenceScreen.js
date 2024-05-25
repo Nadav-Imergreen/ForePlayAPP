@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import { Slider } from '@miblanchard/react-native-slider';
 import Geolocation from '@react-native-community/geolocation';
@@ -56,7 +55,7 @@ const EditUserPreferenceScreen = ({ route }) => {
     const handleSave = async () => {
         setLoading(true);
         try {
-            await saveUserPreferences(gender, ageRange[0], ageRange[1], radius);
+            await saveUserPreferences(gender, ageRange[0], ageRange[1], radius, location);
         } catch (error) {
             console.error('Error saving user data:', error.message);
         } finally {

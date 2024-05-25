@@ -43,7 +43,7 @@ const MatchesScreen = () => {
                 else{
                   setNoResults(true);
                 }
-    
+
             } catch (error) {
                 console.error("Failed to fetch suggested users:", error.message);
                 Alert.alert(
