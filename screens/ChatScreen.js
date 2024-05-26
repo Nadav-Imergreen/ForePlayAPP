@@ -75,7 +75,7 @@ const ChatScreen = ({ navigation, route }) => {
                             onSend={messages => onSend(messages)}
                             placeholder='Write a message...'
                             user={{
-                                _id: auth?.currentUser?.email,
+                                _id: auth?.currentUser?.uid,
                                 name: auth?.currentUser?.displayName || 'User',
                                 avatar: avatarUrl
                             }}

@@ -1,6 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Image, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
-import { getAllUsers, getCurrentUser, saveUserLocation, getUsersBy, saveSeen, saveLike, saveLikeMe, checkForMatch } from "../services/firebaseDatabase";
+import {
+    getAllUsers,
+    getCurrentUser,
+    saveUserLocation,
+    getUsersBy,
+    saveSeen,
+    saveLike,
+    saveLikeMe,
+    checkForMatch,
+    createConversation
+} from "../services/firebaseDatabase";
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -27,22 +37,9 @@ const MatchesScreen = () => {
                         ...doc.data()
                     };
                 });
-
-                // Filter suggested users by age
-                const filteredUsersByAge = usersData.filter(user => user.age >= currentUser.partner_age_bottom_limit && user.age <= currentUser.partner_age_upper_limit);
-
-                // Calculate distance between current user and each suggested user and filter by radius preference
-                const filteredUsers = filteredUsersByAge.filter(user => {
-                    const distance = calculateDistance(currentUser.location.latitude, currentUser.location.longitude, user.location.latitude, user.location.longitude);
-                    return distance <= currentUser.radius[0];
-                });
-
-                if (filteredUsers && filteredUsers.length > 0){
-                  setSuggestedUsers(filteredUsers);
-                }
-                else{
-                  setNoResults(true);
-                }
+                // Filter suggested users by age and distance here
+                if (usersData.length > 0) setSuggestedUsers(usersData);
+                else setNoResults(true);
 
             } catch (error) {
                 console.error("Failed to fetch suggested users:", error.message);
@@ -90,8 +87,8 @@ const MatchesScreen = () => {
             .then(() => saveLike(likedUser)
                 .then(() => saveLikeMe(likedUser)
                     .then(() => {
-                        checkForMatch(likedUser);
-                        createConversation(likedUser)
+                        checkForMatch(likedUser).then(r => console.log('it is a match?', r));
+                        createConversation(likedUser);
                         nextProfile();
                     })))
     };

@@ -1,18 +1,18 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     View,
     Image,
     Text,
-    TouchableOpacity,
     StyleSheet,
     Alert,
     Animated,
     PanResponder,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    TextInput,
+    Button
 } from "react-native";
 import {
     checkForMatch,
-    getAllUsers,
     getCurrentUser,
     getUsersBy,
     saveExtraInfo,
@@ -20,11 +20,10 @@ import {
     saveLikeMe,
     saveSeen
 } from "../services/firebaseDatabase";
-import {matchAI} from "../services/matchAI";
-import {Card, Provider as PaperProvider, TextInput, Title, Button} from "react-native-paper";
+import { matchAI } from "../services/matchAI";
 import LinearGradient from "react-native-linear-gradient";
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = () => {
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
     const [currentIndex, setCurrentIndex] = useState(0); // State to track current index
     const [additionalInfoFilled, setAdditionalInfoFilled] = useState(false); // State to track if additional info is filled
@@ -36,38 +35,32 @@ const HomeScreen = ({navigation}) => {
         const fetchData = async () => {
             // get current user info
             const currentUser = await getCurrentUser();
-            // Filter suggested users by age and distance here
-            const usersSnapshot = await getUsersBy(currentUser);
+            // Check if additional info is filled
+            if (currentUser.aboutMe === '' || currentUser.desireMatch === '') {
+                setAdditionalInfoFilled(false);
+            } else {
+                setAdditionalInfoFilled(true);
+                // Filter suggested users by age and distance here
+                const usersSnapshot = await getUsersBy(currentUser);
 
-            const usersData = usersSnapshot.docs.map(doc => {
-                return {
+                const usersData = usersSnapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
-                };
-            });
+                }));
 
-            console.log('usersData length: ', usersData.length);
+                console.log('usersData length: ', usersData.length);
 
-            if (usersData.length > 0) return usersData;
-            else setNoResults(true);
+                if (usersData.length > 0) {
+                    const matchedUsers = await matchAI(usersData);
+                    setSuggestedUsers(matchedUsers);
+                } else {
+                    setNoResults(true);
+                }
+            }
+        };
 
-            // setAdditionalInfoFilled((currentUser.desireMatch && currentUser.occupation));
-        }
-
-        if (getCurrentUser().aboutMe === '' || getCurrentUser().desireMatch === '')
-            setAdditionalInfoFilled(false);
-        else {
-            setAdditionalInfoFilled(true);
-            fetchData()
-                .then(async (usersData) => await matchAI(usersData)
-                    .then((res) => setSuggestedUsers(res))
-                    .catch((error) => console.error("WARNING: An error occurred while processing the matchAI request:", error)))
-                .catch((e) => console.error("Failed to fetch suggested users:", e.message));
-        }
-
+        fetchData().catch(e => console.error("Failed to fetch suggested users:", e.message));
     }, []);
-
-    console.log('suggestedUsers:', suggestedUsers);
 
     const handleAddInfo = async () => {
         if (aboutMe.trim() === '' || desireMatch.trim() === '') {
@@ -86,8 +79,6 @@ const HomeScreen = ({navigation}) => {
             Alert.alert('Error', 'Failed to add information. Please try again.');
         }
     };
-
-
 
     // Function to handle navigation to the next profile.
     const nextProfile = () => {
@@ -110,7 +101,6 @@ const HomeScreen = ({navigation}) => {
     const handleDislike = () => {
         saveSeen(suggestedUsers[currentIndex].userId).then(() => nextProfile())
     };
-
 
     const pan = useRef(new Animated.ValueXY()).current;
     const [likePressed, setLikePressed] = useState(false);
@@ -190,67 +180,95 @@ const HomeScreen = ({navigation}) => {
 
     return (
         <View style={styles.container}>
-            {/* Display message when waiting for data */}
-            {suggestedUsers.length === 0 && (
-                <View style={styles.noSuggestionsContainer}>
-                    <Text style={styles.noSuggestionsText}>
-                        {noResults ? "No people in your area" : "Looking for people..."}
-                    </Text>
-                </View>
-            )}
-
-            {/* Render suggested user */}
-            {suggestedUsers.length > 0 && currentIndex < suggestedUsers.length && (
+            {additionalInfoFilled ? (
                 <>
-                    <Animated.View style={[styles.card, panStyle]} {...panResponder.panHandlers}>
-                        {suggestedUsers[currentIndex].images[0] && (
-                            <View style={styles.imageContainer}>
-                                <Image style={styles.image} resizeMode='contain' source={{ uri: suggestedUsers[currentIndex].images[0] }} />
-                            </View>
-                        )}
-                        <View style={styles.overlayContainer}>
-                            <LinearGradient
-                                colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)']} // Gradient colors from white to black
-                                style={styles.gradientOverlay}
-                            />
-                            <Text style={styles.userName}>{suggestedUsers[currentIndex].firstName}, {suggestedUsers[currentIndex].age}</Text>
+                    {/* Display message when waiting for data */}
+                    {suggestedUsers.length === 0 && (
+                        <View style={styles.noSuggestionsContainer}>
+                            <Text style={styles.noSuggestionsText}>
+                                {noResults ? "No people in your area" : "Looking for people..."}
+                            </Text>
                         </View>
-                    </Animated.View>
+                    )}
 
-                    <View style={styles.buttonContainer}>
-                        <TouchableWithoutFeedback
-                            onPressIn={() => setDislikePressed(true)}
-                            onPressOut={() => setDislikePressed(false)}
-                            onPress={handleDislike}
-                        >
-                            <Animated.View style={[styles.buttonBody, { backgroundColor: dislikePressed ? '#f06478' : '#ffffff', transform: [{ scale: dislikePressed ? 1.2 : 1 }] }]}>
-                                <Image
-                                    source={dislikePressed ? require('../assets/dislike.png') : require('../assets/dislike_pressed.png')}
-                                    style={styles.buttonImage}
-                                />
+                    {/* Render suggested user */}
+                    {suggestedUsers.length > 0 && currentIndex < suggestedUsers.length && (
+                        <>
+                            <Animated.View style={[styles.card, panStyle]} {...panResponder.panHandlers}>
+                                {suggestedUsers[currentIndex].images[0] && (
+                                    <View style={styles.imageContainer}>
+                                        <Image style={styles.image} resizeMode='contain' source={{ uri: suggestedUsers[currentIndex].images[0] }} />
+                                    </View>
+                                )}
+                                <View style={styles.overlayContainer}>
+                                    <LinearGradient
+                                        colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)']} // Gradient colors from white to black
+                                        style={styles.gradientOverlay}
+                                    />
+                                    <Text style={styles.userName}>{suggestedUsers[currentIndex].firstName}, {suggestedUsers[currentIndex].age}</Text>
+                                </View>
                             </Animated.View>
-                        </TouchableWithoutFeedback>
 
-                        <TouchableWithoutFeedback
-                            onPressIn={() => setLikePressed(true)}
-                            onPressOut={() => setLikePressed(false)}
-                            onPress={handleLike}
-                        >
-                            <Animated.View style={[styles.buttonBody, { backgroundColor: likePressed ? '#a4cdbd' : '#ffffff', transform: [{ scale: likePressed ? 1.2 : 1 }] }]}>
-                                <Image
-                                    source={likePressed ? require('../assets/like.png') : require('../assets/like_pressed.png')}
-                                    style={styles.buttonImage}
-                                />
-                            </Animated.View>
-                        </TouchableWithoutFeedback>
-                    </View>
+                            <View style={styles.buttonContainer}>
+                                <TouchableWithoutFeedback
+                                    onPressIn={() => setDislikePressed(true)}
+                                    onPressOut={() => setDislikePressed(false)}
+                                    onPress={handleDislike}
+                                >
+                                    <Animated.View style={[styles.buttonBody, { backgroundColor: dislikePressed ? '#f06478' : '#ffffff', transform: [{ scale: dislikePressed ? 1.2 : 1 }] }]}>
+                                        <Image
+                                            source={dislikePressed ? require('../assets/dislike.png') : require('../assets/dislike_pressed.png')}
+                                            style={styles.buttonImage}
+                                        />
+                                    </Animated.View>
+                                </TouchableWithoutFeedback>
+
+                                <TouchableWithoutFeedback
+                                    onPressIn={() => setLikePressed(true)}
+                                    onPressOut={() => setLikePressed(false)}
+                                    onPress={handleLike}
+                                >
+                                    <Animated.View style={[styles.buttonBody, { backgroundColor: likePressed ? '#a4cdbd' : '#ffffff', transform: [{ scale: likePressed ? 1.2 : 1 }] }]}>
+                                        <Image
+                                            source={likePressed ? require('../assets/like.png') : require('../assets/like_pressed.png')}
+                                            style={styles.buttonImage}
+                                        />
+                                    </Animated.View>
+                                </TouchableWithoutFeedback>
+                            </View>
+                        </>
+                    )}
+
+                    {/* Display message when end of suggestedUsers array is reached */}
+                    {currentIndex >= suggestedUsers.length && currentIndex !== 0 && (
+                        <View style={styles.noSuggestionsContainer}>
+                            <Text style={styles.noSuggestionsText}>No more suggestions</Text>
+                        </View>
+                    )}
                 </>
-            )}
-
-            {/* Display message when end of suggestedUsers array is reached */}
-            {currentIndex >= suggestedUsers.length && currentIndex !== 0 && (
-                <View style={styles.noSuggestionsContainer}>
-                    <Text style={styles.noSuggestionsText}>No more suggestions</Text>
+            ) : (
+                <View style={styles.formContainer}>
+                    <Text style={styles.additionalInfoText}>Please fill in additional information to activate AI matching.</Text>
+                    <View style={styles.card}>
+                        <Text style={styles.title}>Add Information</Text>
+                        <TextInput
+                            mode="outlined"
+                            label="About Me"
+                            placeholder="Enter information about yourself"
+                            value={aboutMe}
+                            onChangeText={setAboutMe}
+                            style={styles.input}
+                        />
+                        <TextInput
+                            mode="outlined"
+                            label="Desired Match"
+                            placeholder="Describe your desired match"
+                            value={desireMatch}
+                            onChangeText={setDesireMatch}
+                            style={styles.input}
+                        />
+                        <Button title="Add Info" onPress={handleAddInfo} style={styles.button} />
+                    </View>
                 </View>
             )}
         </View>
@@ -274,10 +292,10 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     imageContainer: {
-        flex: 1, // Allow the image container to expand to fill the available space
-        alignItems: 'center', // Center the image horizontally
-        overflow: 'hidden', // Clip the image if it exceeds the container's boundaries
-        borderRadius: 10, // Apply border radius to match the card's border radius
+        flex: 1,
+        alignItems: 'center',
+        overflow: 'hidden',
+        borderRadius: 10,
         paddingBottom: 60
     },
     image: {
@@ -290,18 +308,18 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        height: '60%', // Half the height of the card
-        borderRadius: 10, // Apply border radius to match the card's border radius
-        justifyContent: 'flex-end', // Align the overlay content at the bottom
+        height: '60%',
+        borderRadius: 10,
+        justifyContent: 'flex-end',
     },
     gradientOverlay: {
-        ...StyleSheet.absoluteFillObject, // Position the gradient overlay to cover the whole overlayContainer
-        borderRadius: 10, // Apply border radius to match the card's border radius
+        ...StyleSheet.absoluteFillObject,
+        borderRadius: 10,
     },
     userName: {
         position: 'absolute',
-        bottom: 60, // Adjust the positioning as needed
-        left: 20, // Adjust the positioning as needed
+        bottom: 60,
+        left: 20,
         color: 'white',
         fontSize: 24,
         fontStyle: 'italic'
@@ -332,142 +350,33 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     noSuggestionsText: {
-        fontSize: 20, // Adjust the font size as needed
+        fontSize: 20,
         textAlign: 'center',
     },
+    formContainer: {
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 20
+    },
+    additionalInfoText: {
+        fontSize: 16,
+        color: "green",
+        marginTop: 20,
+        textAlign: "center",
+        paddingHorizontal: 20,
+    },
+    title: {
+        fontSize: 24,
+        marginBottom: 16,
+        textAlign: 'center',
+    },
+    input: {
+        marginBottom: 16,
+    },
+    button: {
+        marginTop: 16,
+    },
 });
-
-
-//     // Function to handle navigation to the next user
-//     const nextUser = () => {
-//         setCurrentIndex((prevIndex) => (prevIndex + 1 < suggestedUsers.length ? prevIndex + 1 : 0));
-//     };
-//
-//     // Function to handle navigation to the previous user
-//     const previousUser = () => {
-//         setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : suggestedUsers.length - 1));
-//     };
-//
-//     return (
-//         <PaperProvider>
-//             <View style={styles.container}>
-//                 {/* Render suggested user */}
-//                 {additionalInfoFilled && suggestedUsers.length > 0 && (
-//                     <View>
-//                         <TouchableOpacity style={styles.userContainer}>
-//                             {suggestedUsers[currentIndex].url && (
-//                                 <Image style={styles.logo} source={{uri: suggestedUsers[currentIndex].url}}/>
-//                             )}
-//                             <Text style={styles.userName}>{suggestedUsers[currentIndex].firstName}</Text>
-//                         </TouchableOpacity>
-//                         <View style={styles.buttonContainer}>
-//                             <TouchableOpacity onPress={previousUser}>
-//                                 <Text style={styles.buttonText}>Previous</Text>
-//                             </TouchableOpacity>
-//                             <TouchableOpacity onPress={nextUser}>
-//                                 <Text style={styles.buttonText}>Next</Text>
-//                             </TouchableOpacity>
-//                         </View>
-//                     </View>
-//                 )}
-//
-//                 {/* Additional info form */}
-//                 {!additionalInfoFilled && (
-//                     <View style={styles.formContainer}>
-//                         <Text style={styles.additionalInfoText}>Please fill in additional information in User Info to
-//                             activate AI matching.</Text>
-//                         <Card style={styles.card}>
-//                             <Card.Content>
-//                                 <Title style={styles.title}>Add Information</Title>
-//                                 <TextInput
-//                                     mode="outlined"
-//                                     label="About Me"
-//                                     placeholder="Enter information about yourself"
-//                                     value={aboutMe}
-//                                     onChangeText={setAboutMe}
-//                                     style={styles.input}
-//                                 />
-//                                 <TextInput
-//                                     mode="outlined"
-//                                     label="Desired Match"
-//                                     placeholder="Describe your desired match"
-//                                     value={desireMatch}
-//                                     onChangeText={setDesireMatch}
-//                                     style={styles.input}
-//                                 />
-//                                 <Button mode="contained" onPress={handleAddInfo} style={styles.button}>
-//                                     Add Info
-//                                 </Button>
-//                             </Card.Content>
-//                         </Card>
-//                     </View>
-//                 )}
-//
-//                 {noResults && <Text>No users found based on your criteria.</Text>}
-//             </View>
-//         </PaperProvider>
-//     );
-// };
-//
-// const styles = StyleSheet.create({
-//     container: {
-//         flex: 1,
-//         backgroundColor: "white",
-//         alignItems: "center",
-//         justifyContent: "center",
-//     },
-//     userContainer: {
-//         alignItems: "center",
-//         marginBottom: 10,
-//     },
-//     userName: {
-//         fontSize: 16,
-//     },
-//     logo: {
-//         width: 96,
-//         height: 98,
-//         borderRadius: 48,
-//     },
-//     buttonContainer: {
-//         flexDirection: "row",
-//         justifyContent: "space-between",
-//         marginTop: 20,
-//         width: "80%",
-//     },
-//     buttonText: {
-//         fontSize: 16,
-//         color: "blue",
-//     },
-//     additionalInfoText: {
-//         fontSize: 16,
-//         color: "green",
-//         marginTop: 20,
-//         textAlign: "center",
-//         paddingHorizontal: 20,
-//     },
-//     formContainer: {
-//         width: "100%",
-//         alignItems: "center",
-//     },
-//     card: {
-//         width: '100%',
-//         maxWidth: 400,
-//         padding: 16,
-//     },
-//     title: {
-//         fontSize: 24,
-//         marginBottom: 16,
-//         textAlign: 'center',
-//     },
-//     input: {
-//         marginBottom: 16,
-//     },
-//     button: {
-//         marginTop: 16,
-//     },
-// });
-//
-
-
 
 export default HomeScreen;

@@ -1,15 +1,8 @@
-import React, {useState, useEffect, useLayoutEffect} from "react";
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {Alert, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
-import chatScreen from "../screens/ChatScreen";
-import { getCurrentUser } from "../services/firebaseDatabase";
+import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import { AiMatchesScreen, MatchesScreen, UserInfoScreen } from "../screens";
-import {signOut} from "firebase/auth";
-import {auth} from "../services/config";
-import {Avatar} from "react-native-elements";
-import {handleSignOut} from "../services/auth";
 import ConversationsScreen from "../screens/conversationsScreen";
-
 const Tab = createBottomTabNavigator();
 
 const screenOptions = {
@@ -29,23 +22,12 @@ const screenOptions = {
 };
 
 const CustomHeader = () => (
-    <View>
     <View style={styles.header}>
         <Image
             source={require("../assets/logo_small.png")}
             style={styles.logoContainer}
             resizeMode="contain"
         />
-    </View>
-    <View style={styles.header}>
-        <TouchableOpacity style={{
-            marginLeft: 20
-        }}
-                          onPress={handleSignOut}
-        >
-            <Text>logout</Text>
-        </TouchableOpacity>
-    </View>
     </View>
 );
 
