@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { auth, db } from '../services/config';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import {handleSignOut} from "../services/auth";
 
 const ConversationsScreen = ({ navigation }) => {
     const [conversations, setConversations] = useState([]);
@@ -44,12 +45,19 @@ const ConversationsScreen = ({ navigation }) => {
     };
 
     return (
+    <View style={{flex: 1}}>
         <FlatList
             data={conversations}
             keyExtractor={item => item.id}
             renderItem={renderConversationItem}
             contentContainerStyle={styles.container}
         />
+        <View style={styles.logoutContainer}>
+            <TouchableOpacity onPress={handleSignOut}>
+                <Text style={styles.logoutText}>logout</Text>
+            </TouchableOpacity>
+        </View>
+    </View>
     );
 };
 
@@ -83,6 +91,25 @@ const styles = StyleSheet.create({
     time: {
         marginLeft: 10,
         color: '#666',
+    },
+    logoutContainer: {
+        position: 'absolute',
+        bottom: 50,
+        left: 0,
+        right: 0,
+        padding: 10
+    },
+    logoutText: {
+        fontSize: 18,
+        color: 'white',
+        fontWeight: 'bold',
+        borderRadius: 12,
+        borderColor: 'black',
+        borderWidth: 1,
+        backgroundColor: '#a4cdbd',
+        textAlign: 'center',
+        width: '100%',
+        padding: 10,
     },
 });
 

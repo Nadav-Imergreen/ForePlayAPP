@@ -153,7 +153,7 @@ const EditUserPreferenceScreen = ({ route, navigation }) => {
                 </View>
                 <Slider
                     minimumValue={1}
-                    maximumValue={100}
+                    maximumValue={1000}
                     step={1}
                     value={radius}
                     minimumTrackTintColor="#007AFF"

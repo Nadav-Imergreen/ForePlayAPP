@@ -131,9 +131,9 @@ export async function getUsersBy(currentUser) {
         const defaultGender = currentUser.sex === 'male' ? 'female' : 'male';
         const coll = collection(db, "users");
         const q = query(coll,
-            where("sex", "==", currentUser.partner_gender ? currentUser.partner_gender : defaultGender));
-        // where('age', '<=', maxAge ? maxAge : (currentUser.age + 7)),
-        // where('age', '>=', minAge ? minAge: currentUser.age / 2 + 7));
+            where("sex", "==", currentUser.partner_gender ? currentUser.partner_gender : defaultGender),
+            where('age', '<=', maxAge),
+            where('age', '>=', minAge));
         return await getDocs(q);
     } catch (error) {
         throw new Error("WARNING: Error retrieving documents: " + error.message);
