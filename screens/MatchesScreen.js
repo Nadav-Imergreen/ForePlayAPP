@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Image, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
-import { getAllUsers, getCurrentUser, saveUserLocation, getUsersBy, saveSeen, saveLike, saveLikeMe, checkForMatch, createConversation } from "../services/firebaseDatabase";
-
+import { View, Image, Text, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
+import { getCurrentUser, getUsersBy, saveSeen, saveLike, saveLikeMe, checkForMatch, createConversation } from "../services/firebaseDatabase";
+import ItsMatchModal from "../components/ItsMatchModal"
 import LinearGradient from 'react-native-linear-gradient';
 
 const MatchesScreen = () => {
 
+    const [currentUser, setCurrentUser] = useState();
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
     const [currentIndex, setCurrentIndex] = useState(0); // State to track current index 
     const [noResults, setNoResults] = useState(false);
@@ -14,52 +15,67 @@ const MatchesScreen = () => {
     const [photoIndex, setPhotoIndex] = useState(0);
     const [showLike, setShowLike] = useState(false);
     const [showDislike, setShowDislike] = useState(false);
+    const [matchVisible, setMatchVisible] = useState(false);
+    const [matchedUser, setMatchedUser] = useState(null);
+    const [likes, setLikes] = useState(0);
+    const [dislikes, setDislikes] = useState(0);
+ 
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // get current user info
-                const currentUser = await getCurrentUser().catch((err) => console.log(err));
-
-                // Only proceed to fetch suggested users if preferences are available
-                const usersSnapshot = await getUsersBy(currentUser);
-
-                const usersData = usersSnapshot.docs.map(doc => {
-                    return {
-                        id: doc.id,
-                        ...doc.data()
-                    };
-                });
-
-                // Filter suggested users by age
-                //const filteredUsersByAge = usersData.filter(user => user.age >= currentUser.partner_age_bottom_limit && user.age <= currentUser.partner_age_upper_limit);
-
-                // Calculate distance between current user and each suggested user and filter by radius preference
-                const filteredUsers = usersData.filter(user => {
-                    const distance = calculateDistance(currentUser.location.latitude, currentUser.location.longitude, user.location.latitude, user.location.longitude);
-                    return distance <= currentUser.radius[0];
-                });
-
-                if (filteredUsers && filteredUsers.length > 0){
-                  setSuggestedUsers(filteredUsers);
-                }
-                else{
+      const fetchData = async () => {
+          try {
+              // Get current user info
+              const currentUser = await getCurrentUser().catch((err) => console.log(err));
+              setCurrentUser(currentUser);
+  
+              // Only proceed to fetch suggested users if preferences are available
+              const usersSnapshot = await getUsersBy(currentUser);
+  
+              // Get IDs of users already seen by the current user
+              const seenUserIds = currentUser.seenUsers ? currentUser.seenUsers.map(user => Object.values(user)[0]) : [];
+              console.log('seenUserIds: ' + seenUserIds);
+            
+  
+              // Combined operation to map documents, calculate distance, filter by radius preference, and filter out seen users
+              const usersWithDistance = usersSnapshot.docs.map(doc => {
+                  const user = {
+                      id: doc.id,
+                      ...doc.data()
+                  };
+  
+                  // Calculate distance between current user and suggested user
+                  const distance = Math.round(calculateDistance(currentUser.location.latitude, currentUser.location.longitude, user.location.latitude, user.location.longitude));
+  
+                  // Check if the user is within the radius preference and not already seen
+                  if (distance <= currentUser.radius[0] && !seenUserIds.includes(user.userId)) {
+                      // If within radius and not already seen, add distance to user object
+                      user.distance = distance;
+                      return user;
+                  } else {
+                      // If not within radius or already seen, return null
+                      return null;
+                  }
+              }).filter(user => user !== null); // Remove null entries from the array
+  
+              if (usersWithDistance.length > 0) {
+                  setSuggestedUsers(usersWithDistance);
+              } else {
                   setNoResults(true);
-                }
-
-            } catch (error) {
-                console.error("Failed to fetch suggested users:", error.message);
-                Alert.alert(
-                    "Error",
-                    "Failed to fetch suggested users. Please try again.",
-                    [{ text: "Retry", onPress: fetchData }],
-                    { cancelable: true }
-                );
-            }
-        };
-
-        fetchData();
-    }, []);
+              }
+  
+          } catch (error) {
+              console.error("Failed to fetch suggested users:", error.message);
+              Alert.alert(
+                  "Oops",
+                  "We couldn't find people in your area. Please give it another try.",
+                  [{ text: "Lets try again", onPress: fetchData }],
+                  { cancelable: true }
+              );
+          }
+      };
+  
+      fetchData();
+  }, []);
 
     const calculateDistance = (lat1, lon1, lat2, lon2) => {
       const R = 6371; // Radius of the Earth in kilometers
@@ -78,6 +94,14 @@ const MatchesScreen = () => {
       return distance;
     };
 
+    useEffect(() => {
+      handleLike();
+  }, [likes]); 
+
+    useEffect(() => {
+      handleDislike();
+    }, [dislikes]); 
+
     // Function to handle navigation to the next profile.
     const nextProfile = () => {
         setPhotoIndex(0);
@@ -86,55 +110,65 @@ const MatchesScreen = () => {
         currentIndexRef.current = newIndex; // Update the current index using ref
         nextIndexRef.current = newNextIndex;
         setCurrentIndex(newIndex);
-        console.log("Current Index:", currentIndexRef.current);
-        console.log("Current Next Index:", nextIndexRef.current);
     };
 
-    // Function to handle navigation to the next profile.
     const handleLike = () => {
-      setShowLike(true);
+      if (suggestedUsers.length > 0){
+        setShowLike(true);
+        const likedUser = suggestedUsers[currentIndex];
+        const likedUserId = likedUser.userId
 
-      // Adding a timeout
-      setTimeout(() => {
-        // Animate card moving to the right
-        Animated.timing(pan, {
-          toValue: { x: 500, y: 0 },
-          duration: 300,
-          useNativeDriver: false,
-        }).start(() => {
-          nextProfile();
-          pan.setValue({ x: 0, y: 0 });
-          setShowLike(false);
+        // First, check for a match
+        checkForMatch(likedUserId)
+          .then(isMatch => {
+              if (isMatch) {
+                  setMatchedUser(likedUser);
+                  setMatchVisible(true);
+                  createConversation(likedUserId);
+              }
+          })
+          .then(() => saveSeen(likedUserId))
+          .then(() => saveLike(likedUserId))
+          .then(() => saveLikeMe(likedUserId))
+          .catch(error => {
+              console.error('Error handling like action:', error);
+          });
 
-          const likedUser = suggestedUsers[currentIndex].userId;
-          saveSeen(likedUser)
-            .then(() => saveLike(likedUser))
-            .then(() => saveLikeMe(likedUser))
-            .then(() => {
-              checkForMatch(likedUser);
-              createConversation(likedUser);
-            });
-        });
-      }, 300); // Adjust the timeout duration as per your requirement
+        // Adding a timeout
+        setTimeout(() => {
+          // Animate card moving to the right
+          Animated.timing(pan, {
+            toValue: { x: 500, y: 0 },
+            duration: 400,
+            useNativeDriver: false,
+          }).start(() => {
+            nextProfile();
+            pan.setValue({ x: 0, y: 0 });
+            setShowLike(false);
+          });
+        }, 400); // Adjust the timeout duration as per your requirement
+      }
     };
 
     const handleDislike = () => {
-      setShowDislike(true);
-    
-      // Adding a timeout
-      setTimeout(() => {
-        // Animate card moving to the left
-        Animated.timing(pan, {
-          toValue: { x: -500, y: 0 },
-          duration: 300,
-          useNativeDriver: false,
-        }).start(() => {
-          nextProfile();
-          pan.setValue({ x: 0, y: 0 });
-          setShowDislike(false);
-        });
+      if (suggestedUsers.length > 0){
+        setShowDislike(true);
         saveSeen(suggestedUsers[currentIndex].userId);
-      }, 300); // Adjust the timeout duration as per your requirement
+
+        // Adding a timeout
+        setTimeout(() => {
+          // Animate card moving to the left
+          Animated.timing(pan, {
+            toValue: { x: -500, y: 0 },
+            duration: 300,
+            useNativeDriver: false,
+          }).start(() => {
+            nextProfile();
+            pan.setValue({ x: 0, y: 0 });
+            setShowDislike(false);
+          });
+        }, 300); // Adjust the timeout duration as per your requirement
+      }
     };
 
     const pan = useRef(new Animated.ValueXY()).current;
@@ -145,10 +179,10 @@ const MatchesScreen = () => {
       PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onPanResponderMove: (e, gesture) => {
-          if (gesture.dx > 50) { // Swipe right
+          if (gesture.dx > 20) { // Swipe right
             setLikePressed(true);
             setShowLike(true);
-          } else if (gesture.dx < -50) { // Swipe left
+          } else if (gesture.dx < -20) { // Swipe left
             setDislikePressed(true);
             setShowDislike(true);
           } else { // Reset button states if swipe is not significant
@@ -176,15 +210,13 @@ const MatchesScreen = () => {
               duration: 300,
               useNativeDriver: false
             }).start(() => {
+              setLikes(prevCounter => prevCounter + 1);
               setTimeout(() => {
-
                 Animated.timing(pan, {
                   toValue: { x: 0, y: 0 },
                   duration: 0,
                   useNativeDriver: false
                 }).start();
-                nextProfile();
-                console.log("realse");
               }, 500);
             });
           } else if (gesture.dx < -120) { // Swipe left
@@ -193,15 +225,14 @@ const MatchesScreen = () => {
               duration: 300,
               useNativeDriver: false
             }).start(() => {
+              setDislikes(prevCounter => prevCounter + 1);
               setTimeout(() => {
-
+                handleDislike();
                 Animated.timing(pan, {
                   toValue: { x: 0, y: 0 },
                   duration: 0,
                   useNativeDriver: false
                 }).start();
-                nextProfile();
-                console.log("realse");
               }, 500);
             });
           } else { // Return card to center
@@ -213,8 +244,6 @@ const MatchesScreen = () => {
         }
       })
     ).current;
-
-    const nextProfileIndex = nextIndexRef.current + 1;
 
     const rotate = pan.x.interpolate({
       inputRange: [-500, 0, 500],
@@ -232,6 +261,10 @@ const MatchesScreen = () => {
       } else {
         setPhotoIndex((prevIndex) => (prevIndex - 1 + userPhotos) % userPhotos);
       }
+    };
+
+    const handleModalClose = () => {
+      setMatchVisible(false);
     };
 
     return (
@@ -252,7 +285,7 @@ const MatchesScreen = () => {
             {suggestedUsers[nextIndexRef.current] && (
               <View style={styles.card}>
                 <View style={styles.imageContainer}>
-                  <Image style={styles.image} resizeMode='contain' source={{ uri: suggestedUsers[nextIndexRef.current].images[photoIndex] }} />
+                  <Image style={styles.image} resizeMode='contain' source={{ uri: suggestedUsers[nextIndexRef.current].images[0] }} />
                   <View style={styles.photosIndicator}>
                     {suggestedUsers[nextIndexRef.current].images.map((_, index) => (
                       <View key={index} style={[styles.indicator, index === photoIndex ? styles.filledIndicator : styles.unfilledIndicator]} />
@@ -265,6 +298,7 @@ const MatchesScreen = () => {
                     style={styles.gradientOverlay}
                   />
                   <Text style={styles.userName}>{suggestedUsers[nextIndexRef.current].firstName}, {suggestedUsers[nextIndexRef.current].age}</Text>
+                  <Text style={styles.distance}>{suggestedUsers[nextIndexRef.current].distance} kilometers from you</Text>
                 </View>
               </View>
             )}
@@ -299,10 +333,20 @@ const MatchesScreen = () => {
                     style={styles.gradientOverlay}
                   />
                   <Text style={styles.userName}>{suggestedUsers[currentIndex].firstName}, {suggestedUsers[currentIndex].age}</Text>
+                  <Text style={styles.distance}>{suggestedUsers[currentIndex].distance} kilometers from you</Text>
                 </View>
               </Animated.View>
             )}
 
+            {/* Its a Match modal */}
+            {matchedUser && <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ItsMatchModal
+                    visible={matchVisible}
+                    user1={currentUser}
+                    user2={matchedUser}
+                    onClose={handleModalClose}
+                />
+            </View>}
 
   
             <View style={styles.buttonContainer}>
@@ -433,6 +477,12 @@ const MatchesScreen = () => {
       fontSize: 24,
       fontStyle: 'italic'
     },
+    distance: {
+      position: 'absolute',
+      bottom: 40, // Adjust the positioning as needed
+      left: 20, // Adjust the positioning as needed
+      color: 'white',
+    },
     buttonContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
@@ -466,8 +516,8 @@ const MatchesScreen = () => {
       left: 10,
     },
     likeLogo: {
-      width: 150, // Adjust the size as needed
-      height: 150, // Adjust the size as needed
+      width: 180, // Adjust the size as needed
+      height: 180, // Adjust the size as needed
       resizeMode: 'contain',
       transform: [{ rotate: '-20deg' }]
     },
@@ -477,11 +527,25 @@ const MatchesScreen = () => {
       right: 10,
     },
     dislikeLogo: {
-      width: 150, // Adjust the size as needed
-      height: 150, // Adjust the size as needed
+      width: 180, // Adjust the size as needed
+      height: 180, // Adjust the size as needed
       resizeMode: 'contain',
       transform: [{ rotate: '20deg' }]
     },
+    alertTitle: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: 'red', // Example color, adjust as needed
+  },
+  alertMessage: {
+      fontSize: 16,
+      color: 'black', // Example color, adjust as needed
+  },
+  alertButton: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: 'blue', // Example color, adjust as needed
+  }
   });
 
 export default MatchesScreen;
