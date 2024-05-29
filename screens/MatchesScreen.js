@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Image, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
-import { getAllUsers, getCurrentUser, saveUserLocation, getUsersBy, saveSeen, saveLike, saveLikeMe, checkForMatch } from "../services/firebaseDatabase";
+import { getAllUsers, getCurrentUser, saveUserLocation, getUsersBy, saveSeen, saveLike, saveLikeMe, checkForMatch, createConversation } from "../services/firebaseDatabase";
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -10,7 +10,10 @@ const MatchesScreen = () => {
     const [currentIndex, setCurrentIndex] = useState(0); // State to track current index 
     const [noResults, setNoResults] = useState(false);
     const currentIndexRef = useRef(0); // Using a ref to keep track of the current index
+    const nextIndexRef = useRef(1); 
     const [photoIndex, setPhotoIndex] = useState(0);
+    const [showLike, setShowLike] = useState(false);
+    const [showDislike, setShowDislike] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -29,10 +32,10 @@ const MatchesScreen = () => {
                 });
 
                 // Filter suggested users by age
-                const filteredUsersByAge = usersData.filter(user => user.age >= currentUser.partner_age_bottom_limit && user.age <= currentUser.partner_age_upper_limit);
+                //const filteredUsersByAge = usersData.filter(user => user.age >= currentUser.partner_age_bottom_limit && user.age <= currentUser.partner_age_upper_limit);
 
                 // Calculate distance between current user and each suggested user and filter by radius preference
-                const filteredUsers = filteredUsersByAge.filter(user => {
+                const filteredUsers = usersData.filter(user => {
                     const distance = calculateDistance(currentUser.location.latitude, currentUser.location.longitude, user.location.latitude, user.location.longitude);
                     return distance <= currentUser.radius[0];
                 });
@@ -79,28 +82,60 @@ const MatchesScreen = () => {
     const nextProfile = () => {
         setPhotoIndex(0);
         const newIndex = currentIndexRef.current + 1; // Get the next index
+        const newNextIndex = currentIndexRef.current + 2;
         currentIndexRef.current = newIndex; // Update the current index using ref
+        nextIndexRef.current = newNextIndex;
         setCurrentIndex(newIndex);
+        console.log("Current Index:", currentIndexRef.current);
+        console.log("Current Next Index:", nextIndexRef.current);
     };
 
     // Function to handle navigation to the next profile.
     const handleLike = () => {
-        const likedUser = suggestedUsers[currentIndex].userId;
-        saveSeen(likedUser)
-            .then(() => saveLike(likedUser)
-                .then(() => saveLikeMe(likedUser)
-                    .then(() => {
-                        checkForMatch(likedUser);
-                        createConversation(likedUser)
-                        nextProfile();
-                    })))
+      setShowLike(true);
+
+      // Adding a timeout
+      setTimeout(() => {
+        // Animate card moving to the right
+        Animated.timing(pan, {
+          toValue: { x: 500, y: 0 },
+          duration: 300,
+          useNativeDriver: false,
+        }).start(() => {
+          nextProfile();
+          pan.setValue({ x: 0, y: 0 });
+          setShowLike(false);
+
+          const likedUser = suggestedUsers[currentIndex].userId;
+          saveSeen(likedUser)
+            .then(() => saveLike(likedUser))
+            .then(() => saveLikeMe(likedUser))
+            .then(() => {
+              checkForMatch(likedUser);
+              createConversation(likedUser);
+            });
+        });
+      }, 300); // Adjust the timeout duration as per your requirement
     };
 
-  // Function to handle navigation to the next profile.
-  const handleDislike = () => {
-      nextProfile();
-      saveSeen(suggestedUsers[currentIndex].userId);
-  };
+    const handleDislike = () => {
+      setShowDislike(true);
+    
+      // Adding a timeout
+      setTimeout(() => {
+        // Animate card moving to the left
+        Animated.timing(pan, {
+          toValue: { x: -500, y: 0 },
+          duration: 300,
+          useNativeDriver: false,
+        }).start(() => {
+          nextProfile();
+          pan.setValue({ x: 0, y: 0 });
+          setShowDislike(false);
+        });
+        saveSeen(suggestedUsers[currentIndex].userId);
+      }, 300); // Adjust the timeout duration as per your requirement
+    };
 
     const pan = useRef(new Animated.ValueXY()).current;
     const [likePressed, setLikePressed] = useState(false);
@@ -110,13 +145,17 @@ const MatchesScreen = () => {
       PanResponder.create({
         onStartShouldSetPanResponder: () => true,
         onPanResponderMove: (e, gesture) => {
-          if (gesture.dx > 120) { // Swipe right
+          if (gesture.dx > 50) { // Swipe right
             setLikePressed(true);
-          } else if (gesture.dx < -120) { // Swipe left
+            setShowLike(true);
+          } else if (gesture.dx < -50) { // Swipe left
             setDislikePressed(true);
+            setShowDislike(true);
           } else { // Reset button states if swipe is not significant
             setLikePressed(false);
             setDislikePressed(false);
+            setShowDislike(false);
+            setShowLike(false);
           }
           Animated.event(
             [
@@ -129,6 +168,8 @@ const MatchesScreen = () => {
         onPanResponderRelease: (e, gesture) => {
           setLikePressed(false);
           setDislikePressed(false);
+          setShowDislike(false);
+          setShowLike(false);
           if (gesture.dx > 120) { // Swipe right
             Animated.timing(pan, {
               toValue: { x: 500, y: 0 },
@@ -143,6 +184,7 @@ const MatchesScreen = () => {
                   useNativeDriver: false
                 }).start();
                 nextProfile();
+                console.log("realse");
               }, 500);
             });
           } else if (gesture.dx < -120) { // Swipe left
@@ -159,6 +201,7 @@ const MatchesScreen = () => {
                   useNativeDriver: false
                 }).start();
                 nextProfile();
+                console.log("realse");
               }, 500);
             });
           } else { // Return card to center
@@ -170,7 +213,9 @@ const MatchesScreen = () => {
         }
       })
     ).current;
-  
+
+    const nextProfileIndex = nextIndexRef.current + 1;
+
     const rotate = pan.x.interpolate({
       inputRange: [-500, 0, 500],
       outputRange: ['-30deg', '0deg', '30deg']
@@ -203,8 +248,30 @@ const MatchesScreen = () => {
         {/* Render suggested user */}
         {suggestedUsers.length > 0 && currentIndex < suggestedUsers.length && (
           <>
-            <Animated.View style={[styles.card, panStyle]} {...panResponder.panHandlers}>
-              {suggestedUsers[currentIndex].images[0] && (
+            {/* Next profile card */}
+            {suggestedUsers[nextIndexRef.current] && (
+              <View style={styles.card}>
+                <View style={styles.imageContainer}>
+                  <Image style={styles.image} resizeMode='contain' source={{ uri: suggestedUsers[nextIndexRef.current].images[photoIndex] }} />
+                  <View style={styles.photosIndicator}>
+                    {suggestedUsers[nextIndexRef.current].images.map((_, index) => (
+                      <View key={index} style={[styles.indicator, index === photoIndex ? styles.filledIndicator : styles.unfilledIndicator]} />
+                    ))}
+                  </View>
+                </View>
+                  <View style={styles.overlayContainer}>
+                  <LinearGradient
+                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)']} // Gradient colors from white to black
+                    style={styles.gradientOverlay}
+                  />
+                  <Text style={styles.userName}>{suggestedUsers[nextIndexRef.current].firstName}, {suggestedUsers[nextIndexRef.current].age}</Text>
+                </View>
+              </View>
+            )}
+
+            {/* Current profile card */}
+            {suggestedUsers[currentIndex].images[0] && (
+              <Animated.View style={[styles.card, panStyle]} {...panResponder.panHandlers}>
                 <View style={styles.imageContainer}>
                   <Image style={styles.image} resizeMode='contain' source={{ uri: suggestedUsers[currentIndex].images[photoIndex] }} />
                   <View style={styles.photosIndicator}>
@@ -212,6 +279,12 @@ const MatchesScreen = () => {
                       <View key={index} style={[styles.indicator, index === photoIndex ? styles.filledIndicator : styles.unfilledIndicator]} />
                     ))}
                   </View>
+                  {showLike && (<View style={styles.likeContainer}>
+                    <Image source={require('../assets/like_logo.png')} style={styles.likeLogo} />
+                  </View>)}
+                  {showDislike && (<View style={styles.dislikeContainer}>
+                    <Image source={require('../assets/dislike_logo.png')} style={styles.dislikeLogo} />
+                  </View>)}
                   <TouchableWithoutFeedback onPress={() => handlePhotoChange('prev')}>
                     <View style={styles.prevOverlay} />
                   </TouchableWithoutFeedback>
@@ -219,15 +292,18 @@ const MatchesScreen = () => {
                     <View style={styles.nextOverlay} />
                   </TouchableWithoutFeedback>
                 </View>
-              )}
-              <View style={styles.overlayContainer}>
-                <LinearGradient
-                  colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)']} // Gradient colors from white to black
-                  style={styles.gradientOverlay}
-                />
-                <Text style={styles.userName}>{suggestedUsers[currentIndex].firstName}, {suggestedUsers[currentIndex].age}</Text>
-              </View>
-            </Animated.View>
+              
+                <View style={styles.overlayContainer}>
+                  <LinearGradient
+                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)']} // Gradient colors from white to black
+                    style={styles.gradientOverlay}
+                  />
+                  <Text style={styles.userName}>{suggestedUsers[currentIndex].firstName}, {suggestedUsers[currentIndex].age}</Text>
+                </View>
+              </Animated.View>
+            )}
+
+
   
             <View style={styles.buttonContainer}>
               <TouchableWithoutFeedback
@@ -383,6 +459,28 @@ const MatchesScreen = () => {
     noSuggestionsText: {
       fontSize: 20, // Adjust the font size as needed
       textAlign: 'center',
+    },
+    likeContainer: {
+      position: 'absolute',
+      top: 10,
+      left: 10,
+    },
+    likeLogo: {
+      width: 150, // Adjust the size as needed
+      height: 150, // Adjust the size as needed
+      resizeMode: 'contain',
+      transform: [{ rotate: '-20deg' }]
+    },
+    dislikeContainer: {
+      position: 'absolute',
+      top: 10,
+      right: 10,
+    },
+    dislikeLogo: {
+      width: 150, // Adjust the size as needed
+      height: 150, // Adjust the size as needed
+      resizeMode: 'contain',
+      transform: [{ rotate: '20deg' }]
     },
   });
 
