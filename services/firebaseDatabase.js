@@ -1,16 +1,16 @@
 //firebaseDatabase.js
 import {auth, db, storage} from './config';
 import {
-    addDoc,
     collection,
     doc,
     getDoc,
     getDocs,
     query,
-    serverTimestamp,
     setDoc,
     updateDoc,
-    where
+    where,
+    serverTimestamp,
+    addDoc
 } from 'firebase/firestore';
 import {getDownloadURL, ref as storageRef, uploadBytes} from 'firebase/storage';
 import {deleteUserAccount} from "./auth";
@@ -219,18 +219,23 @@ export async function saveLike(uid) {
 
     try {
         // Get the current user's data
-        const currentUser = await getCurrentUser();
+        const currentUserData = await getCurrentUser();
         const likedUser = await getUser(uid);
 
-        // Get the existing images array from the user data
-        const LikedList = currentUser.likedUsers || [];
+        // Get the existing liked users array from the current user's data
+        const likedUsers = currentUserData.likedUsers || [];
 
-        // Append the new URL to the existing URLs
-        const updatedLikedList = [...LikedList].includes(uid) ? [...LikedList] : [...LikedList, {[likedUser.firstName]: uid}];
+        // Check if the liked user's UID already exists in any of the objects in the likedUsers array
+        const alreadyLiked = likedUsers.some(obj => Object.values(obj).includes(uid));
 
+        // Append the new liked user if it's not already present
+        const updatedLikedUsers = alreadyLiked ? likedUsers : [...likedUsers, { [likedUser.firstName]: uid }];
         await updateDoc(matchingDataRef, {likedMeUsers: updatedLikedList});
 
-        console.log('INFO: new like saved successfully')
+        // Update the user document with the updated liked users list
+        await updateDoc(currentUserRef, { likedUsers: updatedLikedUsers });
+
+        console.log('INFO: New like saved successfully');
     } catch (error) {
         console.error('ERROR: Failed to save new like:', error.message);
     }
@@ -243,14 +248,14 @@ export async function saveSeen(uid) {
 
     try {
         // Get the current user's data
-        const currentUser = await getCurrentUser();
+        const currentUserData = await getCurrentUser();
         const seenUser = await getUser(uid);
 
-        // Get the existing images array from the user data
-        const SeenList = currentUser.seenUsers || [];
+        // Get the existing seen users array from the current user's data
+        const seenUsers = currentUserData.seenUsers || [];
 
-        // Append the new URL to the existing URLs
-        const updatedSeenList = [...SeenList].includes(uid) ? [...SeenList] : [...SeenList, {[seenUser.firstName]: uid}];
+        // Check if the seen user's UID already exists in the seenUsers array
+        const alreadySeen = seenUsers.some(obj => Object.values(obj).includes(uid));
 
         // Update the user document with the updated image URLs
         const docID = auth.currentUser.uid;
@@ -258,8 +263,13 @@ export async function saveSeen(uid) {
         await setDoc(doc(matchingDataRef, docID), {likedUsers: updatedSeenList, userId: docID})
             .then(() => console.log('matchingData saved',))
             .catch((error) => console.error('WARNING: error in save matchingData: ', error));
+        // Append the new seen user if it's not already present
+        const updatedSeenUsers = alreadySeen ? seenUsers : [...seenUsers, { [seenUser.firstName]: uid }];
 
-        console.log('INFO: seen user saved successfully')
+        // Update the user document with the updated seen users list
+        await updateDoc(currentUserRef, { seenUsers: updatedSeenUsers });
+
+        console.log('INFO: Seen user saved successfully');
     } catch (error) {
         console.error('ERROR: Failed to save seen user:', error.message);
     }
@@ -273,6 +283,16 @@ export async function saveLikeMe(uid) {
         const likedUser = await getUser(uid);
         const currentUser = await getCurrentUser();
 
+        const LikedMeList = likedUser.likedMeUsers || [];
+
+        // Check if the current user's UID is already in the LikedMeList
+        const userAlreadyLiked = LikedMeList.some(entry => Object.values(entry).includes(auth.currentUser.uid));
+
+        // Only add the current user if they are not already in the LikedMeList
+        const updatedLikedMeList = userAlreadyLiked ? LikedMeList : [...LikedMeList, { [currentUser.firstName]: auth.currentUser.uid }];
+
+        await updateDoc(likedUserRef, { likedMeUsers: updatedLikedMeList });
+        console.log('INFO: new likeMe saved successfully');
         const likedUserDoc = await getDoc(matchingDataRef);
 
         // Check if the document exists
@@ -302,17 +322,32 @@ export async function saveLikeMe(uid) {
 
 
 export async function checkForMatch(likedUser) {
-    try {
-        const userMatchTables = await getMatchTables();
-        const LikedMeList = userMatchTables.likedMeUsers || [];
-        // Check if the likedUser is in the LikedMeList
-        return LikedMeList.some(map => {
-            return Object.values(map).includes(likedUser.id);
-        });
-    } catch (error) {
-        console.error('ERROR: Failed to check for match:', error.message);
-        return false; // Return false to indicate failure gracefully
+    console.log('checkForMatch');
+    const currentUser = await getCurrentUser();
+    const LikedMeList = currentUser.likedMeUsers || [];
+    console.log('LikedMeList:', LikedMeList);
+
+    // Iterate over each object in the LikedMeList array
+    for (const obj of LikedMeList) {
+        // Check if the values of the object match the likedUser
+        if (Object.values(obj).includes(likedUser)) {
+            console.log('INFO: it\'s a match');
+            console.log('Liked User:', likedUser);
+            return true;
+        }
     }
+
+    console.log('INFO: it\'s not a match');
+    return false;
+}
+
+export async function saveAdditionalInfo(occupation, desireMatch) {
+    const userId = auth.currentUser.uid;
+    await updateDoc(doc(db, 'users', userId), {
+        occupation: occupation,
+        desireMatch: desireMatch
+    }).then(() => console.log('INFO: User data updated successfully'))
+        .catch((error) => console.error('WARNING: Error updating user data:', error))
 }
 
 export const createConversation = async (secondUserId) => {

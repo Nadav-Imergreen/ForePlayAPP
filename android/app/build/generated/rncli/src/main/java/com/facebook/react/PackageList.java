@@ -33,6 +33,8 @@ import com.swmansion.gesturehandler.RNGestureHandlerPackage;
 import com.imagepicker.ImagePickerPackage;
 // react-native-linear-gradient
 import com.BV.LinearGradient.LinearGradientPackage;
+// react-native-maps
+import com.rnmaps.maps.MapsPackage;
 // react-native-reanimated
 import com.swmansion.reanimated.ReanimatedPackage;
 // react-native-safe-area-context
@@ -99,6 +101,7 @@ public class PackageList {
       new RNGestureHandlerPackage(),
       new ImagePickerPackage(),
       new LinearGradientPackage(),
+      new MapsPackage(),
       new ReanimatedPackage(),
       new SafeAreaContextPackage(),
       new RNScreensPackage(),

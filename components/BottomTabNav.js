@@ -1,8 +1,10 @@
-import React from "react";
+import React, {useState, useEffect, useLayoutEffect} from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {Alert, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import { AiMatchesScreen, MatchesScreen, UserInfoScreen } from "../screens";
+
 import ConversationsScreen from "../screens/conversationsScreen";
+
 const Tab = createBottomTabNavigator();
 
 const screenOptions = {

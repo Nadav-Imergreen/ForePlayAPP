@@ -6,6 +6,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { collection, query, orderBy, onSnapshot, addDoc, where } from 'firebase/firestore';
 import { createMassage, getCurrentUser } from "../services/firebaseDatabase";
 
+
 const ChatScreen = ({ navigation, route }) => {
     const { conversationID } = route.params;
     const [messages, setMessages] = useState([]);
