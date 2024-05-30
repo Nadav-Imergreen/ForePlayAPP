@@ -1,16 +1,34 @@
 import OpenAI from "openai";
-import {getCurrentUser, getUserMessages} from "./firebaseDatabase";
-import {auth} from "./config";
+import { getCurrentUser, getUserMessages } from "./firebaseDatabase";
+import { auth } from "./config";
 
 // Function to match two individuals based on provided information
 export async function matchAI(userSuggestions) {
+    // Initialize the OpenAI API client with your API key and correct URL
+    const openai = new OpenAI({ apiKey: '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' });
+    const path = '/chat/completions';
+    openai.baseURL = 'https://api.openai.com/v1';
+    openai.buildURL = () => `${openai.baseURL}${path}`;
+
     try {
         // Get the current user
         const currentUser = await getCurrentUser();
 
+        const profileBuilt1 = await buildProfileFromMessages(currentUser, openai);
+
         // Prepare a list of promises for parallel execution
         const matchPromises = userSuggestions.map(async (secondUserDoc) => {
-            return await get_matching_rate(currentUser, secondUserDoc);
+            const profileBuilt2 = await buildProfileFromMessages(secondUserDoc, openai);
+            const { matchRate, messageContent } = await get_matching_rate(profileBuilt1, profileBuilt2, openai);
+            return {
+                usersNames: `${currentUser.name} & ${secondUserDoc.name}`,
+                matchRate: matchRate,
+                aiMessage: messageContent,
+                userId: secondUserDoc.id,
+                firstName: secondUserDoc.firstName,
+                images: secondUserDoc.images,
+                age: secondUserDoc.age,
+            };
         });
 
         // Wait for all match promises to resolve
@@ -25,28 +43,18 @@ export async function matchAI(userSuggestions) {
     }
 }
 
-const get_matching_rate = async (profile1, profile2) => {
-
-    // Initialize the OpenAI API client with your API key and correct URL
-    const openai = new OpenAI({ apiKey: 'api-key' });
-    const path = '/chat/completions';
-    openai.baseURL = 'https://api.openai.com/v1';
-    openai.buildURL = () => `${openai.baseURL}${path}`;
-
+const get_matching_rate = async (profile1, profile2, openai) => {
     try {
-        const profileBuilt1 = await buildProfileFromMessages(profile1, openai);
-        const profileBuilt2 = await buildProfileFromMessages(profile2, openai);
-
         // Send a request to the OpenAI API to generate completions for the conversation prompt
-        const completion = await openai.chat.completions.create({
+        const completion = await openai.completions.create({
             model: "gpt-3.5-turbo",
             messages: [
-                { role: "system", content: "You are a helpful assistant that compares dating profiles and calculates a matching rate." },
-                { role: "user", content: `Profile 1: ${JSON.stringify(profile1)}` },
-                { role: "user", content: `Profile 1: profile built from user1 messages: ${JSON.stringify(profileBuilt1)}` },
-                { role: "user", content: `Profile 2: ${JSON.stringify(profile2)}` },
-                { role: "user", content: `Profile 2: profile built from user2 messages: ${JSON.stringify(profileBuilt2)}` },
-                { role: "user", content: "Based on these profiles, calculate a matching rate between 0% and 100% and explain why in a short but informative message ." }
+                { role: "system", content: "Answer in a consistent style" },
+                { role: "system", content: "You are a helpful assistant that knows how to compare dating profiles and calculate a matching rate. When asked to rate two profiles' match, you will reply with one paragraph about the couple's compatibility, including a percentage rating from 1% to 100%." },
+                { role: "user", content: "Based on the profiles I will give you - user1 and user2, calculate a matching rate between 1% and 100% and explain why in a short but informative message. To help you with more data on user profiling, I built a profile for every user based on their chat messages in my dating app. I will give this profile as 'profile built from user messages'" },
+                { role: "user", content: `user 1: ${JSON.stringify(profile1)}` },
+                { role: "user", content: `user 2: ${JSON.stringify(profile2)}` },
+                { role: "assistant", content: "Nataly loves painting and spending time in nature, often meeting up with large groups of friends. This suggests she is a creative and outgoing person who enjoys outdoor activities. In contrast, Nadav prefers indoor activities, such as reading books and watching TV, indicating he is a quiet and introspective individual. Both Nataly and Nadav are looking for a long-term relationship, although they have an age gap. Despite their different lifestyles, they both share a love for enamels. Based on their interests and personalities, I rate their compatibility at 67%." }
             ]
         });
 
@@ -63,16 +71,8 @@ const get_matching_rate = async (profile1, profile2) => {
         const matchRate = matchRateMatch ? parseFloat(matchRateMatch[0]) : 0;
 
         console.log('res - matchRate: ', matchRate);
+        return { matchRate: matchRate, aiMessage: messageContent };
 
-        return {
-            usersNames: `${profile1.name} & ${profile2.name}`,
-            matchRate: matchRate,
-            aiMessage: messageContent,
-            userId: profile2.id,
-            firstName: profile2.firstName,
-            images: profile2.images,
-            age: profile2.age,
-        };
     } catch (error) {
         console.error('Error in get_matching_rate function:', error);
         return null; // Return null to indicate failure gracefully
@@ -81,14 +81,17 @@ const get_matching_rate = async (profile1, profile2) => {
 
 const buildProfileFromMessages = async (profile, openai) => {
     try {
+        const basicProfile = `${profile.firstName}, ${profile.age}. A paragraph about myself: ${profile.aboutMe}. What I'm looking for: ${profile.desireMatch}`;
         const userMessages = await getUserMessages(profile.userId);
+
         // Send a request to the OpenAI API to generate completions for the conversation prompt
-        const completion = await openai.chat.completions.create({
+        const completion = await openai.completions.create({
             model: "gpt-3.5-turbo",
             messages: [
-                { role: "system", content: "You are a helpful assistant that build a person profile using data from is text messages in a dating app conversations." },
-                { role: "user", content: `person text messages:: ${JSON.stringify(userMessages)}` },
-                { role: "user", content: "Based on these messages, build a profile that describe this person nature, and can help you letter fit a good match for this person."}
+                { role: "system", content: "You are a helpful assistant that can build a person's profile and analyze their nature using data from their text messages in a dating app conversation and their basic profile that they wrote themselves." },
+                { role: "user", content: "Based on this data, build a user profile that describes this person's nature and can help you later determine if another user profile is a good dating match for this person." },
+                { role: "user", content: `Person's basic profile: ${JSON.stringify(basicProfile)}` },
+                { role: "user", content: `Person's text messages: ${JSON.stringify(userMessages)}` }
             ]
         });
 
@@ -101,7 +104,7 @@ const buildProfileFromMessages = async (profile, openai) => {
         return messageContent;
 
     } catch (error) {
-        console.error('Error in get_matching_rate function:', error);
+        console.error('Error in buildProfileFromMessages function:', error);
         return null; // Return null to indicate failure gracefully
     }
 }
