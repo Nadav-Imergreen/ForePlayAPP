@@ -5,7 +5,7 @@ import { auth } from "./config";
 // Function to match two individuals based on provided information
 export async function matchAI(userSuggestions) {
     // Initialize the OpenAI API client with your API key and correct URL
-    const openai = new OpenAI({ apiKey: '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' });
+    const openai = new OpenAI({ apiKey: 'api_key' });
     const path = '/chat/completions';
     openai.baseURL = 'https://api.openai.com/v1';
     openai.buildURL = () => `${openai.baseURL}${path}`;
