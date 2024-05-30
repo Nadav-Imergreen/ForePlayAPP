@@ -216,6 +216,7 @@ export async function saveUrl(url) {
 export async function saveLike(uid) {
     const currentUser = auth.currentUser.uid;
     const matchingDataRef = doc(db, 'matchingData', currentUser);
+    const currentUserRef = doc(db, 'users', currentUser);
 
     try {
         // Get the current user's data
@@ -230,7 +231,6 @@ export async function saveLike(uid) {
 
         // Append the new liked user if it's not already present
         const updatedLikedUsers = alreadyLiked ? likedUsers : [...likedUsers, { [likedUser.firstName]: uid }];
-        await updateDoc(matchingDataRef, {likedMeUsers: updatedLikedList});
 
         // Update the user document with the updated liked users list
         await updateDoc(currentUserRef, { likedUsers: updatedLikedUsers });
@@ -241,9 +241,7 @@ export async function saveLike(uid) {
     }
 }
 
-
 export async function saveSeen(uid) {
-
     const matchingDataRef = collection(db, 'matchingData');
 
     try {
@@ -257,24 +255,22 @@ export async function saveSeen(uid) {
         // Check if the seen user's UID already exists in the seenUsers array
         const alreadySeen = seenUsers.some(obj => Object.values(obj).includes(uid));
 
-        // Update the user document with the updated image URLs
-        const docID = auth.currentUser.uid;
-        // Create a new conversation with the two members and the current date
-        await setDoc(doc(matchingDataRef, docID), {likedUsers: updatedSeenList, userId: docID})
-            .then(() => console.log('matchingData saved',))
-            .catch((error) => console.error('WARNING: error in save matchingData: ', error));
         // Append the new seen user if it's not already present
         const updatedSeenUsers = alreadySeen ? seenUsers : [...seenUsers, { [seenUser.firstName]: uid }];
 
-        // Update the user document with the updated seen users list
-        await updateDoc(currentUserRef, { seenUsers: updatedSeenUsers });
+        // Update the user document with the updated image URLs
+        const docID = auth.currentUser.uid;
+
+        // Create a new document or update the existing one
+        await setDoc(doc(matchingDataRef, docID), { seenUsers: updatedSeenUsers, userId: docID }, { merge: true })
+            .then(() => console.log('matchingData saved'))
+            .catch((error) => console.error('WARNING: error in save matchingData: ', error));
 
         console.log('INFO: Seen user saved successfully');
     } catch (error) {
         console.error('ERROR: Failed to save seen user:', error.message);
     }
 }
-
 
 export async function saveLikeMe(uid) {
     const matchingDataRef = doc(db, 'matchingData', uid);
@@ -283,36 +279,34 @@ export async function saveLikeMe(uid) {
         const likedUser = await getUser(uid);
         const currentUser = await getCurrentUser();
 
-        const LikedMeList = likedUser.likedMeUsers || [];
+        const likedMeList = likedUser.likedMeUsers || [];
 
-        // Check if the current user's UID is already in the LikedMeList
-        const userAlreadyLiked = LikedMeList.some(entry => Object.values(entry).includes(auth.currentUser.uid));
+        // Check if the current user's UID is already in the likedMeList
+        const userAlreadyLiked = likedMeList.some(entry => Object.values(entry).includes(auth.currentUser.uid));
 
-        // Only add the current user if they are not already in the LikedMeList
-        const updatedLikedMeList = userAlreadyLiked ? LikedMeList : [...LikedMeList, { [currentUser.firstName]: auth.currentUser.uid }];
+        // Only add the current user if they are not already in the likedMeList
+        const updatedLikedMeList = userAlreadyLiked ? likedMeList : [...likedMeList, { [currentUser.firstName]: auth.currentUser.uid }];
 
-        await updateDoc(likedUserRef, { likedMeUsers: updatedLikedMeList });
-        console.log('INFO: new likeMe saved successfully');
+        await updateDoc(matchingDataRef, { likedMeUsers: updatedLikedMeList });
+
         const likedUserDoc = await getDoc(matchingDataRef);
 
         // Check if the document exists
         if (!likedUserDoc.exists()) {
             // If the document does not exist, create it with the initial likedMeUsers field
             await setDoc(matchingDataRef, {
-                likedMeUsers: [{
-                    [currentUser.firstName]: auth.currentUser.uid,
-                    userId: uid
-                }]
+                likedMeUsers: [{ [currentUser.firstName]: auth.currentUser.uid }],
+                userId: uid
             });
             console.log('INFO: new likeMe saved successfully (created new document)');
         } else {
             // If the document exists, update it
-            const LikedMeList = likedUser.likedMeUsers || [];
-            const updatedLikedMeList = LikedMeList.find(user => Object.values(user)[0] === auth.currentUser.uid)
-                ? LikedMeList
-                : [...LikedMeList, {[currentUser.firstName]: auth.currentUser.uid}];
-            // const updatedLikedMeList = [...LikedMeList].includes(currentUser) ? [...LikedMeList] : [...LikedMeList, {[currentUser.firstName]: auth.currentUser.uid}];
-            await updateDoc(matchingDataRef, {likedMeUsers: updatedLikedMeList, userId: uid});
+            const likedMeList = likedUserDoc.data().likedMeUsers || [];
+            const updatedLikedMeList = likedMeList.find(user => Object.values(user)[0] === auth.currentUser.uid)
+                ? likedMeList
+                : [...likedMeList, { [currentUser.firstName]: auth.currentUser.uid }];
+
+            await updateDoc(matchingDataRef, { likedMeUsers: updatedLikedMeList, userId: uid });
             console.log('INFO: new likeMe saved successfully');
         }
     } catch (error) {
