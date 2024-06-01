@@ -119,7 +119,7 @@ const UserInfoScreen = () => {
 
                         <View style={styles.row}>
                             <Text style={styles.preferences}>Age: </Text>
-                            <Text style={styles.lable}>{userData.partner_age_bottom_limit} - {userData.partner_age_upper_limit}</Text>
+                            <Text style={styles.lable}>{userData.preferredAgeRange[0]} - {userData.preferredAgeRange[1]}</Text>
                         </View>
 
                         <View style={{flexDirection: 'row', alignItems: "center", marginBottom: 10}}>

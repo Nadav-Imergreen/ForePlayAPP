@@ -49,14 +49,13 @@ export async function saveUserInfo(data) {
         .catch((error) => console.error('WARNING: Error updating user data:', error))
 }
 
-export async function saveUserPreferences(gender, age_bottom_limit, age_upper_limit, radius, location) {
+export async function saveUserPreferences(gender, ageRange, radius, location) {
     // Update the document with the new user preferences
     const userId = auth.currentUser.uid;
     console.log(userId);
     await updateDoc(doc(db, 'users', userId), {
         partner_gender: gender,
-        partner_age_bottom_limit: age_bottom_limit,
-        partner_age_upper_limit: age_upper_limit,
+        preferredAgeRange: ageRange,
         radius: radius,
         location: location
     })
@@ -117,7 +116,7 @@ async function getUser(uid) {
 export async function getAllUsers(gender) {
     try {
         const coll = collection(db, "users");
-        const q = query(coll, where("sex", "==", gender));
+        const q = query(coll, where("sex", "!=", gender));
         return await getDocs(q);
     } catch {
         throw Error("WARNING: Docs not found!")
@@ -126,8 +125,8 @@ export async function getAllUsers(gender) {
 
 export async function getUsersBy(currentUser) {
     try {
-        const minAge = currentUser.partner_age_bottom_limit.toString();
-        const maxAge = currentUser.partner_age_upper_limit.toString();
+        const minAge = currentUser.preferredAgeRange[0].toString();
+        const maxAge = currentUser.preferredAgeRange[1].toString();
         const defaultGender = currentUser.sex === 'male' ? 'female' : 'male';
         const coll = collection(db, "users");
         const q = query(coll,

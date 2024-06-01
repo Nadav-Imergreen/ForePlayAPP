@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Image, Text, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
-import { getCurrentUser, getUsersBy, saveSeen, saveLike, saveLikeMe, checkForMatch, createConversation } from "../services/firebaseDatabase";
+import { getCurrentUser, getUsersBy, getAllUsers, saveSeen, saveLike, saveLikeMe, checkForMatch, createConversation } from "../services/firebaseDatabase";
 import ItsMatchModal from "../components/ItsMatchModal"
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -27,9 +27,11 @@ const MatchesScreen = () => {
               // Get current user info
               const currentUser = await getCurrentUser().catch((err) => console.log(err));
               setCurrentUser(currentUser);
+              console.log(currentUser);
   
               // Only proceed to fetch suggested users if preferences are available
               const usersSnapshot = await getUsersBy(currentUser);
+              //const usersSnapshot = await getAllUsers(currentUser.sex);
   
               // Get IDs of users already seen by the current user
               const seenUserIds = currentUser.seenUsers ? currentUser.seenUsers.map(user => Object.values(user)[0]) : [];
@@ -46,6 +48,10 @@ const MatchesScreen = () => {
                   // Calculate distance between current user and suggested user
                   const distance = Math.round(calculateDistance(currentUser.location.latitude, currentUser.location.longitude, user.location.latitude, user.location.longitude));
   
+                // Log the user's first name and last name
+                console.log(`Processing user: ${user.firstName} ${user.lastName} ` + distance);
+
+
                   // Check if the user is within the radius preference and not already seen
                   if (distance <= currentUser.radius[0] && !seenUserIds.includes(user.userId)) {
                       // If within radius and not already seen, add distance to user object
@@ -288,7 +294,7 @@ const MatchesScreen = () => {
                   <Image style={styles.image} resizeMode='contain' source={{ uri: suggestedUsers[nextIndexRef.current].images[0] }} />
                   <View style={styles.photosIndicator}>
                     {suggestedUsers[nextIndexRef.current].images.map((_, index) => (
-                      <View key={index} style={[styles.indicator, index === photoIndex ? styles.filledIndicator : styles.unfilledIndicator]} />
+                      <View key={index} style={[styles.indicator, index === 0 ? styles.filledIndicator : styles.unfilledIndicator]} />
                     ))}
                   </View>
                 </View>

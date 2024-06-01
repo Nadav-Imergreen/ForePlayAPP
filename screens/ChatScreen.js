@@ -7,6 +7,7 @@ import { collection, query, orderBy, onSnapshot, addDoc, where } from 'firebase/
 import { createMassage, getCurrentUser } from "../services/firebaseDatabase";
 
 
+
 const ChatScreen = ({ navigation, route }) => {
     const { conversationID } = route.params;
     const [messages, setMessages] = useState([]);

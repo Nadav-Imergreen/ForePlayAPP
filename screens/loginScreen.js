@@ -99,7 +99,8 @@ const LoginScreen = () => {
                         <CustomFloatingLabelInput
                                     label="Email Address"
                                     value={email}
-                                    onChangeText={setEmail}
+                                    onChangeText={text => setEmail(text.trim())}
+                                    keyboardType="email-address"
                                 />
 
                         <CustomFloatingLabelInput
