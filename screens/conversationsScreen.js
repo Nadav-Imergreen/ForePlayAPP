@@ -29,7 +29,6 @@ const ConversationsScreen = ({ navigation }) => {
     }, []);
 
     const renderConversationItem = ({ item }) => {
-        const otherUser = item.members.find(member => member !== auth.currentUser.uid);
         console.log('item uid: ', item.id);
         return (
             <TouchableOpacity onPress={() => navigation.navigate('Chat', { conversationID: item.id })}>

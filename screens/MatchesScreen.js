@@ -1,7 +1,17 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Image, Text, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
-import { getCurrentUser, getUsersBy, getAllUsers, saveSeen, saveLike, saveLikeMe, checkForMatch, createConversation } from "../services/firebaseDatabase";
-import ItsMatchModal from "../components/ItsMatchModal"
+import { View, Image, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
+import {
+    getAllUsers,
+    getCurrentUser,
+    saveUserLocation,
+    getUsersBy,
+    saveSeen,
+    saveLike,
+    saveLikeMe,
+    checkForMatch,
+    createConversation
+} from "../services/firebaseDatabase";
+
 import LinearGradient from 'react-native-linear-gradient';
 
 const MatchesScreen = () => {
@@ -11,7 +21,7 @@ const MatchesScreen = () => {
     const [currentIndex, setCurrentIndex] = useState(0); // State to track current index 
     const [noResults, setNoResults] = useState(false);
     const currentIndexRef = useRef(0); // Using a ref to keep track of the current index
-    const nextIndexRef = useRef(1); 
+    const nextIndexRef = useRef(1);
     const [photoIndex, setPhotoIndex] = useState(0);
     const [showLike, setShowLike] = useState(false);
     const [showDislike, setShowDislike] = useState(false);
@@ -19,7 +29,7 @@ const MatchesScreen = () => {
     const [matchedUser, setMatchedUser] = useState(null);
     const [likes, setLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
- 
+
 
     useEffect(() => {
       const fetchData = async () => {
@@ -27,30 +37,24 @@ const MatchesScreen = () => {
               // Get current user info
               const currentUser = await getCurrentUser().catch((err) => console.log(err));
               setCurrentUser(currentUser);
-              console.log(currentUser);
-  
+
               // Only proceed to fetch suggested users if preferences are available
               const usersSnapshot = await getUsersBy(currentUser);
-              //const usersSnapshot = await getAllUsers(currentUser.sex);
-  
+
               // Get IDs of users already seen by the current user
               const seenUserIds = currentUser.seenUsers ? currentUser.seenUsers.map(user => Object.values(user)[0]) : [];
               console.log('seenUserIds: ' + seenUserIds);
-            
-  
+
+
               // Combined operation to map documents, calculate distance, filter by radius preference, and filter out seen users
               const usersWithDistance = usersSnapshot.docs.map(doc => {
                   const user = {
                       id: doc.id,
                       ...doc.data()
                   };
-  
+
                   // Calculate distance between current user and suggested user
                   const distance = Math.round(calculateDistance(currentUser.location.latitude, currentUser.location.longitude, user.location.latitude, user.location.longitude));
-  
-                // Log the user's first name and last name
-                console.log(`Processing user: ${user.firstName} ${user.lastName} ` + distance);
-
 
                   // Check if the user is within the radius preference and not already seen
                   if (distance <= currentUser.radius[0] && !seenUserIds.includes(user.userId)) {
@@ -62,13 +66,13 @@ const MatchesScreen = () => {
                       return null;
                   }
               }).filter(user => user !== null); // Remove null entries from the array
-  
+
               if (usersWithDistance.length > 0) {
                   setSuggestedUsers(usersWithDistance);
               } else {
                   setNoResults(true);
               }
-  
+
           } catch (error) {
               console.error("Failed to fetch suggested users:", error.message);
               Alert.alert(
@@ -79,7 +83,7 @@ const MatchesScreen = () => {
               );
           }
       };
-  
+
       fetchData();
   }, []);
 
@@ -102,11 +106,11 @@ const MatchesScreen = () => {
 
     useEffect(() => {
       handleLike();
-  }, [likes]); 
+  }, [likes]);
 
     useEffect(() => {
       handleDislike();
-    }, [dislikes]); 
+    }, [dislikes]);
 
     // Function to handle navigation to the next profile.
     const nextProfile = () => {
@@ -332,7 +336,7 @@ const MatchesScreen = () => {
                     <View style={styles.nextOverlay} />
                   </TouchableWithoutFeedback>
                 </View>
-              
+
                 <View style={styles.overlayContainer}>
                   <LinearGradient
                     colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)']} // Gradient colors from white to black

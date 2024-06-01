@@ -103,6 +103,18 @@ export async function getCurrentUser() {
     }
 }
 
+export async function getMatchTables() {
+    try {
+        const userId = auth.currentUser.uid;
+        const docRef = doc(db, "matchingData", userId);
+        const docSnap = await getDoc(docRef);
+        return docSnap.data();
+    } catch {
+        throw Error("WARNING: Doc not found!")
+    }
+}
+
+
 async function getUser(uid) {
     try {
         const docRef = doc(db, "users", uid);
@@ -131,8 +143,8 @@ export async function getUsersBy(currentUser) {
         const coll = collection(db, "users");
         const q = query(coll,
             where("sex", "==", currentUser.partner_gender ? currentUser.partner_gender : defaultGender),
-            where('age', '<=', maxAge),
-            where('age', '>=', minAge));
+            where('age', '<=', maxAge ? maxAge : (currentUser.age + 7)),
+            where('age', '>=', minAge ? minAge : currentUser.age / 2 + 7));
         return await getDocs(q);
     } catch (error) {
         throw new Error("WARNING: Error retrieving documents: " + error.message);
@@ -202,7 +214,8 @@ export async function saveUrl(url) {
 
 export async function saveLike(uid) {
     const currentUser = auth.currentUser.uid;
-    const currentUserRef = doc(db, 'users', currentUser); // Reference to the user document
+    const matchingDataRef = doc(db, 'matchingData', currentUser);
+    const currentUserRef = doc(db, 'users', currentUser);
 
     try {
         // Get the current user's data
@@ -227,10 +240,8 @@ export async function saveLike(uid) {
     }
 }
 
-
 export async function saveSeen(uid) {
-    const currentUser = auth.currentUser.uid;
-    const currentUserRef = doc(db, 'users', currentUser); // Reference to the user document
+    const matchingDataRef = collection(db, 'matchingData');
 
     try {
         // Get the current user's data
@@ -246,8 +257,13 @@ export async function saveSeen(uid) {
         // Append the new seen user if it's not already present
         const updatedSeenUsers = alreadySeen ? seenUsers : [...seenUsers, { [seenUser.firstName]: uid }];
 
-        // Update the user document with the updated seen users list
-        await updateDoc(currentUserRef, { seenUsers: updatedSeenUsers });
+        // Update the user document with the updated image URLs
+        const docID = auth.currentUser.uid;
+
+        // Create a new document or update the existing one
+        await setDoc(doc(matchingDataRef, docID), { seenUsers: updatedSeenUsers, userId: docID }, { merge: true })
+            .then(() => console.log('matchingData saved'))
+            .catch((error) => console.error('WARNING: error in save matchingData: ', error));
 
         console.log('INFO: Seen user saved successfully');
     } catch (error) {
@@ -256,26 +272,47 @@ export async function saveSeen(uid) {
 }
 
 export async function saveLikeMe(uid) {
-    const likedUserRef = doc(db, 'users', uid); // Reference to the user document
+    const matchingDataRef = doc(db, 'matchingData', uid);
 
     try {
         const likedUser = await getUser(uid);
         const currentUser = await getCurrentUser();
 
-        const LikedMeList = likedUser.likedMeUsers || [];
+        const likedMeList = likedUser.likedMeUsers || [];
 
-        // Check if the current user's UID is already in the LikedMeList
-        const userAlreadyLiked = LikedMeList.some(entry => Object.values(entry).includes(auth.currentUser.uid));
+        // Check if the current user's UID is already in the likedMeList
+        const userAlreadyLiked = likedMeList.some(entry => Object.values(entry).includes(auth.currentUser.uid));
 
-        // Only add the current user if they are not already in the LikedMeList
-        const updatedLikedMeList = userAlreadyLiked ? LikedMeList : [...LikedMeList, { [currentUser.firstName]: auth.currentUser.uid }];
+        // Only add the current user if they are not already in the likedMeList
+        const updatedLikedMeList = userAlreadyLiked ? likedMeList : [...likedMeList, { [currentUser.firstName]: auth.currentUser.uid }];
 
-        await updateDoc(likedUserRef, { likedMeUsers: updatedLikedMeList });
-        console.log('INFO: new likeMe saved successfully');
+        await updateDoc(matchingDataRef, { likedMeUsers: updatedLikedMeList });
+
+        const likedUserDoc = await getDoc(matchingDataRef);
+
+        // Check if the document exists
+        if (!likedUserDoc.exists()) {
+            // If the document does not exist, create it with the initial likedMeUsers field
+            await setDoc(matchingDataRef, {
+                likedMeUsers: [{ [currentUser.firstName]: auth.currentUser.uid }],
+                userId: uid
+            });
+            console.log('INFO: new likeMe saved successfully (created new document)');
+        } else {
+            // If the document exists, update it
+            const likedMeList = likedUserDoc.data().likedMeUsers || [];
+            const updatedLikedMeList = likedMeList.find(user => Object.values(user)[0] === auth.currentUser.uid)
+                ? likedMeList
+                : [...likedMeList, { [currentUser.firstName]: auth.currentUser.uid }];
+
+            await updateDoc(matchingDataRef, { likedMeUsers: updatedLikedMeList, userId: uid });
+            console.log('INFO: new likeMe saved successfully');
+        }
     } catch (error) {
         console.error('ERROR: Failed to save new like:', error.message);
     }
 }
+
 
 export async function checkForMatch(likedUser) {
     console.log('checkForMatch');
@@ -319,7 +356,7 @@ export const createConversation = async (secondUserId) => {
         conversationName: secondUser.firstName,
     })
         .then(() => console.log('Conversation saved with ID: ', docID))
-        .catch((error) => console.error('WARNING: error in save conversation ID : ',docID,' ', error));
+        .catch((error) => console.error('WARNING: error in save conversation ID : ', docID, ' ', error));
 };
 
 
@@ -330,3 +367,22 @@ export const createMassage = async (data) => {
         .then(() => console.log('massage saved with ID: '))
         .catch((error) => console.error('WARNING: error in save massage: ', error));
 };
+
+// Function to get messages text for a given user
+export async function getUserMessages(userId) {
+
+    const messagesRef = collection(db, 'messages');
+    try {
+        // Create a query against the collection
+        const q = query(messagesRef, where("user._id", "==", userId));
+        const querySnapshot = await getDocs(q);
+
+        // Extract the message texts from the query results
+        return querySnapshot.docs.map(doc => ({
+            text: doc.data().text,
+        }));
+    } catch (error) {
+        console.error('ERROR: Failed to retrieve messages:', error.message);
+        return [];
+    }
+}
