@@ -298,7 +298,7 @@ const MatchesScreen = () => {
                   <Image style={styles.image} resizeMode='contain' source={{ uri: suggestedUsers[nextIndexRef.current].images[0] }} />
                   <View style={styles.photosIndicator}>
                     {suggestedUsers[nextIndexRef.current].images.map((_, index) => (
-                      <View key={index} style={[styles.indicator, index === photoIndex ? styles.filledIndicator : styles.unfilledIndicator]} />
+                      <View key={index} style={[styles.indicator, index === 0 ? styles.filledIndicator : styles.unfilledIndicator]} />
                     ))}
                   </View>
                 </View>

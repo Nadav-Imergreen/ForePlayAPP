@@ -29,8 +29,8 @@ const EditUserPreferenceScreen = ({ route, navigation }) => {
         setLoading(true);
         if (userData) {
             setGender(userData.partner_gender || 'Female');
-            const bottomLimit = userData.partner_age_bottom_limit || 18;
-            const upperLimit = userData.partner_age_upper_limit || 25;
+            const bottomLimit = userData.preferredAgeRange[0] || 18;
+            const upperLimit = userData.preferredAgeRange[1] || 25;
             setAgeRange([bottomLimit, upperLimit]);
             setRadius(userData.radius || 10);
             setLocation(userData.location || null);
@@ -55,7 +55,7 @@ const EditUserPreferenceScreen = ({ route, navigation }) => {
     const handleSave = async () => {
         setLoading(true);
         try {
-            await saveUserPreferences(gender, ageRange[0], ageRange[1], radius, location);
+            await saveUserPreferences(gender, ageRange, radius, location);
         } catch (error) {
             console.error('Error saving user data:', error.message);
         } finally {
