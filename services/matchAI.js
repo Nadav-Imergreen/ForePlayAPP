@@ -5,7 +5,7 @@ import { auth } from "./config";
 // Function to match two individuals based on provided information
 export async function matchAI(userSuggestions) {
     // Initialize the OpenAI API client with your API key and correct URL
-    const openai = new OpenAI({ apiKey: 'sk-proj-WILhjrGVwiGpje8Eowl2T3BlbkFJYXzsymGe47VlcT33t642' });
+    const openai = new OpenAI({ apiKey: '' });
     const path = '/chat/completions';
     openai.baseURL = 'https://api.openai.com/v1';
     openai.buildURL = () => `${openai.baseURL}${path}`;
@@ -51,10 +51,10 @@ const get_matching_rate = async (profile1, profile2, openai) => {
             messages: [
                 { role: "system", content: "Answer in a consistent style" },
                 { role: "system", content: "You are a helpful assistant that knows how to compare dating profiles and calculate a matching rate. When asked to rate two profiles' match, you will reply with one paragraph about the couple's compatibility, including a percentage rating from 1% to 100%." },
-                { role: "user", content: "Based on the profiles I will give you - user1 and user2, calculate a matching rate between 1% and 100% and explain why in a short but informative message. To help you with more data on user profiling, I built a profile for every user based on their chat messages in my dating app. I will give this profile as 'profile built from user messages'" },
+                { role: "user", content: "Based on the profiles I will give you - user1 and user2, calculate a matching rate between 1% and 100% and explain why in a short but informative message." },
                 { role: "user", content: `user 1: ${JSON.stringify(profile1)}` },
                 { role: "user", content: `user 2: ${JSON.stringify(profile2)}` },
-                { role: "assistant", content: "Nataly loves painting and spending time in nature, often meeting up with large groups of friends. This suggests she is a creative and outgoing person who enjoys outdoor activities. In contrast, Nadav prefers indoor activities, such as reading books and watching TV, indicating he is a quiet and introspective individual. Both Nataly and Nadav are looking for a long-term relationship, although they have an age gap. Despite their different lifestyles, they both share a love for enamels. Based on their interests and personalities, I rate their compatibility at 67%." }
+                { role: "assistant", content: "Nataly loves painting and spending time in nature, often meeting up with large groups of friends. This suggests she is a creative and outgoing person who enjoys outdoor activities. In contrast, Josef prefers indoor activities, such as reading books and watching TV, indicating he is a quiet and introspective individual. Both Nataly and Josef are looking for a long-term relationship, although they have an age gap. Despite their different lifestyles, they both share a love for enamels. Based on their interests and personalities, I rate their compatibility at 67%." }
             ]
         });
 

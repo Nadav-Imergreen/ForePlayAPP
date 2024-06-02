@@ -48,7 +48,7 @@ const HomeScreen = () => {
                     ...doc.data()
                 }));
 
-                console.log('usersData length: ', usersData.length);
+                console.log('number of profiles found: ', usersData.length);
 
                 if (usersData.length > 0) {
                     const matchedUsers = await matchAI(usersData);
