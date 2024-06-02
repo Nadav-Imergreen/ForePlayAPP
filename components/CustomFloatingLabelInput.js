@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Animated, StyleSheet, TextInput, View } from 'react-native';
 
-const CustomFloatingLabelInput = ({ label, value, onChangeText, secureTextEntry }) => {
+const CustomFloatingLabelInput = ({ label, value, onChangeText, secureTextEntry, keyboardType }) => {
   const floatingLabelAnimation = useRef(new Animated.Value(value ? 1 : 0)).current;
 
   const handleFocus = () => {
@@ -41,6 +41,7 @@ const CustomFloatingLabelInput = ({ label, value, onChangeText, secureTextEntry 
         value={value}
         secureTextEntry={secureTextEntry}
         onChangeText={onChangeText}
+        keyboardType={keyboardType}
         onFocus={handleFocus}
         onBlur={handleBlur}
       />

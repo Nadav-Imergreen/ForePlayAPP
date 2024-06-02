@@ -164,8 +164,8 @@ const Welcome = () => {
                                 <TouchableOpacity
                                     onPress={() => navigation.navigate("Login")}
                                     style={{ flexDirection: 'row', alignItems: 'center' }}
+                                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                                 >
-                                    
                                     <Text style={{ fontSize: vwFontSize(4), color: COLORS.white, fontWeight: 'bold', marginLeft: 4 }}>Login</Text>
                                 </TouchableOpacity>   
                             </>
