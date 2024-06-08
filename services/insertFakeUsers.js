@@ -2,8 +2,7 @@ import { auth, db } from './config'; // Make sure you have firebase configured a
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import axios from 'axios';
-import {createConversation, createMassage } from "./Databases /chat";
-import {getUser } from "./Databases /users";
+import {createConversation, createMassage } from "./Databases/chat";
 
 export const signup = async (email, password) => {
     try {

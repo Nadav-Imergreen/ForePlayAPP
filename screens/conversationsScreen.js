@@ -3,7 +3,7 @@ import { View, FlatList, StyleSheet, TouchableOpacity, Text } from 'react-native
 import { auth } from '../services/config';
 import { handleSignOut } from "../services/auth";
 import {registerAndSaveConversation, registerAndSaveMessages, registerAndSaveUsers} from '../services/insertFakeUsers';
-import { getUserConversations } from "../services/Databases /chat";
+import { getUserConversations } from "../services/Databases/chat";
 import ConversationItem from '../components/conversationItem';
 import {hardCodedConversations, hardCodedMessages, userProfiles} from "../services/hardCodedData";
 

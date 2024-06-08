@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Card, Title, Provider as PaperProvider } from 'react-native-paper';
-import { saveExtraInfo } from '../services/Databases /users';
+import { saveExtraInfo } from '../services/Databases/users';
 
 const AddInfoComponent = () => {
     const [aboutMe, setAboutMe] = useState('');

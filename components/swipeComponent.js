@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import {View, Image, Text, StyleSheet, Animated, PanResponder, TouchableWithoutFeedback} from "react-native";
-import {checkForMatch, saveLike, saveLikeMe, saveSeen} from "../services/Databases /matchingData";
+import {checkForMatch, saveLike, saveLikeMe, saveSeen} from "../services/Databases/matchingData";
 import LinearGradient from "react-native-linear-gradient";
 
 const swipeComponent = ({suggestedUsers}) => {
