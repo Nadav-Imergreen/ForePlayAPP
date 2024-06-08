@@ -121,9 +121,16 @@ export async function saveLikeMe(uid) {
 
 export async function checkForMatch(likedUser) {
     console.log('checkForMatch');
-    const currentUser = await getCurrentUser();
-    const LikedMeList = currentUser.likedMeUsers || [];
 
+    const matchingDataRef = doc(db, 'matchingData', auth.currentUser.uid);
+    const docSnap = await getDoc(matchingDataRef);
+    let LikedMeList = [];
+
+    if (docSnap.exists()) {
+        const data = docSnap.data();
+        LikedMeList = data.likedMeUsers ? data.likedMeUsers : [];
+    }
+    
     for (const obj of LikedMeList) {
         if (Object.values(obj).includes(likedUser)) {
             console.log('INFO: it\'s a match');
