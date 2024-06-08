@@ -2,6 +2,7 @@ import { auth, db } from './config'; // Make sure you have firebase configured a
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import axios from 'axios';
+import {createConversation, createMassage, getUser} from "./firebaseDatabase";
 
 
 export const signup = async (email, password) => {
@@ -70,5 +71,22 @@ export async function registerAndSaveUsers(userList) {
         } catch (error) {
             console.error(`WARNING: Error registering or saving data for user ${user.firstName} ${user.lastName}:`, error.message);
         }
+    }
+}
+
+export async function registerAndSaveConversation(conversationList) {
+    for (let conversation of conversationList) {
+
+        const [user1, user2] = conversation.members;
+        const firstUser = auth.currentUser.uid;
+        const secondUser = user1 === firstUser ? user2 : user1;
+
+        await createConversation(secondUser);
+    }
+}
+
+export async function registerAndSaveMessages(messagesList) {
+    for (let message of messagesList) {
+        await createMassage(message);
     }
 }

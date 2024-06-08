@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Image, ActivityIndicator, TouchableOpacity, Button } from 'react-native';
 import { getCurrentUser } from '../services/firebaseDatabase'; // Assuming this is the function to fetch user data
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
-import {handleSignOut} from "../services/auth";
 
 const UserInfoScreen = () => {
 
@@ -25,7 +24,7 @@ const UserInfoScreen = () => {
             if (user)
                 setUserData(user);
         } catch (error) {
-            console.error('Error fetching user data:', error.message);
+            console.error('Error fetching user info data:', error.message);
         } finally {
             setLoading(false);
         }

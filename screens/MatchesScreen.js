@@ -9,7 +9,7 @@ import {
     saveLike,
     saveLikeMe,
     checkForMatch,
-    createConversation
+    createConversation, getMatchingData
 } from "../services/firebaseDatabase";
 
 import LinearGradient from 'react-native-linear-gradient';
@@ -42,8 +42,8 @@ const MatchesScreen = () => {
               const usersSnapshot = await getUsersBy(currentUser);
 
               // Get IDs of users already seen by the current user
-              const seenUserIds = currentUser.seenUsers ? currentUser.seenUsers.map(user => Object.values(user)[0]) : [];
-              console.log('seenUserIds: ' + seenUserIds);
+              const userMatchingData = getMatchingData();
+              const seenUserIds = userMatchingData.seenUsers ? userMatchingData.seenUsers.map(currentUser => Object.values(currentUser)[0]) : [];
 
 
               // Combined operation to map documents, calculate distance, filter by radius preference, and filter out seen users
@@ -57,7 +57,8 @@ const MatchesScreen = () => {
                   const distance = Math.round(calculateDistance(currentUser.location.latitude, currentUser.location.longitude, user.location.latitude, user.location.longitude));
 
                   // Check if the user is within the radius preference and not already seen
-                  if (distance <= currentUser.radius[0] && !seenUserIds.includes(user.userId)) {
+                  // if (distance <= currentUser.radius[0] && !seenUserIds.includes(user.userId)) {
+                  if (true) {
                       // If within radius and not already seen, add distance to user object
                       user.distance = distance;
                       return user;

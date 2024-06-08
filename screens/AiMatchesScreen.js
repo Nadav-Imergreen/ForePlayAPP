@@ -1,55 +1,34 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-    View,
-    Image,
-    Text,
-    StyleSheet,
-    Alert,
-    Animated,
-    PanResponder,
-    TouchableWithoutFeedback,
-    TextInput,
-    Button
+    View, Image, Text, StyleSheet, Alert, TextInput, Button, TouchableOpacity, ScrollView
 } from "react-native";
-import {
-    checkForMatch,
-    getCurrentUser,
-    getUsersBy,
-    saveExtraInfo,
-    saveLike,
-    saveLikeMe,
-    saveSeen
-} from "../services/firebaseDatabase";
+import {createConversation, getCurrentUser, getUsersBy, saveExtraInfo} from "../services/firebaseDatabase";
 import { matchAI } from "../services/matchAI";
-import LinearGradient from "react-native-linear-gradient";
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
     const [currentIndex, setCurrentIndex] = useState(0); // State to track current index
     const [additionalInfoFilled, setAdditionalInfoFilled] = useState(false); // State to track if additional info is filled
-    const [noResults, setNoResults] = useState(false); // State to track current index
+    const [noResults, setNoResults] = useState(false); // State to track if there are no results
     const [aboutMe, setAboutMe] = useState('');
     const [desireMatch, setDesireMatch] = useState('');
+    const [expanded, setExpanded] = useState(false); // State for expanding view
+    const [isButtonActive, setIsButtonActive] = useState(false);
+    const [countdown, setCountdown] = useState(10);
 
     useEffect(() => {
         const fetchData = async () => {
-            // get current user info
             const currentUser = await getCurrentUser();
-            // Check if additional info is filled
             if (currentUser.aboutMe === '' || currentUser.desireMatch === '') {
                 setAdditionalInfoFilled(false);
             } else {
                 setAdditionalInfoFilled(true);
-                // Filter suggested users by age and distance here
                 const usersSnapshot = await getUsersBy(currentUser);
-
                 const usersData = usersSnapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data()
                 }));
-
-                console.log('usersData length: ', usersData.length);
-
+                console.log('number of profiles found: ', usersData.length);
                 if (usersData.length > 0) {
                     const matchedUsers = await matchAI(usersData);
                     setSuggestedUsers(matchedUsers);
@@ -58,8 +37,19 @@ const HomeScreen = () => {
                 }
             }
         };
-
         fetchData().catch(e => console.error("Failed to fetch suggested users:", e.message));
+
+        const intervalId = setInterval(() => {
+            setCountdown(prevCountdown => {
+                if (prevCountdown <= 1) {
+                    clearInterval(intervalId);
+                    setIsButtonActive(true); // Re-enable the button after the countdown
+                    return 0;
+                }
+                return prevCountdown - 1;
+            });
+        }, 1000);
+
     }, []);
 
     const handleAddInfo = async () => {
@@ -67,7 +57,6 @@ const HomeScreen = () => {
             Alert.alert('Error', 'Please fill in both fields.');
             return;
         }
-
         try {
             await saveExtraInfo(aboutMe, desireMatch);
             Alert.alert('Success', 'Information added successfully.');
@@ -80,109 +69,46 @@ const HomeScreen = () => {
         }
     };
 
-    // Function to handle navigation to the next profile.
-    const nextProfile = () => {
-        setCurrentIndex(currentIndex + 1);
+    const handleOpenConversation = async () => {
+        // Placeholder for opening a conversation
+        const conversationID =  await createConversation(suggestedUsers[currentIndex].userId);
+        console.log("conversationID: ", conversationID);
+        navigation.navigate('Chat', { conversationID: conversationID })
+        Alert.alert("Conversation", "This will open a conversation with the user.");
     };
 
-    // Function to handle navigation to the next profile.
-    const handleLike = () => {
-        const likedUser = suggestedUsers[currentIndex].userId;
-        saveSeen(likedUser)
-            .then(() => saveLike(likedUser)
-                .then(() => saveLikeMe(likedUser)
-                    .then(() => {
-                        checkForMatch(likedUser);
-                        nextProfile();
-                    })))
-    };
+    const handleFindNewMatch = () => {
+        if (!isButtonActive) {
+            return;
+        }
 
-    // Function to handle navigation to the next profile.
-    const handleDislike = () => {
-        saveSeen(suggestedUsers[currentIndex].userId).then(() => nextProfile())
-    };
+        setIsButtonActive(false); // Disable the button
 
-    const pan = useRef(new Animated.ValueXY()).current;
-    const [likePressed, setLikePressed] = useState(false);
-    const [dislikePressed, setDislikePressed] = useState(false);
+        // Set the countdown to 60 seconds
+        setCountdown(10);
 
-    const panResponder = useRef(
-        PanResponder.create({
-            onStartShouldSetPanResponder: () => true,
-            onPanResponderMove: (e, gesture) => {
-                if (gesture.dx > 120) { // Swipe right
-                    setLikePressed(true);
-                } else if (gesture.dx < -120) { // Swipe left
-                    setDislikePressed(true);
-                } else { // Reset button states if swipe is not significant
-                    setLikePressed(false);
-                    setDislikePressed(false);
+        // Start the countdown
+        const intervalId = setInterval(() => {
+            setCountdown(prevCountdown => {
+                if (prevCountdown <= 1) {
+                    clearInterval(intervalId);
+                    setIsButtonActive(true); // Re-enable the button after the countdown
+                    return 0;
                 }
-                Animated.event(
-                    [
-                        null,
-                        { dx: pan.x, dy: pan.y }
-                    ],
-                    { useNativeDriver: false }
-                )(e, gesture);
-            },
-            onPanResponderRelease: (e, gesture) => {
-                setLikePressed(false);
-                setDislikePressed(false);
-                if (gesture.dx > 120) { // Swipe right
-                    Animated.timing(pan, {
-                        toValue: { x: 500, y: 0 },
-                        duration: 300,
-                        useNativeDriver: false
-                    }).start(() => {
-                        setTimeout(() => {
-                            nextProfile();
-                            Animated.timing(pan, {
-                                toValue: { x: 0, y: 0 },
-                                duration: 0,
-                                useNativeDriver: false
-                            }).start();
-                        }, 500);
-                    });
-                } else if (gesture.dx < -120) { // Swipe left
-                    Animated.timing(pan, {
-                        toValue: { x: -500, y: 0 },
-                        duration: 300,
-                        useNativeDriver: false
-                    }).start(() => {
-                        setTimeout(() => {
-                            nextProfile();
-                            Animated.timing(pan, {
-                                toValue: { x: 0, y: 0 },
-                                duration: 0,
-                                useNativeDriver: false
-                            }).start();
-                        }, 500);
-                    });
-                } else { // Return card to center
-                    Animated.spring(pan, {
-                        toValue: { x: 0, y: 0 },
-                        useNativeDriver: false
-                    }).start();
-                }
-            }
-        })
-    ).current;
-
-    const rotate = pan.x.interpolate({
-        inputRange: [-500, 0, 500],
-        outputRange: ['-30deg', '0deg', '30deg']
-    });
-
-    const panStyle = {
-        transform: [{ translateX: pan.x }, { translateY: pan.y }, { rotate: rotate }]
+                return prevCountdown - 1;
+            });
+        }, 1000);
+        if(isButtonActive){
+            // Increment the current index to show the next suggested user after the countdown
+            setCurrentIndex(currentIndex + 1);
+            setExpanded(false);
+        }
     };
 
     return (
         <View style={styles.container}>
             {additionalInfoFilled ? (
                 <>
-                    {/* Display message when waiting for data */}
                     {suggestedUsers.length === 0 && (
                         <View style={styles.noSuggestionsContainer}>
                             <Text style={styles.noSuggestionsText}>
@@ -191,55 +117,44 @@ const HomeScreen = () => {
                         </View>
                     )}
 
-                    {/* Render suggested user */}
                     {suggestedUsers.length > 0 && currentIndex < suggestedUsers.length && (
                         <>
-                            <Animated.View style={[styles.card, panStyle]} {...panResponder.panHandlers}>
-                                {suggestedUsers[currentIndex].images[0] && (
-                                    <View style={styles.imageContainer}>
-                                        <Image style={styles.image} resizeMode='contain' source={{ uri: suggestedUsers[currentIndex].images[0] }} />
+                            <View style={styles.userContainer}>
+                                <Image source={{ uri: suggestedUsers[currentIndex].images[0] }} style={styles.image} />
+                                <Text style={styles.userName}>
+                                    {suggestedUsers[currentIndex].firstName}, {suggestedUsers[currentIndex].age}
+                                </Text>
+                                <Text style={styles.matchRate}>Match Rate: {suggestedUsers[currentIndex].matchRate}%</Text>
+                                <TouchableOpacity style={styles.button} onPress={() => setExpanded(!expanded)}>
+                                    <Text style={styles.buttonText}>Open AI Message</Text>
+                                </TouchableOpacity>
+                                {expanded && (
+                                    <View style={styles.expandedView}>
+                                        <ScrollView>
+                                            <Text style={styles.modalText}>
+                                                {suggestedUsers[currentIndex].messageContent}
+                                            </Text>
+                                            <TouchableOpacity
+                                                style={[styles.button, styles.buttonClose]}
+                                                onPress={() => setExpanded(false)}
+                                            >
+                                                <Text style={styles.buttonText}>Close</Text>
+                                            </TouchableOpacity>
+                                        </ScrollView>
                                     </View>
                                 )}
-                                <View style={styles.overlayContainer}>
-                                    <LinearGradient
-                                        colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)']} // Gradient colors from white to black
-                                        style={styles.gradientOverlay}
-                                    />
-                                    <Text style={styles.userName}>{suggestedUsers[currentIndex].firstName}, {suggestedUsers[currentIndex].age}</Text>
-                                </View>
-                            </Animated.View>
-
-                            <View style={styles.buttonContainer}>
-                                <TouchableWithoutFeedback
-                                    onPressIn={() => setDislikePressed(true)}
-                                    onPressOut={() => setDislikePressed(false)}
-                                    onPress={handleDislike}
-                                >
-                                    <Animated.View style={[styles.buttonBody, { backgroundColor: dislikePressed ? '#f06478' : '#ffffff', transform: [{ scale: dislikePressed ? 1.2 : 1 }] }]}>
-                                        <Image
-                                            source={dislikePressed ? require('../assets/dislike.png') : require('../assets/dislike_pressed.png')}
-                                            style={styles.buttonImage}
-                                        />
-                                    </Animated.View>
-                                </TouchableWithoutFeedback>
-
-                                <TouchableWithoutFeedback
-                                    onPressIn={() => setLikePressed(true)}
-                                    onPressOut={() => setLikePressed(false)}
-                                    onPress={handleLike}
-                                >
-                                    <Animated.View style={[styles.buttonBody, { backgroundColor: likePressed ? '#a4cdbd' : '#ffffff', transform: [{ scale: likePressed ? 1.2 : 1 }] }]}>
-                                        <Image
-                                            source={likePressed ? require('../assets/like.png') : require('../assets/like_pressed.png')}
-                                            style={styles.buttonImage}
-                                        />
-                                    </Animated.View>
-                                </TouchableWithoutFeedback>
+                                <TouchableOpacity style={[styles.button, styles.conversationButton]} onPress={handleOpenConversation}>
+                                    <Text style={styles.buttonText}>Start Conversation</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.button, styles.newMatchButton]} onPress={handleFindNewMatch}>
+                                    <Text style={styles.buttonText}>
+                                        {isButtonActive ? "Find New Match" : `Next Match in ${countdown} seconds`}
+                                    </Text>
+                                </TouchableOpacity>
                             </View>
                         </>
                     )}
 
-                    {/* Display message when end of suggestedUsers array is reached */}
                     {currentIndex >= suggestedUsers.length && currentIndex !== 0 && (
                         <View style={styles.noSuggestionsContainer}>
                             <Text style={styles.noSuggestionsText}>No more suggestions</Text>
@@ -248,26 +163,24 @@ const HomeScreen = () => {
                 </>
             ) : (
                 <View style={styles.formContainer}>
-                    <Text style={styles.additionalInfoText}>Please fill in additional information to activate AI matching.</Text>
+                    <Text style={styles.additionalInfoText}>
+                        Please fill in additional information to activate AI matching.
+                    </Text>
                     <View style={styles.card}>
                         <Text style={styles.title}>Add Information</Text>
                         <TextInput
-                            mode="outlined"
-                            label="About Me"
                             placeholder="Enter information about yourself"
                             value={aboutMe}
                             onChangeText={setAboutMe}
                             style={styles.input}
                         />
                         <TextInput
-                            mode="outlined"
-                            label="Desired Match"
                             placeholder="Describe your desired match"
                             value={desireMatch}
                             onChangeText={setDesireMatch}
                             style={styles.input}
                         />
-                        <Button title="Add Info" onPress={handleAddInfo} style={styles.button} />
+                        <Button title="Add Info" onPress={handleAddInfo} />
                     </View>
                 </View>
             )}
@@ -280,69 +193,64 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         paddingHorizontal: 10,
-        paddingBottom: 110
+        paddingBottom: 110,
     },
-    card: {
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'white',
-        borderRadius: 10,
-        elevation: 5,
-        marginTop: 20,
-    },
-    imageContainer: {
-        flex: 1,
+    userContainer: {
         alignItems: 'center',
-        overflow: 'hidden',
-        borderRadius: 10,
-        paddingBottom: 60
+        marginVertical: 20,
     },
-    image: {
-        flex: 1,
-        width: '100%',
-        aspectRatio: 1,
-    },
-    overlayContainer: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: '60%',
-        borderRadius: 10,
-        justifyContent: 'flex-end',
-    },
-    gradientOverlay: {
-        ...StyleSheet.absoluteFillObject,
-        borderRadius: 10,
+        image: {
+        width: 200,
+        height: 200,
+        borderRadius: 100,
+        marginBottom: 20,
     },
     userName: {
-        position: 'absolute',
-        bottom: 60,
-        left: 20,
-        color: 'white',
         fontSize: 24,
-        fontStyle: 'italic'
+        marginBottom: 10,
     },
-    buttonContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-        paddingHorizontal: 50,
-        paddingBottom: 20,
-        position: 'absolute',
-        bottom: 40,
+    matchRate: {
+        fontSize: 18,
+        color: 'gray',
+        marginBottom: 20,
     },
-    buttonImage: {
-        width: 40,
-        height: 40,
-    },
-    buttonBody: {
-        borderWidth: 1,
-        borderColor: 'transparent',
-        borderRadius: 50,
+    button: {
+        backgroundColor: '#2196F3',
         padding: 10,
-        backgroundColor: '#a4cdbd'
+        borderRadius: 5,
+        marginVertical: 10,
+    },
+    buttonText: {
+        color: 'white',
+    },
+    expandedView: {
+        width: '90%',
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 15,
+        marginTop: 10,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    buttonClose: {
+        backgroundColor: '#f194ff',
+        marginTop: 10,
+    },
+    conversationButton: {
+        backgroundColor: '#4CAF50', // Green
+    },
+    newMatchButton: {
+        backgroundColor: '#FF5722', // Orange
     },
     noSuggestionsContainer: {
         flex: 1,
@@ -357,7 +265,7 @@ const styles = StyleSheet.create({
         width: "100%",
         alignItems: "center",
         justifyContent: "center",
-        padding: 20
+        padding: 20,
     },
     additionalInfoText: {
         fontSize: 16,
@@ -372,10 +280,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     input: {
+        width: '100%',
+        borderColor: 'gray',
+        borderWidth: 1,
+        padding: 10,
         marginBottom: 16,
-    },
-    button: {
-        marginTop: 16,
+        borderRadius: 5,
     },
 });
 
