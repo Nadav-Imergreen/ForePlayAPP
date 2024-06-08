@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Image, Text, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
-import {getCurrentUser, getUsersBy,} from "../services/Databases/users";
+import {
+    getCurrentUser,
+    getUsersBy,
+} from "../services/Databases/users";
 import {saveSeen, saveLike, saveLikeMe, checkForMatch, getMatchingData} from "../services/Databases/matchingData";
 import {createConversation} from "../services/Databases/chat";
-import LinearGradient from 'react-native-linear-gradient';
 import ProfileCard from "../components/ProfileCard";
+import LinearGradient from 'react-native-linear-gradient';
 import ItsMatchModal from "../components/ItsMatchModal";
 
 const MatchesScreen = () => {
@@ -134,8 +137,8 @@ const MatchesScreen = () => {
               }
           })
           .then(() => saveSeen(likedUserId)
-              .then(() => saveLike(likedUserId)))
-            .then(() => saveLikeMe(likedUserId))
+          .then(() => saveLike(likedUserId)))
+          .then(() => saveLikeMe(likedUserId))
           .catch(error => {
               console.error('Error handling like action:', error);
           });
