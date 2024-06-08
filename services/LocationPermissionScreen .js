@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { PermissionsAndroid, Platform, StyleSheet, View, Text, TouchableOpacity, Alert, Image, ActivityIndicator } from 'react-native';
+import { PermissionsAndroid, StyleSheet, View, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
-import { saveUserLocation } from "./firebaseDatabase";
+import { saveUserLocation } from "./Databases /users";
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import Loader from '../services/loadingIndicator';
 

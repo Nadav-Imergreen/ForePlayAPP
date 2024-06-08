@@ -2,12 +2,10 @@ import React, {useState, useEffect} from 'react';
 import {
     Image,
     Text,
-    TextInput,
     TouchableOpacity,
     TouchableWithoutFeedback,
     Keyboard,
     View,
-    Pressable,
     useWindowDimensions,
     StyleSheet,
     I18nManager,
@@ -15,7 +13,6 @@ import {
     Dimensions,
     ImageBackground
 } from 'react-native';
-import { FloatingLabelInput } from 'react-native-floating-label-input';
 import {useNavigation} from '@react-navigation/native';
 import {login} from '../services/auth';
 import Loader from '../services/loadingIndicator';

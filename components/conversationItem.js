@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {auth} from '../services/config';
-import {getUser} from "../services/firebaseDatabase";
+import {getUser} from "../services/Databases /users";
 
 const ConversationItem = ({ item, navigation }) => {
     const [secondUserProfile, setSecondUserProfile] = useState(null);

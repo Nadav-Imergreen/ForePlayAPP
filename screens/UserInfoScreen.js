@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, Text, Image, ActivityIndicator, TouchableOpacity, Button } from 'react-native';
-import { getCurrentUser } from '../services/firebaseDatabase'; // Assuming this is the function to fetch user data
+import { getCurrentUser } from '../services/Databases /users'; // Assuming this is the function to fetch user data
 import {useNavigation, useFocusEffect} from '@react-navigation/native';
 
 const UserInfoScreen = () => {
