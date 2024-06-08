@@ -1,5 +1,6 @@
 import OpenAI from "openai";
-import {getCurrentUser, getUser, getUserMessages, saveAiProfile} from "./firebaseDatabase";
+import {getCurrentUser, getUser, saveAiProfile} from "./Databases/users";
+import { getUserMessages } from "./Databases/chat";
 import {auth} from "./config";
 
 

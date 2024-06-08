@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Alert } fr
 import { Picker } from '@react-native-picker/picker';
 import { Slider } from '@miblanchard/react-native-slider';
 import Geolocation from '@react-native-community/geolocation';
-import { saveUserPreferences } from '../services/firebaseDatabase';
+import { saveUserPreferences } from '../services/Databases/users';
 import { HeaderBackButton } from '@react-navigation/elements';
 import LocationPicker from '../components/LocationPicker'; // Make sure the path is correct
 import axios from 'axios';

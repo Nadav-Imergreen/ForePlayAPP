@@ -9,7 +9,6 @@ import {
     StyleSheet,
     I18nManager,
     useWindowDimensions,
-    KeyboardAvoidingView,
     TouchableWithoutFeedback,
     Keyboard,
     Dimensions,
@@ -17,7 +16,7 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {googleSignIn, signInWithFB, signup} from '../services/auth';
-import {saveUser} from '../services/firebaseDatabase';
+import {saveUser} from '../services/Databases/users';
 import Loader from '../services/loadingIndicator';
 import COLORS from '../constants/colors';
 import CustomFloatingLabelInput from '../components/CustomFloatingLabelInput'

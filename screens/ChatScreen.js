@@ -3,8 +3,9 @@ import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react'
 import { GiftedChat, InputToolbar } from 'react-native-gifted-chat';
 import { View, Text, StyleSheet, Button } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import {collection, query, orderBy, onSnapshot, addDoc, where, getDoc, doc} from 'firebase/firestore';
-import { createMassage, getCurrentUser } from "../services/firebaseDatabase";
+import {collection, query, orderBy, onSnapshot, where, getDoc, doc} from 'firebase/firestore';
+import { getCurrentUser } from "../services/Databases/users";
+import { createMassage } from "../services/Databases/chat";
 import {aiMessageGenerator } from "../services/matchAI";
 import {fineTuningMessi} from "../services/fineTuningMessi";
 

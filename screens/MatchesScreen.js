@@ -1,9 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Image, Text, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
+import { View, Image, Text, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
 import {
-    getAllUsers,
     getCurrentUser,
-    saveUserLocation,
     getUsersBy,
     saveSeen,
     saveLike,
@@ -11,7 +9,7 @@ import {
     checkForMatch,
     createConversation, getMatchingData
 } from "../services/firebaseDatabase";
-import ProfileCard from "../components/ProfileCard";
+
 import LinearGradient from 'react-native-linear-gradient';
 
 const MatchesScreen = () => {
@@ -60,8 +58,8 @@ const MatchesScreen = () => {
                   const distance = Math.round(calculateDistance(currentUser.location.latitude, currentUser.location.longitude, user.location.latitude, user.location.longitude));
 
                   // Check if the user is within the radius preference and not already seen
-                  // if (distance <= currentUser.radius[0] && !seenUserIds.includes(user.userId)) {
-                  if (true) {
+                  if (distance <= currentUser.radius[0] && !seenUserIds.includes(user.userId)) {
+
                       // If within radius and not already seen, add distance to user object
                       user.distance = distance;
                       return user;
@@ -129,23 +127,23 @@ const MatchesScreen = () => {
       if (suggestedUsers.length > 0){
         setShowLike(true);
         const likedUser = suggestedUsers[currentIndex];
-        const likedUserId = likedUser.userId
+        const likedUserId = likedUser.userId;
 
         // First, check for a match
-        //checkForMatch(likedUserId)
-        //  .then(isMatch => {
-        //      if (isMatch) {
-          //        setMatchedUser(likedUser);
-            //      setMatchVisible(true);
-              //    createConversation(likedUserId);
-             // }
-          //})
-          //.then(() => saveSeen(likedUserId))
-          //.then(() => saveLike(likedUserId))
-          //.then(() => saveLikeMe(likedUserId))
-          //.catch(error => {
-            //  console.error('Error handling like action:', error);
-          //});
+        checkForMatch(likedUserId)
+          .then(isMatch => {
+              if (isMatch) {
+                  setMatchedUser(likedUser);
+                  setMatchVisible(true);
+                  createConversation(likedUserId);
+              }
+          })
+          .then(() => saveSeen(likedUserId))
+          .then(() => saveLike(likedUserId))
+          .then(() => saveLikeMe(likedUserId))
+          .catch(error => {
+              console.error('Error handling like action:', error);
+          });
 
         // Adding a timeout
         setTimeout(() => {
