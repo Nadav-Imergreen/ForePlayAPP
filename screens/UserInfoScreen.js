@@ -31,11 +31,11 @@ const UserInfoScreen = () => {
     };
 
     const handleEditProfile = () => {
-        navigation.navigate("EditProfile", { userData: userData });
+        navigation.navigate("My profile", { userData: userData });
     };
 
     const handleEditPreferences = () => {
-        navigation.navigate("EditUserPreferenceScreen", { userData: userData });
+        navigation.navigate("My Preferences", { userData: userData });
     };
 
     const calculateCompletionPercentage = () => {
@@ -101,7 +101,7 @@ const UserInfoScreen = () => {
                         </View>
                     </View>
 
-                    <Text style={styles.labels}>My preferences</Text>
+                    <Text style={styles.labels}>My Preferences</Text>
 
                     <View style={styles.section}>
 

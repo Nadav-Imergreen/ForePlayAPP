@@ -10,7 +10,7 @@ import EditUserInfoScreen from './screens/EditUserInfoScreen';
 import EditUserPreferenceScreen from './screens/EditUserPreferenceScreen';
 import MatchesScreen from './screens/MatchesScreen';
 import AiMatchesScreen from './screens/AiMatchesScreen';
-import LocationPermissionScreen from './services/LocationPermissionScreen ';
+import LocationPermissionScreen from './screens/LocationPermissionScreen ';
 import BottomTabNav from './components/BottomTabNav';
 import {onAuthStateChanged} from 'firebase/auth';
 import {auth} from './services/config';
@@ -52,14 +52,14 @@ export default function App() {
                     <>
                         <Stack.Screen name="LocationPermission" component={LocationPermissionScreen} options={{headerShown: false}}/>
                         <Stack.Screen name="TabNavigator" component={BottomTabNav} options={{headerShown: false}}/>
-                        <Stack.Screen name="EditProfile" component={EditUserInfoScreen}/>
                         <Stack.Screen name="UserInfoScreen" component={UserInfoScreen}/>
-                        <Stack.Screen name="EditUserPreferenceScreen" component={EditUserPreferenceScreen}/>
+                        <Stack.Screen name="My profile" component={EditUserInfoScreen}/>
+                        <Stack.Screen name="My Preferences" component={EditUserPreferenceScreen}/>
                         <Stack.Screen name="Matches" component={MatchesScreen}/>
                         <Stack.Screen name="AiMatches" component={AiMatchesScreen}/>
                         <Stack.Screen name="AddInfo" component={AddInfoComponent}/>
-                        <Stack.Screen name='Chat' component={ChatScreen} options={{title: 'Chat', headerBackTitle: 'Logout'}} />
-                        <Stack.Screen name='Conversations' component={ConversationsScreen} options={{title: 'Conversations', headerBackTitle: 'Logout'}} />
+                        <Stack.Screen name='Chat' component={ChatScreen}/>
+                        <Stack.Screen name='Conversations' component={ConversationsScreen}/>
                     </>
                 ) : (
                     <>

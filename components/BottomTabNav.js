@@ -38,7 +38,7 @@ const BottomTabNav = ({navigation}) => {
     return (
         <Tab.Navigator screenOptions={screenOptions}>
             <Tab.Screen
-                name="Create"
+                name="MatchesScreen"
                 component={MatchesScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
@@ -51,12 +51,12 @@ const BottomTabNav = ({navigation}) => {
                             style={styles.icon}
                         />
                     ),
+                    unmountOnBlur: true
                 }}
             />
             {<Tab.Screen
                 name="Conversations"
                 component={ConversationsScreen}
-                initialParams={{username: "NadavImergreen"}}
                 options={{
                     tabBarIcon: ({focused}) => (
                         <Image
