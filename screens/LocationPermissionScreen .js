@@ -130,8 +130,8 @@ const LocationPermissionScreen = () => {
       </View>
       <View style={styles.bottomContainer}>
         {!loading && (
-          <TouchableOpacity style={styles.allowButton} onPress={locationError ? handleContinue : handleAllow}>
-            <Text style={styles.allowButtonText}>{locationError ? 'Continue' : 'Allow'}</Text>
+          <TouchableOpacity style={styles.allowButton} onPress={locationError ? getCurrentLocation : handleAllow}>
+            <Text style={styles.allowButtonText}>{locationError ? 'Try again' : 'Allow'}</Text>
           </TouchableOpacity>
         )}
       </View>
