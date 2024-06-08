@@ -1,12 +1,12 @@
 import { auth, db } from '../services/config';
 import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import { GiftedChat, InputToolbar } from 'react-native-gifted-chat';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Button } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { collection, query, orderBy, onSnapshot, addDoc, where } from 'firebase/firestore';
+import {collection, query, orderBy, onSnapshot, addDoc, where, getDoc, doc} from 'firebase/firestore';
 import { createMassage, getCurrentUser } from "../services/firebaseDatabase";
-
-
+import {aiMessageGenerator } from "../services/matchAI";
+import {fineTuningMessi} from "../services/fineTuningMessi";
 
 const ChatScreen = ({ navigation, route }) => {
     const { conversationID } = route.params;
@@ -15,7 +15,6 @@ const ChatScreen = ({ navigation, route }) => {
     const [avatarUrl, setAvatarUrl] = useState('');
 
     useLayoutEffect(() => {
-
         const q = query(
             collection(db, 'messages'),
             where('conversationId', '==', conversationID),
@@ -23,6 +22,8 @@ const ChatScreen = ({ navigation, route }) => {
         );
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
+
+
             setMessages(snapshot.docs.map(doc => ({
                 _id: doc.id,
                 createdAt: doc.data().createdAt.toDate(),
@@ -30,7 +31,7 @@ const ChatScreen = ({ navigation, route }) => {
                 user: doc.data().user,
                 conversationId: doc.data().conversationId
             })));
-           setLoadingMessages(false);
+            setLoadingMessages(false);
         });
 
         return () => {
@@ -58,9 +59,36 @@ const ChatScreen = ({ navigation, route }) => {
         createMassage(data);
     }, [conversationID]);
 
+    const generateMessage = async () => {
+
+        // await fineTuningMessi().then((response)=> console.log('File uploaded successfully:', response.id));
+
+        const conversationDoc = await getDoc(doc(db, 'conversations', conversationID));
+        const usersId = conversationDoc.data().members;
+
+        const messagesText = messages.reverse().map(msg => `user ${msg.user._id}: "${msg.text}"`).join('. ');
+        await aiMessageGenerator(usersId[0], usersId[1], messagesText);
+
+        // const currentUser = {
+        //     _id: auth?.currentUser?.uid,
+        //     name: auth?.currentUser?.email || 'User',
+        //     avatar: avatarUrl
+        // };
+        // const newMessage = {
+        //     _id: new Date().getTime().toString(),
+        //     text: 'This is a generated message.',
+        //     createdAt: new Date(),
+        //     user: currentUser,
+        //     conversationId: conversationID
+        // };
+        // setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
+        // createMassage(newMessage);
+    };
+
     return (
         <SafeAreaProvider>
             <SafeAreaView style={styles.container}>
+                <Button title="Generate Message" onPress={generateMessage} />
                 {loadingMessages ? (
                     <View style={styles.loadingContainer}>
                         <Text style={styles.loadingText}>Loading...</Text>
@@ -78,7 +106,7 @@ const ChatScreen = ({ navigation, route }) => {
                             placeholder='Write a message...'
                             user={{
                                 _id: auth?.currentUser?.uid,
-                                name: auth?.currentUser?.displayName || 'User',
+                                name: auth?.currentUser?.email || 'User',
                                 avatar: avatarUrl
                             }}
                             showUserAvatar={true}
