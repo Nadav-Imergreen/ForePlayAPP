@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PermissionsAndroid, Platform, StyleSheet, View, Text, TouchableOpacity, Alert, Image, ActivityIndicator } from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
-import { saveUserLocation } from "./firebaseDatabase";
+import { saveUserLocation } from "../services/firebaseDatabase";
 import { useNavigation, CommonActions } from '@react-navigation/native';
 import Loader from '../services/loadingIndicator';
 
@@ -89,7 +89,7 @@ const LocationPermissionScreen = () => {
       error => {
         setLoading(false);
         console.log(error.code, error.message);
-        setLocationError('Failed to get your current location.\nPlease try again in your preferences screen.');
+        setLocationError('Failed to get your current location.\nPlease try again.');
       },
       { enableHighAccuracy: false, timeout: 3000, maximumAge: 1000000 }
     );
@@ -130,9 +130,11 @@ const LocationPermissionScreen = () => {
       </View>
       <View style={styles.bottomContainer}>
         {!loading && (
-          <TouchableOpacity style={styles.allowButton} onPress={locationError ? handleContinue : handleAllow}>
-            <Text style={styles.allowButtonText}>{locationError ? 'Continue' : 'Allow'}</Text>
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity style={styles.allowButton} onPress={locationError ? getCurrentLocation : handleAllow}>
+              <Text style={styles.allowButtonText}>{locationError ? 'Try again' : 'Allow'}</Text>
+            </TouchableOpacity>
+          </>
         )}
       </View>
     </View>
@@ -197,6 +199,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
+  },
+  refreshIcon: {
+    width: 50,
+    height: 50, 
+    margin: 50, 
   },
   allowButton: {
     backgroundColor: '#ff5252',

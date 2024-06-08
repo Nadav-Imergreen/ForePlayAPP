@@ -36,6 +36,8 @@ const ConversationsScreen = ({ navigation }) => {
                 contentContainerStyle={styles.container}
             />
             <View style={styles.logoutContainer}>
+                
+                {/* 
                 <TouchableOpacity onPress={() => registerAndSaveUsers(userProfiles)}>
                     <Text style={styles.logoutText}>Write users</Text>
                 </TouchableOpacity>
@@ -45,6 +47,7 @@ const ConversationsScreen = ({ navigation }) => {
                 <TouchableOpacity onPress={() => registerAndSaveMessages(hardCodedMessages)}>
                     <Text style={styles.logoutText}>Write messages</Text>
                 </TouchableOpacity>
+                */}
                 <TouchableOpacity onPress={handleSignOut}>
                     <Text style={styles.logoutText}>Logout</Text>
                 </TouchableOpacity>
@@ -54,10 +57,6 @@ const ConversationsScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        padding: 10,
-        backgroundColor: '#fff',
-    },
     logoutContainer: {
         position: 'absolute',
         bottom: 50,
