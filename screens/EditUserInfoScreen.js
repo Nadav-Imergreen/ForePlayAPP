@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, TextInput, ScrollView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { saveUserInfo } from '../services/Databases /users';
+import { saveUserInfo } from '../services/Databases/users';
 import UploadImage from '../components/UploadImage';
 import { HeaderBackButton } from '@react-navigation/elements';
 import SwitchSelector from "react-native-switch-selector";

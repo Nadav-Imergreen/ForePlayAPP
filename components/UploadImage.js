@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableOpacity, Text, Image, View } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { saveUrl, uploadImageToStorage, deletePhoto } from '../services/Databases /ImagesStorage';
+import { saveUrl, uploadImageToStorage, deletePhoto } from '../services/Databases/ImagesStorage';
 
 const UploadImage = ({ setImageUrls, imageUrls }) => {
 

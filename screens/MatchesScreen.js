@@ -3,9 +3,9 @@ import { View, Image, Text, TouchableWithoutFeedback, StyleSheet, PanResponder, 
 import {
     getCurrentUser,
     getUsersBy,
-} from "../services/Databases /users";
-import {saveSeen, saveLike, saveLikeMe, checkForMatch, getMatchingData} from "../services/Databases /matchingData";
-import {createConversation} from "../services/Databases /chat";
+} from "../services/Databases/users";
+import {saveSeen, saveLike, saveLikeMe, checkForMatch, getMatchingData} from "../services/Databases/matchingData";
+import {createConversation} from "../services/Databases/chat";
 
 import LinearGradient from 'react-native-linear-gradient';
 
