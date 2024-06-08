@@ -69,7 +69,6 @@ const UserInfoScreen = () => {
                 <>
                     <View style={styles.header}>
                         <Text style={styles.labels}>My Profile</Text>
-                        <Button title="Logout" onPress={handleSignOut} />
                     </View>
                     <View style={[styles.section, { alignItems: 'center' }]}>
                         <View>
