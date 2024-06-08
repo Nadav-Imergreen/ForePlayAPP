@@ -38,13 +38,25 @@ const MatchesScreen = () => {
               const currentUser = await getCurrentUser().catch((err) => console.log(err));
               setCurrentUser(currentUser);
 
+              const { partner_gender, preferredAgeRange, radius } = currentUser || {};
+              if (!partner_gender || !preferredAgeRange || !radius) {
+                setNoResults(true);
+                Alert.alert(
+                    "Oops",
+                    "Fill your preferences to begin matching with others.",
+                    [{ text: "OK" }],
+                    { cancelable: false }
+                );
+                return;
+              }
+    
               // Only proceed to fetch suggested users if preferences are available
               const usersSnapshot = await getUsersBy(currentUser);
-
+             
               // Get IDs of users already seen by the current user
               const userMatchingData = getMatchingData();
               const seenUserIds = userMatchingData.seenUsers ? userMatchingData.seenUsers.map(currentUser => Object.values(currentUser)[0]) : [];
-
+         
               // Combined operation to map documents, calculate distance, filter by radius preference, and filter out seen users
               const usersWithDistance = usersSnapshot.docs.map(doc => {
                   const user = {

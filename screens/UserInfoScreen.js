@@ -8,7 +8,7 @@ const UserInfoScreen = () => {
     const navigation = useNavigation();
 
     const [loading, setLoading] = useState(false);
-    const [userData, setUserData] = useState(null);
+    const [userData, setUserData] = useState();
 
     useFocusEffect(
         React.useCallback(() => {
@@ -72,20 +72,14 @@ const UserInfoScreen = () => {
                     <View style={[styles.section, { alignItems: 'center' }]}>
                         <View>
                             <View style={[styles.photoBorderContainer, { borderColor: userData.sex === 'Male' ? '#a4cdbd' : '#f06478' }]}>
-                                {userData && userData.images && userData.images.length > 0 ? (
-                                    <Image
-                                    source={{ uri: userData.images[0] }}
-                                    style={styles.photo}
-                                    />
+                                {userData?.images?.length > 0 ? (
+                                    <Image source={{ uri: userData.images[0] }} style={styles.photo} />
                                 ) : (
-                                    <Image
-                                    source={require('../assets/default_user_icon.jpg')}
-                                    style={styles.photo} 
-                                    />
+                                    <Image source={require('../assets/default_user_icon.jpg')} style={styles.photo} />
                                 )}
                             </View>
                             <TouchableOpacity style={styles.edit_profile} onPress={handleEditProfile}>
-                                    <Image source={require('../assets/edit.png')} style={styles.editIcon} />
+                                <Image source={require('../assets/edit.png')} style={styles.editIcon} />
                             </TouchableOpacity>
                         </View>
                         <View style={styles.userInfo}>
@@ -106,7 +100,7 @@ const UserInfoScreen = () => {
                     <View style={styles.section}>
 
                         <TouchableOpacity style={styles.edit_preferences} onPress={handleEditPreferences}>
-                                <Image source={require('../assets/edit.png')} style={styles.editIcon} />
+                            <Image source={require('../assets/edit.png')} style={styles.editIcon} />
                         </TouchableOpacity>
 
                         <View style={styles.row}>
@@ -114,19 +108,17 @@ const UserInfoScreen = () => {
                             <Text style={styles.lable}>{userData.partner_gender}</Text>
                         </View>
 
-                        <View style={{flexDirection: 'row', alignItems: "center", marginBottom: 10}}>
-                            <View style={{flex: 1, height: 1, backgroundColor: 'lightgrey', marginHorizontal: 10}}
-                            />
+                        <View style={{ flexDirection: 'row', alignItems: "center", marginBottom: 10 }}>
+                            <View style={{ flex: 1, height: 1, backgroundColor: 'lightgrey', marginHorizontal: 10 }} />
                         </View>
 
                         <View style={styles.row}>
                             <Text style={styles.preferences}>Age: </Text>
-                            <Text style={styles.lable}>{userData.preferredAgeRange[0]} - {userData.preferredAgeRange[1]}</Text>
+                            <Text style={styles.lable}>{userData.preferredAgeRange?.[0] ?? ''} - {userData.preferredAgeRange?.[1] ?? ''}</Text>
                         </View>
 
-                        <View style={{flexDirection: 'row', alignItems: "center", marginBottom: 10}}>
-                            <View style={{flex: 1, height: 1, backgroundColor: 'lightgrey', marginHorizontal: 10}}
-                            />
+                        <View style={{ flexDirection: 'row', alignItems: "center", marginBottom: 10 }}>
+                            <View style={{ flex: 1, height: 1, backgroundColor: 'lightgrey', marginHorizontal: 10 }} />
                         </View>
 
                         <View style={styles.row}>
@@ -134,9 +126,8 @@ const UserInfoScreen = () => {
                             <Text style={styles.lable}>{userData.radius} km</Text>
                         </View>
 
-                        <View style={{flexDirection: 'row', alignItems: "center", marginBottom: 10}}>
-                            <View style={{flex: 1, height: 1, backgroundColor: 'lightgrey', marginHorizontal: 10}}
-                            />
+                        <View style={{ flexDirection: 'row', alignItems: "center", marginBottom: 10 }}>
+                            <View style={{ flex: 1, height: 1, backgroundColor: 'lightgrey', marginHorizontal: 10 }} />
                         </View>
                     </View>
                 </>

@@ -29,8 +29,8 @@ const EditUserPreferenceScreen = ({ route, navigation }) => {
         setLoading(true);
         if (userData) {
             setGender(userData.partner_gender || 'Female');
-            const bottomLimit = userData.preferredAgeRange[0] || 18;
-            const upperLimit = userData.preferredAgeRange[1] || 25;
+            const bottomLimit = userData.preferredAgeRange?.[0] || 18;
+            const upperLimit = userData.preferredAgeRange?.[1] || 25;
             setAgeRange([bottomLimit, upperLimit]);
             setRadius(userData.radius || 10);
             setLocation(userData.location || null);

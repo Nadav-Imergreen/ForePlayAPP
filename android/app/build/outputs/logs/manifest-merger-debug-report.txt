@@ -1,7 +1,7 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:1:1-35:12
-MERGED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:1:1-35:12
+ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:1:1-36:12
+MERGED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:1:1-36:12
 INJECTED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\debug\AndroidManifest.xml:2:1-9:12
 INJECTED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\debug\AndroidManifest.xml:2:1-9:12
 INJECTED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\debug\AndroidManifest.xml:2:1-9:12
@@ -172,9 +172,9 @@ ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\Androi
 	android:name
 		ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:6:22-76
 application
-ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:8:5-33:19
-MERGED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:8:5-33:19
-MERGED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:8:5-33:19
+ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:8:5-34:19
+MERGED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:8:5-34:19
+MERGED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:8:5-34:19
 INJECTED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\debug\AndroidManifest.xml:5:5-8:50
 MERGED from [:react-native-firebase_app] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-firebase\app\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:8:5-28:19
 MERGED from [:react-native-firebase_app] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-firebase\app\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:8:5-28:19
@@ -309,7 +309,9 @@ ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\Androi
 	android:name
 		ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:20:17-74
 activity#com.foreplay.MainActivity
-ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:21:7-32:18
+ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:21:7-33:18
+	android:screenOrientation
+		ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:27:9-45
 	android:label
 		ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:23:9-41
 	android:launchMode
@@ -317,21 +319,21 @@ ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\Androi
 	android:windowSoftInputMode
 		ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:26:9-51
 	android:exported
-		ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:27:9-32
+		ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:28:9-32
 	android:configChanges
 		ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:24:9-118
 	android:name
 		ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:22:9-37
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:28:9-31:25
+ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:29:9-32:25
 action#android.intent.action.MAIN
-ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:29:13-65
+ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:30:13-65
 	android:name
-		ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:29:21-62
+		ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:30:21-62
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:30:13-73
+ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:31:13-73
 	android:name
-		ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:30:23-70
+		ADDED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\main\AndroidManifest.xml:31:23-70
 uses-sdk
 INJECTED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\debug\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\debug\AndroidManifest.xml
