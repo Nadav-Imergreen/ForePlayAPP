@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-    View, Image, Text, StyleSheet, Alert, TextInput, Button, TouchableOpacity, ScrollView
-} from "react-native";
+import {View, Image, Text, StyleSheet, Alert, TextInput, Button, TouchableOpacity, ScrollView} from "react-native";
 import { getCurrentUser, getUsersBy, saveExtraInfo} from "../services/Databases/users";
 import { createConversation} from "../services/Databases/chat";
 import { matchAI } from "../services/matchAI";

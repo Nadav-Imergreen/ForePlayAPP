@@ -1,7 +1,7 @@
 import {getDownloadURL, ref as storageRef, uploadBytes} from "firebase/storage";
 import {auth, db, storage} from "../config";
 import {doc, getDoc, updateDoc} from "firebase/firestore";
-import {getCurrentUser} from "./users";
+import {getCurrentUser} from './users';
 
 
 export async function uploadImageToStorage(imageUrl) {

@@ -1,13 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { View, Image, Text, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
-import {
-    getCurrentUser,
-    getUsersBy,
-} from "../services/Databases /users";
-import {saveSeen, saveLike, saveLikeMe, checkForMatch, getMatchingData} from "../services/Databases /matchingData";
-import {createConversation} from "../services/Databases /chat";
-
+import {getCurrentUser, getUsersBy,} from "../services/Databases/users";
+import {saveSeen, saveLike, saveLikeMe, checkForMatch, getMatchingData} from "../services/Databases/matchingData";
+import {createConversation} from "../services/Databases/chat";
 import LinearGradient from 'react-native-linear-gradient';
+import ProfileCard from "../components/ProfileCard";
+import ItsMatchModal from "../components/ItsMatchModal";
 
 const MatchesScreen = () => {
 
