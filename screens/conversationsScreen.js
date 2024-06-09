@@ -48,7 +48,7 @@ const ConversationsScreen = ({ navigation }) => {
                     <Text style={styles.logoutText}>Write messages</Text>
                 </TouchableOpacity>
                 */}
-                <TouchableOpacity onPress={handleSignOut}>
+                <TouchableOpacity style={styles.logoutbutton} onPress={handleSignOut}>
                     <Text style={styles.logoutText}>Logout</Text>
                 </TouchableOpacity>
             </View>
@@ -64,17 +64,21 @@ const styles = StyleSheet.create({
         right: 0,
         padding: 10
     },
+    logoutbutton: {
+        borderRadius: 40
+    },
     logoutText: {
         fontSize: 18,
-        color: 'white',
         fontWeight: 'bold',
-        borderRadius: 12,
-        borderColor: 'black',
+        borderColor: 'lightgrey',
         borderWidth: 1,
-        backgroundColor: '#a4cdbd',
+        backgroundColor: 'white',
+        color: '#a4cdbd',
         textAlign: 'center',
         width: '100%',
         padding: 10,
+        borderRadius: 30,
+        elevation: 3
     },
 });
 
