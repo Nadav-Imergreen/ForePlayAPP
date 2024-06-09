@@ -101,161 +101,118 @@ const RegisterScreen = () => {
 
 
     return(
-
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={{ flex: 1, backgroundColor: 'white' }}>
+            <View style={styles.container}>
+                <View style={{ alignItems: 'center', paddingBottom: '10%' }}>
+                    <Image source={require('../assets/logo_small.png')} style={{ width: scaledWidth, height: scaledHeight }} />
+                </View>
 
-                <ImageBackground source={require('../assets/background.png')} style={pageStyles.backgroundStyle}>
+                <Text style={styles.title}>Create your Account</Text>
+                <TextInput style={styles.input} placeholder="Email" onChangeText={text => setEmail(text.trim())} placeholderTextColor="black" keyboardType="email-address"/>
+                <TextInput style={styles.input} placeholder="Password" secureTextEntry onChangeText={setPassword} placeholderTextColor="black"/>
+                <TextInput style={styles.input} placeholder="Confirm Password" secureTextEntry onChangeText={setPasswordConfirmation} placeholderTextColor="black"/>
+                
+                {loading ? (
+                    <Loader />
+                ) : (
+                    <TouchableOpacity style={styles.button} onPress={handleSignup}>
+                        <Text style={styles.buttonText}>Sign up</Text>
+                    </TouchableOpacity>
+                )}
+                
+
+                <Text style={{marginTop: 50}}>Or Sign Up with</Text>
 
 
-                    <View style={{ alignItems: 'center', paddingBottom: '10%' }}>
-                        <Image source={require('../assets/logo_small.png')} style={{ width: scaledWidth, height: scaledHeight }} />
-                    </View>
+                <View style={styles.socialContainer}>
+                    <TouchableOpacity onPress={handleGoogleSignup} style={styles.socialButton}>
+                        <Image
+                            source={require("../assets/google.png")}
+                            style={styles.socialIcon}
+                            resizeMode='contain'
+                        />
 
-                    <View style={{
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: 20,
-                        width: '90%',
-                        borderRadius: 20,
-                        borderColor: 'grey',
-                        borderWidth: 1,
-                        backgroundColor: 'rgba(255, 255, 255, 0.75)',
-                    }}>
-                        <CustomFloatingLabelInput
-                                    label="Email Address"
-                                    value={email}
-                                    onChangeText={setEmail}
-                                />
-                        <CustomFloatingLabelInput
-                                    label="Password"
-                                    value={password}
-                                    onChangeText={setPassword}
-                                    secureTextEntry={true}
-                                />
-                        <CustomFloatingLabelInput
-                                    label="Confirm Password"
-                                    value={passwordConfirmation}
-                                    onChangeText={setPasswordConfirmation}
-                                    secureTextEntry={true}
-                                />
-                        <View style={{ marginVertical: vwFontSize(4), height: 50 }}>
-                            {loading ? (
-                                <Loader />
-                            ) : (
-                                <TouchableOpacity
-                                    onPress={handleSignup}>
-                                    <Text style={[pageStyles.buttonText, { width: FIELD_WIDTH, fontSize: vwFontSize(4), padding: vwFontSize(3) }]}>Sing Up</Text>
-                                </TouchableOpacity>
-                            )}
-                        </View>
-
-                        <View style={{flexDirection: 'row', alignItems: "center", marginBottom: vwFontSize(3)}}>
-                            <View style={{flex: 1, height: 1, backgroundColor: COLORS.black, marginHorizontal: 10}}
-                            />
-                            <Text>Or Sign Up with</Text>
-                            <View style={{flex: 1, height: 1, backgroundColor: COLORS.black, marginHorizontal: 10}}
-                            />
-                        </View>
-
-                        <View style={{
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            marginTop: vwFontSize(3),
-                        }}>
-                            <TouchableOpacity
-                                onPress={handleGoogleSignup}
-                                style={{
-                                    flex: 1,
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    flexDirection: 'row',
-                                    padding: vwFontSize(1),
-                                    marginHorizontal: vwFontSize(1),
-                                    borderWidth: 1,
-                                    borderColor: COLORS.black,
-                                    backgroundColor: COLORS.white,
-                                    borderRadius: 10
-                                }}
-                            >
-                                <Image
-                                    source={require("../assets/google.png")}
-                                    style={{
-                                        height: 36,
-                                        width: 36,
-                                        marginRight: 8
-                                    }}
-                                    resizeMode='contain'
-                                />
-
-                                <Text>Google</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={handleGoogleSignup}
-                                style={{
-                                    flex: 1,
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    flexDirection: 'row',
-                                    padding: vwFontSize(1),
-                                    marginHorizontal: vwFontSize(1),
-                                    borderWidth: 1,
-                                    borderColor: COLORS.black,
-                                    backgroundColor: COLORS.white,
-                                    borderRadius: 10
-                                }}
-                            >
-                                <Image
-                                    source={require("../assets/facebook.png")}
-                                    style={{
-                                        height: 36,
-                                        width: 36,
-                                        marginRight: 8
-                                    }}
-                                    resizeMode='contain'
-                                />
-
-                                <Text>Facebook</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                    </View>
-                </ImageBackground>
-
+                        <Text style={styles.socialText}>Google</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleGoogleSignup} style={styles.socialButton}>
+                        <Image
+                            source={require("../assets/facebook.png")}
+                            style={styles.socialIcon}
+                            resizeMode='contain'
+                        />
+                        <Text style={styles.socialText}>Facebook</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </TouchableWithoutFeedback>
-
     );
 };
 
-const pageStyles = StyleSheet.create({
-    input: {
-        borderWidth: 2,
-        borderColor: 'gray',
-        borderRadius: 12,
-        paddingHorizontal: 10,
-        color: 'black',
-        backgroundColor: 'white'
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center', // Center content horizontally
+        backgroundColor: 'white',
+        paddingTop: 100
     },
-    label: {
-        marginBottom: 2,
-        color: 'black',
-    },
-    buttonText: {
-        color: 'white',
+    title: {
+        fontSize: 18,
         fontWeight: 'bold',
-        borderRadius: 12,
-        borderColor: 'black',
+        color: 'black',
+        marginBottom: 20,
+        marginRight: 150
+      },
+      input: {
+        width: '80%',
+        height: 45,
+        borderColor: '#ccc',
         borderWidth: 1,
-        backgroundColor: '#a4cdbd',
-        textAlign: 'center'
-    },
-    backgroundStyle: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
-        resizeMode: 'stretch',
-        alignItems: 'center'
-    }
+        borderRadius: 30,
+        paddingHorizontal: 20,
+        marginBottom: 10,
+      },
+      button: {
+        width: '80%',
+        height: 45,
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 30,
+        marginBottom: 20,
+        elevation: 5
+      },
+      buttonText: {
+        color: '#ff6f61',
+        fontWeight: 'bold',
+      },
+      socialContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 10,
+        paddingHorizontal: 40,
+        marginTop: 20
+      },
+      socialButton: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        borderWidth: 1,
+        borderColor: 'lightgrey',
+        backgroundColor: COLORS.white,
+        borderRadius: 30,
+        paddingVertical: 10,
+        marginHorizontal: 10,
+      },
+      socialIcon: {
+        height: 25,
+        width: 25,
+        marginRight: 8
+      },
+      socialText: {
+        fontSize: 16,
+        color: 'black'
+      }
 
 });
 

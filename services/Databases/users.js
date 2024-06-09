@@ -78,7 +78,7 @@ export async function saveUserLocation(location) {
         const userDocRef = doc(db, 'users', userId);
 
         // Update the user document with the provided location
-        await updateDoc(userDocRef, {location: location});
+        await setDoc(userDocRef, { location: location }, { merge: true });
 
         console.log('INFO: User location saved successfully');
     } catch (error) {
