@@ -1,19 +1,19 @@
 import { auth, db } from '../services/config';
 import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
 import { GiftedChat, InputToolbar } from 'react-native-gifted-chat';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import {collection, query, orderBy, onSnapshot, where, getDoc, doc} from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, where, getDoc, doc } from 'firebase/firestore';
 import { getCurrentUser } from "../services/Databases/users";
 import { createMassage } from "../services/Databases/chat";
-import {aiMessageGenerator } from "../services/matchAI";
-import {fineTuningMessi} from "../services/fineTuningMessi";
+import { aiMessageGenerator } from "../services/matchAI";
 
 const ChatScreen = ({ navigation, route }) => {
     const { conversationID } = route.params;
     const [messages, setMessages] = useState([]);
     const [loadingMessages, setLoadingMessages] = useState(true);
     const [avatarUrl, setAvatarUrl] = useState('');
+    const [aiSuggestion, setAiSuggestion] = useState(''); // State to hold AI suggestion
 
     useLayoutEffect(() => {
         const q = query(
@@ -23,8 +23,6 @@ const ChatScreen = ({ navigation, route }) => {
         );
 
         const unsubscribe = onSnapshot(q, (snapshot) => {
-
-
             setMessages(snapshot.docs.map(doc => ({
                 _id: doc.id,
                 createdAt: doc.data().createdAt.toDate(),
@@ -61,35 +59,41 @@ const ChatScreen = ({ navigation, route }) => {
     }, [conversationID]);
 
     const generateMessage = async () => {
-
-        // await fineTuningMessi().then((response)=> console.log('File uploaded successfully:', response.id));
-
         const conversationDoc = await getDoc(doc(db, 'conversations', conversationID));
         const usersId = conversationDoc.data().members;
 
         const messagesText = messages.reverse().map(msg => `user ${msg.user._id}: "${msg.text}"`).join('. ');
-        await aiMessageGenerator(usersId[0], usersId[1], messagesText);
+        const aiSuggestion = await aiMessageGenerator(usersId[0], usersId[1], messagesText);
+        setAiSuggestion(aiSuggestion); // Set AI suggestion
+    };
 
-        // const currentUser = {
-        //     _id: auth?.currentUser?.uid,
-        //     name: auth?.currentUser?.email || 'User',
-        //     avatar: avatarUrl
-        // };
-        // const newMessage = {
-        //     _id: new Date().getTime().toString(),
-        //     text: 'This is a generated message.',
-        //     createdAt: new Date(),
-        //     user: currentUser,
-        //     conversationId: conversationID
-        // };
-        // setMessages(previousMessages => GiftedChat.append(previousMessages, [newMessage]));
-        // createMassage(newMessage);
+    const useSuggestion = () => {
+        setMessages(previousMessages => GiftedChat.append(previousMessages, [{
+            _id: new Date().getTime().toString(),
+            text: aiSuggestion,
+            createdAt: new Date(),
+            user: {
+                _id: auth?.currentUser?.uid,
+                name: auth?.currentUser?.email || 'User',
+                avatar: avatarUrl
+            },
+            conversationId: conversationID
+        }]));
+        setAiSuggestion(''); // Clear AI suggestion after use
     };
 
     return (
         <SafeAreaProvider>
             <SafeAreaView style={styles.container}>
                 <Button title="Generate Message" onPress={generateMessage} />
+                {aiSuggestion !== '' && (
+                    <View style={styles.aiSuggestionContainer}>
+                        <Text style={styles.aiSuggestionText}>{aiSuggestion}</Text>
+                        <TouchableOpacity style={styles.useSuggestionButton} onPress={useSuggestion}>
+                            <Text style={styles.useSuggestionButtonText}>Use Suggestion</Text>
+                        </TouchableOpacity>
+                    </View>
+                )}
                 {loadingMessages ? (
                     <View style={styles.loadingContainer}>
                         <Text style={styles.loadingText}>Loading...</Text>
@@ -153,6 +157,26 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#333',
         textAlign: 'center',
+    },
+    aiSuggestionContainer: {
+        padding: 10,
+        margin: 10,
+        backgroundColor: '#e0e0e0',
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    aiSuggestionText: {
+        fontSize: 16,
+        marginBottom: 10,
+    },
+    useSuggestionButton: {
+        backgroundColor: '#007BFF',
+        padding: 10,
+        borderRadius: 5,
+    },
+    useSuggestionButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
     },
 });
 

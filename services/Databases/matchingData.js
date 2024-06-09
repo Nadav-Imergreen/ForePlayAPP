@@ -3,11 +3,20 @@ import { collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where, addD
 import { getCurrentUser, getUser } from './users';
 
 export async function getMatchingData() {
-    try {
-        const col = collection(db, "matchingData");
-        const q = query(col, where("userId", "==", auth.currentUser.uid));
-        const querySnapshot = await getDocs(q);
-        return querySnapshot.docs.map(doc => doc.data());
+
+        const currentUserUid = auth.currentUser.uid;
+        const matchingDataRef = doc(db, 'matchingData', currentUserUid);
+
+        try {
+            const docSnap = await getDoc(matchingDataRef);
+            let seenUsers = [];
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                seenUsers = data.seenUsers ? data.seenUsers : [];
+            }
+            return seenUsers;
+
     } catch (error) {
         throw new Error("WARNING: matchingData docs not found!");
     }

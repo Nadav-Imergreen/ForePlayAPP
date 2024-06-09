@@ -54,9 +54,9 @@ const MatchesScreen = () => {
               const usersSnapshot = await getUsersBy(currentUser);
              
               // Get IDs of users already seen by the current user
-              const userMatchingData = getMatchingData();
-              const seenUserIds = userMatchingData.seenUsers ? userMatchingData.seenUsers.map(currentUser => Object.values(currentUser)[0]) : [];
-         
+              const userMatchingData = await getMatchingData();
+              const seenUserIds = userMatchingData ? userMatchingData.map(currentUser => Object.values(currentUser)[0]) : [];
+;
               // Combined operation to map documents, calculate distance, filter by radius preference, and filter out seen users
               const usersWithDistance = usersSnapshot.docs.map(doc => {
                   const user = {

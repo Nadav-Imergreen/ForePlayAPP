@@ -36,19 +36,7 @@ const ConversationsScreen = ({ navigation }) => {
                 contentContainerStyle={styles.container}
             />
             <View style={styles.logoutContainer}>
-                
-                {/* 
-                <TouchableOpacity onPress={() => registerAndSaveUsers(userProfiles)}>
-                    <Text style={styles.logoutText}>Write users</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => registerAndSaveConversation(hardCodedConversations)}>
-                    <Text style={styles.logoutText}>Write conversations</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => registerAndSaveMessages(hardCodedMessages)}>
-                    <Text style={styles.logoutText}>Write messages</Text>
-                </TouchableOpacity>
-                */}
-                <TouchableOpacity style={styles.logoutbutton} onPress={handleSignOut}>
+                <TouchableOpacity onPress={handleSignOut}>
                     <Text style={styles.logoutText}>Logout</Text>
                 </TouchableOpacity>
             </View>

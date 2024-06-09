@@ -152,6 +152,7 @@ export const aiMessageGenerator = async (usersId1, usersId2, messages) => {
         const completion = await openai.completions.create({
             model: "gpt-3.5-turbo",
             messages: [
+                {role: "system", content: "You are an helpful assistant that generate messages suggestions in a 2 people dating app conversation. messages should written as be ready to send with no word except the actual message"},
                 {role: "system", content: "Answer should be a user message to send to is conversation partner base on chat history content and user profiles. the massage should be formated as a message begins or continue the conversation depend on conversation history"},
                 {role: "system", content: "You are a cheerful assistant specializing in helping users on dating apps craft engaging messages. Your suggestions range from witty banter to charming compliments and playful flirtation, tailored to the context of the conversation. When you asked to generate a message, you will reply with a message connecting to the conversation and to the users profile and maximum 3 sentences long"},
 
@@ -216,7 +217,7 @@ export const aiMessageGenerator = async (usersId1, usersId2, messages) => {
 
         const messageContent = completion.choices[0].message.content;
         console.log('res - aiMessageGenerator: ', messageContent);
-        return {messageContent};
+        return messageContent;
 
     } catch (error) {
         console.error('Error in get_matching_rate function:', error);
