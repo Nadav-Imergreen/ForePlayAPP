@@ -89,7 +89,7 @@ const LocationPermissionScreen = () => {
       error => {
         setLoading(false);
         console.log(error.code, error.message);
-        setLocationError('Failed to get your current location.\nPlease try again in your preferences screen.');
+        setLocationError('Failed to get your current location.\nPlease try again.');
       },
       { enableHighAccuracy: false, timeout: 3000, maximumAge: 1000000 }
     );
