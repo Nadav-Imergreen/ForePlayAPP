@@ -71,7 +71,7 @@ const ChatScreen = ({ navigation, route }) => {
         setMessages(previousMessages => GiftedChat.append(previousMessages, [{
             _id: new Date().getTime().toString(),
             text: aiSuggestion,
-            createdAt: new Date().getTime(),
+            createdAt: new Date(),
             user: {
                 _id: auth?.currentUser?.uid,
                 name: auth?.currentUser?.email || 'User',
@@ -79,20 +79,13 @@ const ChatScreen = ({ navigation, route }) => {
             },
             conversationId: conversationID
         }]));
-
-        const { _id, createdAt, text, user } = messages[0];
-
-        const data = { id: _id, createdAt, text, user, conversationId: conversationID };
-        console.log('Creating message with data:', data);
-        createMassage(data);
-
         setAiSuggestion(''); // Clear AI suggestion after use
     };
 
     return (
         <SafeAreaProvider>
             <SafeAreaView style={styles.container}>
-                <Button title="Generate Message" onPress={generateMessage}/>
+                <Button title="Generate Message" onPress={generateMessage} />
                 {aiSuggestion !== '' && (
                     <View style={styles.aiSuggestionContainer}>
                         <Text style={styles.aiSuggestionText}>{aiSuggestion}</Text>
