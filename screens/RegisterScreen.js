@@ -108,9 +108,9 @@ const RegisterScreen = () => {
                 </View>
 
                 <Text style={styles.title}>Create your Account</Text>
-                <TextInput style={styles.input} placeholder="Email" onChangeText={text => setEmail(text.trim())} placeholderTextColor="black" keyboardType="email-address"/>
-                <TextInput style={styles.input} placeholder="Password" secureTextEntry onChangeText={setPassword} placeholderTextColor="black"/>
-                <TextInput style={styles.input} placeholder="Confirm Password" secureTextEntry onChangeText={setPasswordConfirmation} placeholderTextColor="black"/>
+                <TextInput style={styles.input} placeholder="Email" onChangeText={text => setEmail(text.trim())} keyboardType="email-address"/>
+                <TextInput style={styles.input} placeholder="Password" secureTextEntry onChangeText={setPassword} />
+                <TextInput style={styles.input} placeholder="Confirm Password" secureTextEntry onChangeText={setPasswordConfirmation}/>
                 
                 {loading ? (
                     <Loader />

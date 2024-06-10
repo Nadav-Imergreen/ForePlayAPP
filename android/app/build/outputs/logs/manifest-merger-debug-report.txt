@@ -7,6 +7,7 @@ INJECTED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\debug\An
 INJECTED from C:\Users\user\Desktop\Project\ForePlayAPP\android\app\src\debug\AndroidManifest.xml:2:1-9:12
 MERGED from [com.facebook.react:flipper-integration:0.73.6] C:\Users\user\.gradle\caches\transforms-3\0154fd5111aa98aee2a7e83a215ed535\transformed\jetified-flipper-integration-0.73.6-debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-async-storage_async-storage] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-async-storage\async-storage\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
+MERGED from [:react-native-community_blur] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-community\blur\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-community_geolocation] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-community\geolocation\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-community_slider] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-community\slider\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-firebase_auth] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-firebase\auth\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-11:12
@@ -14,6 +15,7 @@ MERGED from [:react-native-firebase_app] C:\Users\user\Desktop\Project\ForePlayA
 MERGED from [:react-native-google-signin_google-signin] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-google-signin\google-signin\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-picker_picker] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-picker\picker\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-fbsdk-next] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-fbsdk-next\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:21:1-26:12
+MERGED from [:react-native-fs] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-fs\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-9:12
 MERGED from [:react-native-gesture-handler] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-gesture-handler\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-image-picker] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-image-picker\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-19:12
 MERGED from [:react-native-linear-gradient] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-linear-gradient\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:2:1-7:12
@@ -120,6 +122,7 @@ MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.5.1] C:\Users\user\.gr
 MERGED from [androidx.room:room-runtime:2.2.5] C:\Users\user\.gradle\caches\transforms-3\67cfb977c1c801053491be070244b6cc\transformed\room-runtime-2.2.5\AndroidManifest.xml:17:1-31:12
 MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\user\.gradle\caches\transforms-3\659167600047641b79fae446563c48ad\transformed\core-runtime-2.1.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\user\.gradle\caches\transforms-3\229934784557d6a0fcdc65fa9ad02c92\transformed\cursoradapter-1.0.0\AndroidManifest.xml:17:1-22:12
+MERGED from [com.github.Dimezis:BlurView:version-2.0.3] C:\Users\user\.gradle\caches\transforms-3\47a4ffe35a885ad3fcf45c3f56221c6a\transformed\jetified-BlurView-version-2.0.3\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.exifinterface:exifinterface:1.3.3] C:\Users\user\.gradle\caches\transforms-3\5d56ef2775a15f4ff215a671623cffb6\transformed\exifinterface-1.3.3\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\user\.gradle\caches\transforms-3\2f160961d6e877fd162f590d5be17e39\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.firebase:firebase-components:17.1.5] C:\Users\user\.gradle\caches\transforms-3\2a5c682de3ec191019ed9b2557912bf0\transformed\jetified-firebase-components-17.1.5\AndroidManifest.xml:15:1-20:12
@@ -252,6 +255,8 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\us
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\user\.gradle\caches\transforms-3\0fbf5c5037731fa9d5a7ba0ffffe1f91\transformed\versionedparcelable-1.1.1\AndroidManifest.xml:24:5-25:19
 MERGED from [androidx.room:room-runtime:2.2.5] C:\Users\user\.gradle\caches\transforms-3\67cfb977c1c801053491be070244b6cc\transformed\room-runtime-2.2.5\AndroidManifest.xml:24:5-29:19
 MERGED from [androidx.room:room-runtime:2.2.5] C:\Users\user\.gradle\caches\transforms-3\67cfb977c1c801053491be070244b6cc\transformed\room-runtime-2.2.5\AndroidManifest.xml:24:5-29:19
+MERGED from [com.github.Dimezis:BlurView:version-2.0.3] C:\Users\user\.gradle\caches\transforms-3\47a4ffe35a885ad3fcf45c3f56221c6a\transformed\jetified-BlurView-version-2.0.3\AndroidManifest.xml:9:5-20
+MERGED from [com.github.Dimezis:BlurView:version-2.0.3] C:\Users\user\.gradle\caches\transforms-3\47a4ffe35a885ad3fcf45c3f56221c6a\transformed\jetified-BlurView-version-2.0.3\AndroidManifest.xml:9:5-20
 MERGED from [com.facebook.soloader:soloader:0.10.5] C:\Users\user\.gradle\caches\transforms-3\166ff798998698da0ba3f6d44040aa8e\transformed\jetified-soloader-0.10.5\AndroidManifest.xml:11:5-15:19
 MERGED from [com.facebook.soloader:soloader:0.10.5] C:\Users\user\.gradle\caches\transforms-3\166ff798998698da0ba3f6d44040aa8e\transformed\jetified-soloader-0.10.5\AndroidManifest.xml:11:5-15:19
 MERGED from [com.android.installreferrer:installreferrer:1.0] C:\Users\user\.gradle\caches\transforms-3\e4ccfc6183d96dfd3652ddf353df4040\transformed\jetified-installreferrer-1.0\AndroidManifest.xml:11:5-20
@@ -342,6 +347,8 @@ MERGED from [com.facebook.react:flipper-integration:0.73.6] C:\Users\user\.gradl
 MERGED from [com.facebook.react:flipper-integration:0.73.6] C:\Users\user\.gradle\caches\transforms-3\0154fd5111aa98aee2a7e83a215ed535\transformed\jetified-flipper-integration-0.73.6-debug\AndroidManifest.xml:5:5-44
 MERGED from [:react-native-async-storage_async-storage] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-async-storage\async-storage\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:react-native-async-storage_async-storage] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-async-storage\async-storage\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:react-native-community_blur] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-community\blur\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:react-native-community_blur] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-community\blur\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:react-native-community_geolocation] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-community\geolocation\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:react-native-community_geolocation] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-community\geolocation\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:react-native-community_slider] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-community\slider\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
@@ -356,6 +363,8 @@ MERGED from [:react-native-picker_picker] C:\Users\user\Desktop\Project\ForePlay
 MERGED from [:react-native-picker_picker] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-picker\picker\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:react-native-fbsdk-next] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-fbsdk-next\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:24:5-44
 MERGED from [:react-native-fbsdk-next] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-fbsdk-next\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:24:5-44
+MERGED from [:react-native-fs] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-fs\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
+MERGED from [:react-native-fs] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-fs\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:react-native-gesture-handler] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-gesture-handler\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:react-native-gesture-handler] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-gesture-handler\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
 MERGED from [:react-native-image-picker] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-image-picker\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:5:5-44
@@ -568,6 +577,8 @@ MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\user\.gradle\caches
 MERGED from [androidx.arch.core:core-runtime:2.1.0] C:\Users\user\.gradle\caches\transforms-3\659167600047641b79fae446563c48ad\transformed\core-runtime-2.1.0\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\user\.gradle\caches\transforms-3\229934784557d6a0fcdc65fa9ad02c92\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] C:\Users\user\.gradle\caches\transforms-3\229934784557d6a0fcdc65fa9ad02c92\transformed\cursoradapter-1.0.0\AndroidManifest.xml:20:5-44
+MERGED from [com.github.Dimezis:BlurView:version-2.0.3] C:\Users\user\.gradle\caches\transforms-3\47a4ffe35a885ad3fcf45c3f56221c6a\transformed\jetified-BlurView-version-2.0.3\AndroidManifest.xml:5:5-7:41
+MERGED from [com.github.Dimezis:BlurView:version-2.0.3] C:\Users\user\.gradle\caches\transforms-3\47a4ffe35a885ad3fcf45c3f56221c6a\transformed\jetified-BlurView-version-2.0.3\AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.exifinterface:exifinterface:1.3.3] C:\Users\user\.gradle\caches\transforms-3\5d56ef2775a15f4ff215a671623cffb6\transformed\exifinterface-1.3.3\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.exifinterface:exifinterface:1.3.3] C:\Users\user\.gradle\caches\transforms-3\5d56ef2775a15f4ff215a671623cffb6\transformed\exifinterface-1.3.3\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] C:\Users\user\.gradle\caches\transforms-3\2f160961d6e877fd162f590d5be17e39\transformed\localbroadcastmanager-1.0.0\AndroidManifest.xml:20:5-44
@@ -662,6 +673,10 @@ ADDED from [:react-native-firebase_app] C:\Users\user\Desktop\Project\ForePlayAP
 		ADDED from [:react-native-firebase_app] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-firebase\app\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:27:13-35
 	android:name
 		ADDED from [:react-native-firebase_app] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\@react-native-firebase\app\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:24:13-88
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from [:react-native-fs] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-fs\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:7:5-81
+	android:name
+		ADDED from [:react-native-fs] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-fs\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:7:22-78
 provider#com.imagepicker.ImagePickerProvider
 ADDED from [:react-native-image-picker] C:\Users\user\Desktop\Project\ForePlayAPP\node_modules\react-native-image-picker\android\build\intermediates\merged_manifest\debug\AndroidManifest.xml:8:9-16:20
 	android:grantUriPermissions

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.foreplay.app-mergeDebugResources-49:/values-my/values-my.xml",
+            "outputFile": "com.foreplay.app-mergeDebugResources-50:/values-my/values-my.xml",
             "map": [
                 {
                     "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\2f1891e7ba66b168501930a560ce44d2\\transformed\\jetified-play-services-basement-18.3.0\\res\\values-my\\values.xml",

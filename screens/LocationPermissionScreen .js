@@ -8,7 +8,7 @@ import Loader from '../services/loadingIndicator';
 const LocationPermissionScreen = () => {
   const navigation = useNavigation();
   const [currentLocation, setCurrentLocation] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [locationError, setLocationError] = useState(null);
 
   useEffect(() => {
@@ -25,6 +25,7 @@ const LocationPermissionScreen = () => {
         console.log('Permission already granted');
         getCurrentLocation();
       } else {
+        setLoading(false);
         console.log('Location permission not granted');
         // Show UI to prompt the user for permission
       }
@@ -72,12 +73,12 @@ const LocationPermissionScreen = () => {
     setLoading(true);
     setLocationError(null); // Clear any previous error message
     Geolocation.getCurrentPosition(
-      position => {
-        setLoading(false);
+      async position => {
         const { latitude, longitude } = position.coords;
         console.log('Latitude:', latitude, 'Longitude:', longitude);
         setCurrentLocation({ latitude, longitude });
-        saveUserLocation({ latitude, longitude });
+        await saveUserLocation({ latitude, longitude });
+        setLoading(false);
 
         navigation.dispatch(
           CommonActions.reset({
