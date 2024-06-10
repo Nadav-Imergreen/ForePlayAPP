@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Image, Text, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
+import { View, Image, Text, TouchableWithoutFeedback, StyleSheet, Dimensions, Animated, Alert } from "react-native";
 import {
     getCurrentUser,
     getUsersBy,
@@ -9,6 +9,8 @@ import {createConversation} from "../services/Databases/chat";
 import ProfileCard from "../components/ProfileCard";
 import LinearGradient from 'react-native-linear-gradient';
 import ItsMatchModal from "../components/ItsMatchModal";
+import Loader from '../services/loadingIndicator';
+import { BlurView } from '@react-native-community/blur';
 
 const MatchesScreen = () => {
 
@@ -30,12 +32,15 @@ const MatchesScreen = () => {
     const [likes, setLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
 
+    const [loading, setLoading] = useState(true);
+
+    const [isBlurred, setIsBlurred] = useState(false);
 
     useEffect(() => {
       const fetchData = async () => {
           try {
               // Get current user info
-              const currentUser = await getCurrentUser().catch((err) => console.log(err));
+              const currentUser = await getCurrentUser();
               setCurrentUser(currentUser);
 
               const { partner_gender, preferredAgeRange, radius } = currentUser || {};
@@ -56,7 +61,7 @@ const MatchesScreen = () => {
               // Get IDs of users already seen by the current user
               const userMatchingData = await getMatchingData();
               const seenUserIds = userMatchingData ? userMatchingData.map(currentUser => Object.values(currentUser)[0]) : [];
-;
+
               // Combined operation to map documents, calculate distance, filter by radius preference, and filter out seen users
               const usersWithDistance = usersSnapshot.docs.map(doc => {
                   const user = {
@@ -84,6 +89,8 @@ const MatchesScreen = () => {
               } else {
                   setNoResults(true);
               }
+
+              setLoading(false);
 
           } catch (error) {
               console.error("Failed to fetch suggested users:", error.message);
@@ -206,6 +213,7 @@ const MatchesScreen = () => {
             <Text style={styles.noSuggestionsText}>
               {noResults ? "No people in your area" : "Looking for people..."}
             </Text>
+            {loading && <Loader />}
           </View>
         )}
   
@@ -214,6 +222,7 @@ const MatchesScreen = () => {
           <>
             {/* Next profile card */}
             {suggestedUsers[nextIndexRef.current] && (
+              <>
 
               <View style={styles.card}>
                 <View style={styles.imageContainer}>
@@ -233,8 +242,12 @@ const MatchesScreen = () => {
                   <Text style={styles.distance}>{suggestedUsers[nextIndexRef.current].distance} kilometers from you</Text>
                 </View>
               </View>
-
-
+              <BlurView
+                style={StyleSheet.absoluteFill}
+                blurType="light"
+                blurAmount={15} // Adjust the blur amount as needed
+              />
+            </>
             )}
 
             {/* Current profile card */}
@@ -312,7 +325,6 @@ const MatchesScreen = () => {
     container: {
       flex: 1,
       alignItems: 'center',
-      paddingHorizontal: 10,
       paddingBottom: 110
     },
     card: {
@@ -428,6 +440,7 @@ const MatchesScreen = () => {
     noSuggestionsText: {
       fontSize: 20, // Adjust the font size as needed
       textAlign: 'center',
+      marginBottom: 30
     },
     likeContainer: {
       position: 'absolute',

@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.foreplay.app-mergeDebugResources-49:/values-da/values-da.xml",
+            "outputFile": "com.foreplay.app-mergeDebugResources-50:/values-da/values-da.xml",
             "map": [
                 {
                     "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\5e163cad2de2686fc91eb3bb1babbbad\\transformed\\material-1.9.0\\res\\values-da\\values-da.xml",

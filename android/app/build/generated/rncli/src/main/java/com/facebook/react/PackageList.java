@@ -13,6 +13,8 @@ import java.util.ArrayList;
 
 // @react-native-async-storage/async-storage
 import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+// @react-native-community/blur
+import com.reactnativecommunity.blurview.BlurViewPackage;
 // @react-native-community/geolocation
 import com.reactnativecommunity.geolocation.GeolocationPackage;
 // @react-native-community/slider
@@ -27,6 +29,8 @@ import com.reactnativegooglesignin.RNGoogleSigninPackage;
 import com.reactnativecommunity.picker.RNCPickerPackage;
 // react-native-fbsdk-next
 import com.facebook.reactnative.androidsdk.FBSDKPackage;
+// react-native-fs
+import com.rnfs.RNFSPackage;
 // react-native-gesture-handler
 import com.swmansion.gesturehandler.RNGestureHandlerPackage;
 // react-native-image-picker
@@ -91,6 +95,7 @@ public class PackageList {
     return new ArrayList<>(Arrays.<ReactPackage>asList(
       new MainReactPackage(mConfig),
       new AsyncStoragePackage(),
+      new BlurViewPackage(),
       new GeolocationPackage(),
       new ReactSliderPackage(),
       new ReactNativeFirebaseAppPackage(),
@@ -98,6 +103,7 @@ public class PackageList {
       new RNGoogleSigninPackage(),
       new RNCPickerPackage(),
       new FBSDKPackage(),
+      new RNFSPackage(),
       new RNGestureHandlerPackage(),
       new ImagePickerPackage(),
       new LinearGradientPackage(),
