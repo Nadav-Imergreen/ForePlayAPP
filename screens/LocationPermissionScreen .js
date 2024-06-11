@@ -152,22 +152,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingTop: 20
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
     color: 'black',
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: 40,
   },
   message: {
     fontSize: 16,
     textAlign: 'center',
-    fontStyle: 'italic'
+    fontStyle: 'italic',
   },
   middleContainer: {
-    flex: 2,
+    flex: 1.5,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -195,7 +194,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },  
   bottomContainer: {
-    flex: 1,
+    flex: 0.5,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },
