@@ -66,7 +66,7 @@ const Welcome = () => {
 
                     <View style={{
                         flexDirection: "row",
-                        marginTop: 5,
+                        marginTop: 15,
                         justifyContent: "center",
                     }}>
                         {isRTL ? (
