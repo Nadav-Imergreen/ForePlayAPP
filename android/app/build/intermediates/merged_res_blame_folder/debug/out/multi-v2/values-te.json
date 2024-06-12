@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.foreplay.app-mergeDebugResources-49:/values-te/values-te.xml",
+            "outputFile": "com.foreplay.app-mergeDebugResources-50:/values-te/values-te.xml",
             "map": [
                 {
                     "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\3627d408fdf8d34689271b6a162e6e32\\transformed\\browser-1.4.0\\res\\values-te\\values-te.xml",

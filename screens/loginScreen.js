@@ -15,9 +15,9 @@ import {
     ImageBackground
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {login} from '../services/auth';
+import {login, googleSignIn} from '../services/auth';
 import Loader from '../services/loadingIndicator';
-import CustomFloatingLabelInput from '../components/CustomFloatingLabelInput'
+
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('');

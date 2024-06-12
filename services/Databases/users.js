@@ -108,10 +108,10 @@ export async function getUser(uid) {
     }
 }
 
-export async function getAllUsers(gender) {
+export async function getAllUsers() {
     try {
         const coll = collection(db, "users");
-        const q = query(coll, where("sex", "!=", gender));
+        const q = query(coll);
         return await getDocs(q);
     } catch {
         throw Error("WARNING: Docs not found!")
@@ -125,9 +125,9 @@ export async function getUsersBy(user) {
         const defaultGender = user.sex === 'male' ? 'female' : 'male';
         const coll = collection(db, "users");
         const q = query(coll,
-            where("sex", "==", user.partner_gender ? user.partner_gender : defaultGender));
-            // where('age', '<=', maxAge ? maxAge : (user.age + 7)),
-            // where('age', '>=', minAge ? minAge : user.age / 2 + 7));
+            where("sex", "==", user.partner_gender ? user.partner_gender : defaultGender),
+            where('age', '<=', maxAge ? maxAge : (user.age + 7)),
+            where('age', '>=', minAge ? minAge : user.age / 2 + 7));
         return await getDocs(q);
     } catch (error) {
         throw new Error("WARNING: Error retrieving documents: " + error.message);
