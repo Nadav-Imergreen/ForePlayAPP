@@ -6,7 +6,7 @@ import {auth} from "./config";
 
 export const buildOpenaiURL = (path) => {
     // Initialize the OpenAI API client with your API key and correct URL
-    const openai = new OpenAI({apiKey: 'PI_KEY'});
+    const openai = new OpenAI({apiKey: 'API_KEY'});
     openai.baseURL = 'https://api.openai.com/v1';
     openai.buildURL = () => `${openai.baseURL}${path}`;
     return openai;
