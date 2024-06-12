@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {auth} from '../services/config';
-import {getUser} from "../services/Databases/users";
+import React, { useEffect, useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { auth, db } from '../services/config';
+import { getUser } from "../services/Databases/users";
+import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 
 const ConversationItem = ({ item, navigation }) => {
     const [secondUserProfile, setSecondUserProfile] = useState(null);
@@ -17,21 +18,33 @@ const ConversationItem = ({ item, navigation }) => {
         fetchSecondUserProfile().then((p) => setSecondUserProfile(p));
     }, [item]);
 
+    const handlePress = async () => {
+        const conversationDocRef = doc(db, 'conversations', item.id);
+        await updateDoc(conversationDocRef, {
+            openedBy: arrayUnion(auth.currentUser.uid)
+        });
+
+        navigation.navigate('Chat', { conversationID: item.id });
+    };
+
+    const isNew = !item.openedBy || !item.openedBy.includes(auth.currentUser.uid);
+
     if (!secondUserProfile) {
         return <Text>Loading...</Text>;
     }
 
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('Chat', { conversationID: item.id })}>
+        <TouchableOpacity onPress={handlePress}>
             <View style={styles.conversationItem}>
                 <Image
-                    source={{ uri: secondUserProfile.images[0]}}
+                    source={{ uri: secondUserProfile.images[0] }}
                     style={styles.avatar}
                 />
                 <View style={styles.textContainer}>
                     <Text style={styles.username}>{secondUserProfile.firstName}</Text>
                 </View>
                 <Text style={styles.time}>{new Date(item.createdAt.seconds * 1000).toLocaleTimeString()}</Text>
+                {isNew && <View style={styles.newIndicator} />}
             </View>
         </TouchableOpacity>
     );
@@ -63,6 +76,13 @@ const styles = StyleSheet.create({
     time: {
         marginLeft: 10,
         color: '#666',
+    },
+    newIndicator: {
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: 'red',
+        marginLeft: 10,
     },
 });
 
