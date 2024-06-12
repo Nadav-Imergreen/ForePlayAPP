@@ -26,9 +26,8 @@ export async function matchAI(userSuggestions) {
         const matchPromises = userSuggestions.map(async (secondUserDoc) => {
             const profileBuilt2 = secondUserDoc.aiProfile ? secondUserDoc.aiProfile : await buildProfileFromMessages(secondUserDoc, openai);
             const {matchRate, messageContent} = await get_matching_rate(profileBuilt1, profileBuilt2, openai);
-            console.log( `res - matchRate between ${currentUser.firstName} & ${secondUserDoc.firstName} is: ${matchRate}`);
             return {
-                usersNames: `${currentUser.firstName} & ${secondUserDoc.firstName}`,
+                usersNames: [currentUser.firstName , secondUserDoc.firstName],
                 matchRate: matchRate,
                 messageContent: messageContent,
                 userId: secondUserDoc.id,
