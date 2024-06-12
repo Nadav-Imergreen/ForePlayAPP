@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {View, Image, Text, StyleSheet, Alert, TextInput, Button, TouchableOpacity, ScrollView} from "react-native";
 import { getCurrentUser, getUsersBy, saveExtraInfo} from "../services/Databases/users";
-import { createConversation} from "../services/Databases/chat";
+import {createConversation, getUserConversations} from "../services/Databases/chat";
 import { matchAI } from "../services/matchAI";
+import {auth} from '../services/config';
 
 const HomeScreen = ({navigation}) => {
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
@@ -30,6 +31,12 @@ const HomeScreen = ({navigation}) => {
                 console.log('number of profiles found: ', usersData.length);
                 if (usersData.length > 0) {
                     const matchedUsers = await matchAI(usersData);
+
+                    matchedUsers.forEach(doc => {
+                        const data = doc;
+                        console.log( `res - matchRate between ${data.usersNames[0]} & ${data.usersNames[1]} is: ${data.matchRate}`);
+                    });
+
                     setSuggestedUsers(matchedUsers);
                 } else {
                     setNoResults(true);
@@ -71,6 +78,7 @@ const HomeScreen = ({navigation}) => {
     const handleOpenConversation = async () => {
         // Placeholder for opening a conversation
         const conversationID =  await createConversation(suggestedUsers[currentIndex].userId);
+
         console.log("conversationID: ", conversationID);
         navigation.navigate('Chat', { conversationID: conversationID })
         Alert.alert("Conversation", "This will open a conversation with the user.");
@@ -96,7 +104,7 @@ const HomeScreen = ({navigation}) => {
                 }
                 return prevCountdown - 1;
             });
-        }, 1000);
+        }, 1);
         if(isButtonActive){
             // Increment the current index to show the next suggested user after the countdown
             setCurrentIndex(currentIndex + 1);

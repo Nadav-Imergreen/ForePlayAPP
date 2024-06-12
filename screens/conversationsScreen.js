@@ -1,28 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import { auth } from '../services/config';
+import {auth, db} from '../services/config';
 import { handleSignOut } from "../services/auth";
-import {registerAndSaveConversation, registerAndSaveMessages, registerAndSaveUsers} from '../services/insertFakeUsers';
-import { getUserConversations } from "../services/Databases/chat";
 import ConversationItem from '../components/conversationItem';
-import {hardCodedConversations, hardCodedMessages, userProfiles} from "../services/hardCodedData";
+import {collection, onSnapshot, query, where} from "firebase/firestore";
 
 const ConversationsScreen = ({ navigation }) => {
     const [conversations, setConversations] = useState([]);
 
     useEffect(() => {
         const fetchConversations = async () => {
-            const currentUserId = auth.currentUser.uid;
-            const querySnapshot = await getUserConversations(currentUserId);
+            // get all conversation that active user is a part of
+            const conversationRef = collection(db, 'conversations');
+            const q = query(conversationRef, where('members', 'array-contains', auth.currentUser.uid));
+            // extract data from query and set a realTime db alert
+            const unsubscribe = onSnapshot(q, (snapshot) => {
+                const convos = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setConversations(convos);
+            });
 
-            const convos = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setConversations(convos);
+            return () => {
+                unsubscribe();
+            };
         };
 
-        fetchConversations();
+        fetchConversations().catch((e) => console.log('WARNING: error loading user conversations: ', e));
     }, []);
 
     return (
