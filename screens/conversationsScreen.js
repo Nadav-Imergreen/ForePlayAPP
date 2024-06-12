@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { View, FlatList, StyleSheet, TouchableOpacity, Text } from 'react-native';
-import {auth, db} from '../services/config';
+import { auth, db } from '../services/config';
 import { handleSignOut } from "../services/auth";
 import ConversationItem from '../components/conversationItem';
-import {collection, onSnapshot, query, where} from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 
 const ConversationsScreen = ({ navigation }) => {
     const [conversations, setConversations] = useState([]);
 
     useEffect(() => {
         const fetchConversations = async () => {
-            // get all conversation that active user is a part of
+
+            // Get all conversations that the active user is a part of
             const conversationRef = collection(db, 'conversations');
             const q = query(conversationRef, where('members', 'array-contains', auth.currentUser.uid));
-            // extract data from query and set a realTime db alert
+
+            // Extract data from query and set a real-time DB alert
             const unsubscribe = onSnapshot(q, (snapshot) => {
                 const convos = snapshot.docs.map(doc => ({
                     id: doc.id,
