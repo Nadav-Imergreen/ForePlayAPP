@@ -90,7 +90,7 @@ const BottomTabNav = ({navigation}) => {
                 }}
             />
             <Tab.Screen
-                name="Profile"
+                name="AiMatchesScreen"
                 component={AiMatchesScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (

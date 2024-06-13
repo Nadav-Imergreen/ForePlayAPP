@@ -15,8 +15,7 @@ const ChatScreen = ({ route, navigation }) => {
     const [avatarUrl, setAvatarUrl] = useState('');
     const [aiSuggestion, setAiSuggestion] = useState(''); // State to hold AI suggestion
 
-    console.log(conversationID);
-
+    
     useLayoutEffect(() => {
         const q = query(
             collection(db, 'messages'),
@@ -43,6 +42,7 @@ const ChatScreen = ({ route, navigation }) => {
     useEffect(() => {
         const getUserImage = async () => {
             const currentUser = await getCurrentUser();
+            console.log(currentUser);
             return currentUser.images[0];
         };
 
@@ -121,6 +121,7 @@ const ChatScreen = ({ route, navigation }) => {
                         />
                     </>
                 )}
+                <Text>HELLOW</Text>
             </SafeAreaView>
         </SafeAreaProvider>
     );

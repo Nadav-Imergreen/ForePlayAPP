@@ -8,6 +8,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ItsMatchModal from "../components/ItsMatchModal";
 import Loader from '../services/loadingIndicator';
 import { BlurView } from '@react-native-community/blur';
+import { CommonActions } from '@react-navigation/native';
 
 const MatchesScreen = ({navigation}) => {
 
@@ -34,6 +35,7 @@ const MatchesScreen = ({navigation}) => {
 
     const [conversationId, setConversationId] = useState(false);
 
+    const [goToChat, setgoToChat] = useState(false);
 
     useEffect(() => {
       const fetchData = async () => {
@@ -142,6 +144,14 @@ const MatchesScreen = ({navigation}) => {
       handleDislike();
     }, [dislikes]);
 
+    useEffect(() => {
+      if (goToChat){
+        handleModalClose();
+        setgoToChat(false);
+        navigation.navigate('Chat', { conversationID: conversationId });
+      }
+  }, [goToChat]);
+
     // Function to handle navigation to the next profile.
     const nextProfile = () => {
         setPhotoIndex(0);
@@ -166,7 +176,6 @@ const MatchesScreen = ({navigation}) => {
                   setMatchedUser(likedUser);
                   setMatchVisible(true);
                   const id = await createConversation(likedUserId);
-                  console.log(id);
                   setConversationId(id);
               }
           })
@@ -307,8 +316,7 @@ const MatchesScreen = ({navigation}) => {
                     user1={currentUser}
                     user2={matchedUser}
                     onClose={handleModalClose}
-                    navigation={navigation}
-                    conversationId={conversationId}
+                    setgoToChat={setgoToChat}
                 />
             </View>}
 
