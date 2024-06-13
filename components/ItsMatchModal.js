@@ -1,7 +1,20 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { createConversation, getUserConversations } from '../services/Databases/chat';
 
-const ItsMatchModal = ({ visible, user1, user2, onClose }) => {
+const ItsMatchModal = ({ visible, user1, user2, onClose, navigation, conversationId  }) => {
+
+    //const navigation = useNavigation();
+
+    const goToChat = async () => {
+        try {
+            console.log(conversationId);
+            navigation.navigate('Chat', { conversationId: conversationId });
+        } catch (error) {
+            console.error('Error navigating to chat:', error);
+        }
+    };
 
     return (
         <Modal
@@ -17,11 +30,11 @@ const ItsMatchModal = ({ visible, user1, user2, onClose }) => {
                         <Image source={{ uri: user2.images[0] }} style={styles.image} />
                     </View>
                     <Text style={styles.message}>You and {user2.firstName} liked each other!</Text>
-                    <TouchableOpacity style={styles.button}>
-                        <Text style={styles.buttonText}>Go to Chat</Text>
+                    <TouchableOpacity style={styles.button} onPress={goToChat}>
+                        <Text style={styles.buttonText}>Go to chat</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.button} onPress={onClose}>
-                        <Text style={styles.buttonText}>Maybe Later</Text>
+                    <TouchableOpacity onPress={onClose}>
+                        <Text style={styles.laterText}>Maybe Later</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -42,19 +55,11 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 35,
         alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5,
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 15,
+        marginBottom: 30,
     },
     imageContainer: {
         flexDirection: 'row',
@@ -72,18 +77,23 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     button: {
-        backgroundColor: '#2196F3',
+        backgroundColor: 'white',
         borderRadius: 20,
+        borderWidth: 1,
+        borderColor: 'lightgrey',
         padding: 10,
-        elevation: 2,
-        width: 150,
+        elevation: 5,
+        width: 200,
         marginTop: 10,
     },
     buttonText: {
-        color: 'white',
-        fontWeight: 'bold',
+        color: '#f2647a',
+        fontSize: 16,
         textAlign: 'center',
     },
+    laterText: {
+        marginTop: 10
+    }
 });
 
 export default ItsMatchModal;

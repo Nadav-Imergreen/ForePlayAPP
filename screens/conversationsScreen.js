@@ -33,7 +33,7 @@ const ConversationsScreen = ({ navigation }) => {
     }, []);
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={{ flex: 1, backgroundColor: 'white' }}>
             <FlatList
                 data={conversations}
                 keyExtractor={item => item.id}
