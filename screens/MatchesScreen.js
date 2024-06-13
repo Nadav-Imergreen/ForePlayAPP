@@ -9,7 +9,7 @@ import ItsMatchModal from "../components/ItsMatchModal";
 import Loader from '../services/loadingIndicator';
 import { BlurView } from '@react-native-community/blur';
 
-const MatchesScreen = () => {
+const MatchesScreen = ({navigation}) => {
 
     const [currentUser, setCurrentUser] = useState();
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
@@ -31,6 +31,8 @@ const MatchesScreen = () => {
 
     const [loading, setLoading] = useState(true);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+    const [conversationId, setConversationId] = useState(false);
 
 
     useEffect(() => {
@@ -69,7 +71,7 @@ const MatchesScreen = () => {
                       id: doc.id,
                       ...doc.data()
                   };
-  
+
                   // Check if the user is not already seen and is not the current user
                   if (!seenUserIds.includes(user.userId) && user.userId !== currentUser.userId) {
                       if (radius) {
@@ -159,11 +161,13 @@ const MatchesScreen = () => {
 
         // First, check for a match
         checkForMatch(likedUserId)
-          .then(isMatch => {
+          .then(async isMatch => {
               if (isMatch) {
                   setMatchedUser(likedUser);
                   setMatchVisible(true);
-                  createConversation(likedUserId);
+                  const id = await createConversation(likedUserId);
+                  console.log(id);
+                  setConversationId(id);
               }
           })
           .then(() => saveSeen(likedUserId)
@@ -303,6 +307,8 @@ const MatchesScreen = () => {
                     user1={currentUser}
                     user2={matchedUser}
                     onClose={handleModalClose}
+                    navigation={navigation}
+                    conversationId={conversationId}
                 />
             </View>}
 

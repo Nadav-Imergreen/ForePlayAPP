@@ -81,7 +81,6 @@ const HomeScreen = ({navigation}) => {
 
         console.log("conversationID: ", conversationID);
         navigation.navigate('Chat', { conversationID: conversationID })
-        Alert.alert("Conversation", "This will open a conversation with the user.");
     };
 
     const handleFindNewMatch = () => {
