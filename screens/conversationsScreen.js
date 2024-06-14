@@ -5,9 +5,18 @@ import { handleSignOut } from "../services/auth";
 import ConversationItem from '../components/conversationItem';
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 
-const ConversationsScreen = ({ navigation }) => {
+const ConversationsScreen = ({ navigation, route }) => {
     const [conversations, setConversations] = useState([]);
+    const { conversationId } = route.params || {};
 
+    /*
+    useEffect(() => {
+        if (conversationId){
+            navigation.navigate('Chat', { conversationID: conversationId });
+        }
+    }, []);
+    */
+   
     useEffect(() => {
         const fetchConversations = async () => {
 
@@ -33,7 +42,7 @@ const ConversationsScreen = ({ navigation }) => {
     }, []);
 
     return (
-        <View style={{ flex: 1, backgroundColor: 'white' }}>
+        <View style={{ flex: 1, backgroundColor: '#F8F8F8' }}>
             <FlatList
                 data={conversations}
                 keyExtractor={item => item.id}

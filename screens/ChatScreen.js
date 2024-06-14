@@ -42,7 +42,7 @@ const ChatScreen = ({ route, navigation }) => {
     useEffect(() => {
         const getUserImage = async () => {
             const currentUser = await getCurrentUser();
-            console.log(currentUser);
+            console.log(conversationID);
             return currentUser.images[0];
         };
 
@@ -121,7 +121,6 @@ const ChatScreen = ({ route, navigation }) => {
                         />
                     </>
                 )}
-                <Text>HELLOW</Text>
             </SafeAreaView>
         </SafeAreaProvider>
     );

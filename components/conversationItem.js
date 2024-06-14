@@ -37,7 +37,7 @@ const ConversationItem = ({ item, navigation }) => {
     return (
         <Pressable     
             style={({ pressed }) => [
-            { backgroundColor: pressed ? 'lightgray' : 'white',},
+            { backgroundColor: pressed ? 'lightgray' : '#F8F8F8',},
             styles.pressable,
         ]} onPress={handlePress}>
             <View style={styles.conversationItem}>

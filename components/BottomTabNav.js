@@ -69,6 +69,7 @@ const BottomTabNav = ({navigation}) => {
                             style={styles.icon}
                         />
                     ),
+                    unmountOnBlur: true
                    // tabBarStyle: { display: "none" }
                 }}
             />}

@@ -14,7 +14,7 @@ const EditUserPreferenceScreen = ({ route, navigation }) => {
     const [ageRange, setAgeRange] = useState([18, 25]); // Default age range
     const [radius, setRadius] = useState(10); // Default radius
     const [loading, setLoading] = useState(false);
-    const { userData } = route.params;
+    const { userData } = [route.params];
 
     const [useCurrentLocation, setUseCurrentLocation] = useState(true);
     const [location, setLocation] = useState(null);
