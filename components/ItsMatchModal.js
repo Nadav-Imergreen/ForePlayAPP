@@ -3,16 +3,12 @@ import { View, Text, Image, TouchableOpacity, StyleSheet, Modal } from 'react-na
 import { useNavigation } from '@react-navigation/native';
 import { createConversation, getUserConversations } from '../services/Databases/chat';
 
-const ItsMatchModal = ({ visible, user1, user2, onClose, setgoToChat  }) => {
+const ItsMatchModal = ({ visible, user1, user2, onClose, conversationId, navigation  }) => {
 
     //const navigation = useNavigation();
 
-    const goToChat = async () => {
-        try {
-            setgoToChat(true);
-        } catch (error) {
-            console.error('Error navigating to chat:', error);
-        }
+    const goToChat = () => {
+        navigation.navigate('Conversations', { conversationId: conversationId });
     };
 
     return (

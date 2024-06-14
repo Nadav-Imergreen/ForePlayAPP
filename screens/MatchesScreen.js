@@ -33,7 +33,7 @@ const MatchesScreen = ({navigation}) => {
     const [loading, setLoading] = useState(true);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-    const [conversationId, setConversationId] = useState(false);
+    const [conversationId, setConversationId] = useState(null);
 
     const [goToChat, setgoToChat] = useState(false);
 
@@ -145,12 +145,19 @@ const MatchesScreen = ({navigation}) => {
     }, [dislikes]);
 
     useEffect(() => {
-      if (goToChat){
-        handleModalClose();
-        setgoToChat(false);
-        navigation.navigate('Chat', { conversationID: conversationId });
+      handleModalClose();
+    
+      if (goToChat) {
+        setTimeout(() => {
+          go();
+        }, 1000); // Adjust the delay as necessary
       }
-  }, [goToChat]);
+    }, [goToChat]);
+
+    const go = () => {
+      const id = 'FC9ULDifiWwNzpd0MOlR'
+      navigation.navigate('Conversations');
+    };
 
     // Function to handle navigation to the next profile.
     const nextProfile = () => {
@@ -316,7 +323,8 @@ const MatchesScreen = ({navigation}) => {
                     user1={currentUser}
                     user2={matchedUser}
                     onClose={handleModalClose}
-                    setgoToChat={setgoToChat}
+                    conversationId={conversationId}
+                    navigation={navigation}
                 />
             </View>}
 
