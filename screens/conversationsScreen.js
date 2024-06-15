@@ -5,9 +5,17 @@ import { handleSignOut } from "../services/auth";
 import ConversationItem from '../components/conversationItem';
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 
-const ConversationsScreen = ({ navigation }) => {
+const ConversationsScreen = ({ navigation, route }) => {
     const [conversations, setConversations] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const { conversationId } = route.params || {};
+
+    useEffect(() => {
+        if (conversationId){
+            navigation.navigate('Chat', { conversationID: conversationId });
+            navigation.setParams({ conversationId: null });
+        }
+    }, []);
+
 
     useEffect(() => {
         const fetchConversations = async () => {

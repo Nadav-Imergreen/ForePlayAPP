@@ -3,6 +3,9 @@ import {auth, db} from '../config';
 import {
     collection,
     getDocs,
+    doc,
+    updateDoc,
+    arrayUnion,
     query,
     where,
     serverTimestamp,
@@ -74,5 +77,17 @@ export async function getUserMessages(userId) {
     } catch (error) {
         console.error('ERROR: Failed to retrieve messages:', error.message);
         return [];
+    }
+}
+
+export async function updateConversationOpened(conversationId) {
+    try {
+        const conversationDocRef = doc(db, 'conversations', conversationId);
+        await updateDoc(conversationDocRef, {
+            openedBy: arrayUnion(auth.currentUser.uid)
+        });
+        console.log('Conversation successfully updated as opened');
+    } catch (error) {
+        console.error('Error updating conversation as opened: ', error);
     }
 }

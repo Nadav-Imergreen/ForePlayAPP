@@ -8,8 +8,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import ItsMatchModal from "../components/ItsMatchModal";
 import Loader from '../services/loadingIndicator';
 import { BlurView } from '@react-native-community/blur';
+import { CommonActions } from '@react-navigation/native';
 
-const MatchesScreen = () => {
+const MatchesScreen = ({navigation}) => {
 
     const [currentUser, setCurrentUser] = useState();
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
@@ -32,6 +33,9 @@ const MatchesScreen = () => {
     const [loading, setLoading] = useState(true);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
+    const [conversationId, setConversationId] = useState(null);
+
+    const [goToChat, setgoToChat] = useState(false);
 
     useEffect(() => {
       const fetchData = async () => {
@@ -69,7 +73,7 @@ const MatchesScreen = () => {
                       id: doc.id,
                       ...doc.data()
                   };
-  
+
                   // Check if the user is not already seen and is not the current user
                   if (!seenUserIds.includes(user.userId) && user.userId !== currentUser.userId) {
                       if (radius) {
@@ -140,6 +144,21 @@ const MatchesScreen = () => {
       handleDislike();
     }, [dislikes]);
 
+    useEffect(() => {
+      handleModalClose();
+    
+      if (goToChat) {
+        setTimeout(() => {
+          go();
+        }, 1000); // Adjust the delay as necessary
+      }
+    }, [goToChat]);
+
+    const go = () => {
+      const id = 'FC9ULDifiWwNzpd0MOlR'
+      navigation.navigate('Conversations');
+    };
+
     // Function to handle navigation to the next profile.
     const nextProfile = () => {
         setPhotoIndex(0);
@@ -159,11 +178,12 @@ const MatchesScreen = () => {
 
         // First, check for a match
         checkForMatch(likedUserId)
-          .then(isMatch => {
+          .then(async isMatch => {
               if (isMatch) {
                   setMatchedUser(likedUser);
                   setMatchVisible(true);
-                  createConversation(likedUserId);
+                  const id = await createConversation(likedUserId);
+                  setConversationId(id);
               }
           })
           .then(() => saveSeen(likedUserId)
@@ -303,6 +323,8 @@ const MatchesScreen = () => {
                     user1={currentUser}
                     user2={matchedUser}
                     onClose={handleModalClose}
+                    conversationId={conversationId}
+                    navigation={navigation}
                 />
             </View>}
 

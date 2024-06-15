@@ -8,13 +8,14 @@ import { getCurrentUser } from "../services/Databases/users";
 import { createMassage } from "../services/Databases/chat";
 import { aiMessageGenerator } from "../services/matchAI";
 
-const ChatScreen = ({ navigation, route }) => {
+const ChatScreen = ({ route, navigation }) => {
     const { conversationID } = route.params;
     const [messages, setMessages] = useState([]);
     const [loadingMessages, setLoadingMessages] = useState(true);
     const [avatarUrl, setAvatarUrl] = useState('');
     const [aiSuggestion, setAiSuggestion] = useState(''); // State to hold AI suggestion
 
+    
     useLayoutEffect(() => {
         const q = query(
             collection(db, 'messages'),

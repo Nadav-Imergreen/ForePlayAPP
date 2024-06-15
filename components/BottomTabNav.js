@@ -69,6 +69,7 @@ const BottomTabNav = ({navigation}) => {
                             style={styles.icon}
                         />
                     ),
+                    unmountOnBlur: true
                    // tabBarStyle: { display: "none" }
                 }}
             />}
@@ -90,7 +91,7 @@ const BottomTabNav = ({navigation}) => {
                 }}
             />
             <Tab.Screen
-                name="Profile"
+                name="AiMatchesScreen"
                 component={AiMatchesScreen}
                 options={{
                     tabBarIcon: ({ focused }) => (
