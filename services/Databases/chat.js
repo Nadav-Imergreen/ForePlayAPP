@@ -9,7 +9,7 @@ import {
     query,
     where,
     serverTimestamp,
-    addDoc, arrayUnion
+    addDoc
 } from 'firebase/firestore';
 
 
