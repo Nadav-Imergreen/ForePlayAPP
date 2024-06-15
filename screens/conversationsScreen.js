@@ -9,13 +9,13 @@ const ConversationsScreen = ({ navigation, route }) => {
     const [conversations, setConversations] = useState([]);
     const { conversationId } = route.params || {};
 
-    /*
     useEffect(() => {
         if (conversationId){
             navigation.navigate('Chat', { conversationID: conversationId });
+            navigation.setParams({ conversationId: null });
         }
     }, []);
-    */
+    
    
     useEffect(() => {
         const fetchConversations = async () => {

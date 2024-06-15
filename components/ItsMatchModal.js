@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Modal } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { createConversation, getUserConversations } from '../services/Databases/chat';
+import { updateConversationOpened } from "../services/Databases/chat"
 
 const ItsMatchModal = ({ visible, user1, user2, onClose, conversationId, navigation  }) => {
 
     //const navigation = useNavigation();
 
-    const goToChat = () => {
+    const goToChat = async () => {
+        await updateConversationOpened(conversationId);
         navigation.navigate('Conversations', { conversationId: conversationId });
     };
 

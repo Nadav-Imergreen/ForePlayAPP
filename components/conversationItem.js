@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, Pressable, View } from 'react-native';
 import { auth, db } from '../services/config';
 import { getUser } from "../services/Databases/users";
-import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { updateConversationOpened } from "../services/Databases/chat"
 
 const ConversationItem = ({ item, navigation }) => {
     const [secondUserProfile, setSecondUserProfile] = useState(null);
@@ -21,10 +21,7 @@ const ConversationItem = ({ item, navigation }) => {
     const handlePress = async () => {
         navigation.navigate('Chat', { conversationID: item.id });
 
-        const conversationDocRef = doc(db, 'conversations', item.id);
-        await updateDoc(conversationDocRef, {
-            openedBy: arrayUnion(auth.currentUser.uid)
-        });
+        await updateConversationOpened(item.id);
     };
 
     const isNew = !item.openedBy || !item.openedBy.includes(auth.currentUser.uid);
