@@ -42,7 +42,6 @@ const ChatScreen = ({ route, navigation }) => {
     useEffect(() => {
         const getUserImage = async () => {
             const currentUser = await getCurrentUser();
-            console.log(conversationID);
             return currentUser.images[0];
         };
 
