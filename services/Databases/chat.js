@@ -6,7 +6,7 @@ import {
     query,
     where,
     serverTimestamp,
-    addDoc
+    addDoc, arrayUnion
 } from 'firebase/firestore';
 
 
@@ -25,7 +25,7 @@ export const createConversation = async (secondUserId) => {
         });
 
         if (existingConversation) {
-            console.log('Conversation already exists with ID: ', existingConversation.id);
+            console.log('INFO: Conversation already exists with ID: ', existingConversation.id);
             return existingConversation.id;
         }
 
@@ -36,7 +36,7 @@ export const createConversation = async (secondUserId) => {
             createdAt: serverTimestamp(),
         });
 
-        console.log('Conversation saved with ID: ', docRef.id);
+        console.log('INFO: Conversation saved with ID: ', docRef.id);
         return docRef.id;
     } catch (error) {
         console.error('WARNING: error in save conversation ID: ', error);

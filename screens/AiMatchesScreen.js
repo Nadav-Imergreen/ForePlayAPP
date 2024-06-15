@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {View, Image, Text, StyleSheet, Alert, TextInput, Button, TouchableOpacity, ScrollView} from "react-native";
 import { getCurrentUser, getUsersBy, saveExtraInfo} from "../services/Databases/users";
-import {createConversation, getUserConversations} from "../services/Databases/chat";
+import {createConversation} from "../services/Databases/chat";
 import { matchAI } from "../services/matchAI";
-import {auth} from '../services/config';
+import AddInfoScreen from './AddInfoScreen'
 
 const HomeScreen = ({navigation}) => {
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
@@ -58,30 +58,10 @@ const HomeScreen = ({navigation}) => {
 
     }, []);
 
-    const handleAddInfo = async () => {
-        if (aboutMe.trim() === '' || desireMatch.trim() === '') {
-            Alert.alert('Error', 'Please fill in both fields.');
-            return;
-        }
-        try {
-            await saveExtraInfo(aboutMe, desireMatch);
-            Alert.alert('Success', 'Information added successfully.');
-            setAboutMe('');
-            setDesireMatch('');
-            setAdditionalInfoFilled(true);
-        } catch (error) {
-            console.error('Error adding info to Firestore: ', error);
-            Alert.alert('Error', 'Failed to add information. Please try again.');
-        }
-    };
-
     const handleOpenConversation = async () => {
         // Placeholder for opening a conversation
         const conversationID =  await createConversation(suggestedUsers[currentIndex].userId);
-
-        console.log("conversationID: ", conversationID);
         navigation.navigate('Chat', { conversationID: conversationID })
-        Alert.alert("Conversation", "This will open a conversation with the user.");
     };
 
     const handleFindNewMatch = () => {
@@ -168,29 +148,7 @@ const HomeScreen = ({navigation}) => {
                         </View>
                     )}
                 </>
-            ) : (
-                <View style={styles.formContainer}>
-                    <Text style={styles.additionalInfoText}>
-                        Please fill in additional information to activate AI matching.
-                    </Text>
-                    <View style={styles.card}>
-                        <Text style={styles.title}>Add Information</Text>
-                        <TextInput
-                            placeholder="Enter information about yourself"
-                            value={aboutMe}
-                            onChangeText={setAboutMe}
-                            style={styles.input}
-                        />
-                        <TextInput
-                            placeholder="Describe your desired match"
-                            value={desireMatch}
-                            onChangeText={setDesireMatch}
-                            style={styles.input}
-                        />
-                        <Button title="Add Info" onPress={handleAddInfo} />
-                    </View>
-                </View>
-            )}
+            ) : <AddInfoScreen/>}
         </View>
     );
 };
