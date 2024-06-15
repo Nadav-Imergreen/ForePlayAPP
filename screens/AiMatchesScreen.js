@@ -3,14 +3,13 @@ import {View, Image, Text, StyleSheet, Alert, TextInput, Button, TouchableOpacit
 import { getCurrentUser, getUsersBy, saveExtraInfo} from "../services/Databases/users";
 import { createConversation} from "../services/Databases/chat";
 import { matchAI } from "../services/matchAI";
+import AddInfoScreen from "../components/AiExtraInfo";
 
 const HomeScreen = ({navigation}) => {
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
     const [currentIndex, setCurrentIndex] = useState(0); // State to track current index
     const [additionalInfoFilled, setAdditionalInfoFilled] = useState(false); // State to track if additional info is filled
     const [noResults, setNoResults] = useState(false); // State to track if there are no results
-    const [aboutMe, setAboutMe] = useState('');
-    const [desireMatch, setDesireMatch] = useState('');
     const [expanded, setExpanded] = useState(false); // State for expanding view
     const [isButtonActive, setIsButtonActive] = useState(false);
     const [countdown, setCountdown] = useState(10);
@@ -18,22 +17,17 @@ const HomeScreen = ({navigation}) => {
     useEffect(() => {
         const fetchData = async () => {
             const currentUser = await getCurrentUser();
-            if (currentUser.aboutMe === '' || currentUser.desireMatch === '') {
-                setAdditionalInfoFilled(false);
+            const usersSnapshot = await getUsersBy(currentUser);
+            const usersData = usersSnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            console.log('number of profiles found: ', usersData.length);
+            if (usersData.length > 0) {
+                const matchedUsers = await matchAI(usersData);
+                setSuggestedUsers(matchedUsers);
             } else {
-                setAdditionalInfoFilled(true);
-                const usersSnapshot = await getUsersBy(currentUser);
-                const usersData = usersSnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                console.log('number of profiles found: ', usersData.length);
-                if (usersData.length > 0) {
-                    const matchedUsers = await matchAI(usersData);
-                    setSuggestedUsers(matchedUsers);
-                } else {
-                    setNoResults(true);
-                }
+                setNoResults(true);
             }
         };
         fetchData().catch(e => console.error("Failed to fetch suggested users:", e.message));
@@ -51,22 +45,6 @@ const HomeScreen = ({navigation}) => {
 
     }, []);
 
-    const handleAddInfo = async () => {
-        if (aboutMe.trim() === '' || desireMatch.trim() === '') {
-            Alert.alert('Error', 'Please fill in both fields.');
-            return;
-        }
-        try {
-            await saveExtraInfo(aboutMe, desireMatch);
-            Alert.alert('Success', 'Information added successfully.');
-            setAboutMe('');
-            setDesireMatch('');
-            setAdditionalInfoFilled(true);
-        } catch (error) {
-            console.error('Error adding info to Firestore: ', error);
-            Alert.alert('Error', 'Failed to add information. Please try again.');
-        }
-    };
 
     const handleOpenConversation = async () => {
         // Placeholder for opening a conversation
@@ -160,29 +138,7 @@ const HomeScreen = ({navigation}) => {
                         </View>
                     )}
                 </>
-            ) : (
-                <View style={styles.formContainer}>
-                    <Text style={styles.additionalInfoText}>
-                        Please fill in additional information to activate AI matching.
-                    </Text>
-                    <View style={styles.card}>
-                        <Text style={styles.title}>Add Information</Text>
-                        <TextInput
-                            placeholder="Enter information about yourself"
-                            value={aboutMe}
-                            onChangeText={setAboutMe}
-                            style={styles.input}
-                        />
-                        <TextInput
-                            placeholder="Describe your desired match"
-                            value={desireMatch}
-                            onChangeText={setDesireMatch}
-                            style={styles.input}
-                        />
-                        <Button title="Add Info" onPress={handleAddInfo} />
-                    </View>
-                </View>
-            )}
+            ) : <AddInfoScreen setAdditionalInfoFilled ={setAdditionalInfoFilled}/>}
         </View>
     );
 };

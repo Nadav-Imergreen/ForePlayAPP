@@ -1,6 +1,6 @@
 import { auth, db } from '../services/config';
 import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
-import { GiftedChat, InputToolbar } from 'react-native-gifted-chat';
+import { GiftedChat } from 'react-native-gifted-chat';
 import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { collection, query, orderBy, onSnapshot, where, getDoc, doc } from 'firebase/firestore';

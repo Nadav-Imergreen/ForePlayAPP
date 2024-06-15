@@ -3,24 +3,25 @@ import { View, StyleSheet, Alert } from 'react-native';
 import { TextInput, Button, Card, Title, Provider as PaperProvider } from 'react-native-paper';
 import { saveExtraInfo } from '../services/Databases/users';
 
-const AddInfoComponent = () => {
+const ExtraInfo = ({ setAdditionalInfoFilled }) => {
     const [aboutMe, setAboutMe] = useState('');
     const [desireMatch, setDesireMatch] = useState('');
 
     const handleAddInfo = async () => {
         if (aboutMe.trim() === '' || desireMatch.trim() === '') {
             Alert.alert('Error', 'Please fill in both fields.');
-            return;
-        }
-
-        try {
-            await saveExtraInfo(aboutMe, desireMatch);
-            Alert.alert('Success', 'Information added successfully.');
-            setAboutMe('');
-            setDesireMatch('');
-        } catch (error) {
-            console.error('Error adding info to Firestore: ', error);
-            Alert.alert('Error', 'Failed to add information. Please try again.');
+            setAdditionalInfoFilled(false);
+        } else {
+            try {
+                await saveExtraInfo(aboutMe, desireMatch);
+                Alert.alert('Success', 'Information added successfully.');
+                setAboutMe('');
+                setDesireMatch('');
+                setAdditionalInfoFilled(true);
+            } catch (error) {
+                console.error('Error adding info to Firestore: ', error);
+                Alert.alert('Error', 'Failed to add information. Please try again.');
+            }
         }
     };
 
@@ -82,4 +83,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default AddInfoComponent;
+export default ExtraInfo;

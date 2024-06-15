@@ -15,7 +15,7 @@ import BottomTabNav from './components/BottomTabNav';
 import {onAuthStateChanged} from 'firebase/auth';
 import {auth} from './services/config';
 import ChatScreen from './screens/ChatScreen';
-import AddInfoComponent from "./screens/AddInfoScreen";
+import ExtraInfo from "./components/AiExtraInfo";
 import ConversationsScreen from "./screens/conversationsScreen";
 
 
@@ -57,7 +57,7 @@ export default function App() {
                         <Stack.Screen name="My Preferences" component={EditUserPreferenceScreen}/>
                         <Stack.Screen name="Matches" component={MatchesScreen}/>
                         <Stack.Screen name="AiMatches" component={AiMatchesScreen}/>
-                        <Stack.Screen name="AddInfo" component={AddInfoComponent}/>
+                        <Stack.Screen name="AddInfo" component={ExtraInfo}/>
                         <Stack.Screen name='Chat' component={ChatScreen}/>
                         <Stack.Screen name='Conversations' component={ConversationsScreen}/>
                     </>
