@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {
+    TextInput,
     Image,
     Text,
     TouchableOpacity,
@@ -14,15 +15,14 @@ import {
     ImageBackground
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {login} from '../services/auth';
+import {login, googleSignIn} from '../services/auth';
 import Loader from '../services/loadingIndicator';
-import CustomFloatingLabelInput from '../components/CustomFloatingLabelInput'
+
 
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [showEmailMessage, setShowEmailMessage] = useState(false);
     const pixelDensity = PixelRatio.get();
     const logoSize = 30;
 
@@ -73,102 +73,129 @@ const LoginScreen = () => {
         } finally {setLoading(false);}
     };
 
+    const handleGoogleSignup = async () => {
+        setLoading(true);
+        try {
+            const user = await googleSignIn();
+            if (user) await saveUser(user.uid, user.email);
+        } catch (error) {console.log('WARNING: google registration fails', error);
+        } finally {setLoading(false)}
+    };
+
     return(
+<>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={{ flex: 1, backgroundColor: 'white' }}>
-                <ImageBackground source={require('../assets/background.png')} style={pageStyles.backgroundStyle}>
+            <View style={styles.container}>
+                <View style={{ alignItems: 'center', paddingBottom: '10%' }}>
+                    <Image source={require('../assets/logo_small.png')} style={{ width: scaledWidth, height: scaledHeight }} />
+                </View>
 
-                    <View style={{ alignItems: 'center', paddingBottom: '10%' }}>
-                        <Image source={require('../assets/logo_small.png')} style={{ width: scaledWidth, height: scaledHeight }} />
-                    </View>
+                <Text style={styles.title}>Create your Account</Text>
+                <TextInput style={styles.input} placeholder="Email" onChangeText={text => setEmail(text.trim())} placeholderTextColor="black" keyboardType="email-address"/>
+                <TextInput style={styles.input} placeholder="Password" secureTextEntry onChangeText={setPassword} placeholderTextColor="black"/>
+                
+                {loading ? (
+                    <Loader />
+                ) : (
+                    <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                        <Text style={styles.buttonText}>Log in</Text>
+                    </TouchableOpacity>
+                )}
 
-                    <View style={{
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: 30,
-                        width: '90%',
-                        borderRadius: 20,
-                        borderColor: 'grey',
-                        borderWidth: 1,
-                        backgroundColor: 'rgba(255, 255, 255, 0.75)',
-                    }}>
+                <Text style={{marginTop: 50}}>Or Login with</Text>
 
-                        <CustomFloatingLabelInput
-                                    label="Email Address"
-                                    value={email}
-                                    onChangeText={text => setEmail(text.trim())}
-                                    keyboardType="email-address"
-                                />
 
-                        <CustomFloatingLabelInput
-                                    label="Password"
-                                    value={password}
-                                    onChangeText={setPassword}
-                                    secureTextEntry={true}
-                                />
-                        
+                <View style={styles.socialContainer}>
+                    <TouchableOpacity onPress={handleGoogleSignup} style={styles.socialButton}>
+                        <Image
+                            source={require("../assets/google.png")}
+                            style={styles.socialIcon}
+                            resizeMode='contain'
+                        />
 
-                        <View style={{ marginTop: 40, height: 50 }}>
-                            {loading ? (
-                                <Loader />
-                            ) : (
-                                <TouchableOpacity
-                                    onPress={handleLogin}>
-                                    <Text style={[pageStyles.buttonText, { width: FIELD_WIDTH }]}>Login</Text>
-                                </TouchableOpacity>
-                            )}
-                        </View>
-
-                        <View style={{
-                            marginTop: 10,
-                            ...renderTextOrder()
-                        }}>
-                            <Text>Don't have an account? </Text>
-                            <TouchableOpacity onPress={handleNavigation}>
-                                <Text style={{ fontWeight: 'bold' }}>SignUp</Text>
-                            </TouchableOpacity>
-
-                        </View>
-                    </View>
-
-                </ImageBackground>
+                        <Text style={styles.socialText}>Google</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={handleGoogleSignup} style={styles.socialButton}>
+                        <Image
+                            source={require("../assets/facebook.png")}
+                            style={styles.socialIcon}
+                            resizeMode='contain'
+                        />
+                        <Text style={styles.socialText}>Facebook</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </TouchableWithoutFeedback>
+        </>
     );
 };
 
-const pageStyles = StyleSheet.create({
-    input: {
-        borderWidth: 2,
-        borderColor: 'gray',
-        borderRadius: 12,
-        padding: 7,
-        fontSize: 16,
-        color: 'black',
-        backgroundColor: 'white'
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        alignItems: 'center', // Center content horizontally
+        backgroundColor: 'white',
+        paddingTop: 100
     },
-    label: {
-        fontSize: 16,
-        marginBottom: 2,
-        color: 'black',
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 16,
+    title: {
+        fontSize: 18,
         fontWeight: 'bold',
-        borderRadius: 12,
-        borderColor: 'black',
+        color: 'black',
+        marginBottom: 20,
+        marginRight: 150
+      },
+      input: {
+        width: '80%',
+        height: 45,
+        borderColor: '#ccc',
         borderWidth: 1,
-        padding: 12,
-        backgroundColor: '#a4cdbd',
-        textAlign: 'center'
-    },
-    backgroundStyle: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height,
-        resizeMode: 'stretch',
-        alignItems: 'center'
-    }
+        borderRadius: 30,
+        paddingHorizontal: 20,
+        marginBottom: 10,
+      },
+      button: {
+        width: '80%',
+        height: 45,
+        backgroundColor: 'white',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 30,
+        marginBottom: 20,
+        elevation: 5
+      },
+      buttonText: {
+        color: '#ff6f61',
+        fontWeight: 'bold',
+      },
+      socialContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginTop: 10,
+        paddingHorizontal: 40,
+        marginTop: 20
+      },
+      socialButton: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'row',
+        borderWidth: 1,
+        borderColor: 'lightgrey',
+        backgroundColor: "white",
+        borderRadius: 30,
+        paddingVertical: 10,
+        marginHorizontal: 10,
+      },
+      socialIcon: {
+        height: 25,
+        width: 25,
+        marginRight: 8
+      },
+      socialText: {
+        fontSize: 16,
+        color: 'black'
+      }
+
 });
 
 export default LoginScreen;

@@ -153,8 +153,8 @@ const ProfileCard = ({ suggestedUsers,
 const styles = StyleSheet.create({
     card: {
         position: 'absolute',
-        width: '100%',
-        height: '100%',
+        width: '95%',
+        height: '98%',
         backgroundColor: 'white',
         borderRadius: 10,
         elevation: 5,

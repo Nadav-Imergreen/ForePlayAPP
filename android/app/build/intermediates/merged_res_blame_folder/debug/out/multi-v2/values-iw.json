@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.foreplay.app-mergeDebugResources-49:/values-iw/values-iw.xml",
+            "outputFile": "com.foreplay.app-mergeDebugResources-50:/values-iw/values-iw.xml",
             "map": [
                 {
                     "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\c09cd989c823ee12b8bfc0e43acf7d4c\\transformed\\jetified-react-android-0.73.6-debug\\res\\values-iw\\values-iw.xml",

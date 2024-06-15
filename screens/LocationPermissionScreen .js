@@ -8,7 +8,7 @@ import Loader from '../services/loadingIndicator';
 const LocationPermissionScreen = () => {
   const navigation = useNavigation();
   const [currentLocation, setCurrentLocation] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [locationError, setLocationError] = useState(null);
 
   useEffect(() => {
@@ -25,6 +25,7 @@ const LocationPermissionScreen = () => {
         console.log('Permission already granted');
         getCurrentLocation();
       } else {
+        setLoading(false);
         console.log('Location permission not granted');
         // Show UI to prompt the user for permission
       }
@@ -72,12 +73,12 @@ const LocationPermissionScreen = () => {
     setLoading(true);
     setLocationError(null); // Clear any previous error message
     Geolocation.getCurrentPosition(
-      position => {
-        setLoading(false);
+      async position => {
         const { latitude, longitude } = position.coords;
         console.log('Latitude:', latitude, 'Longitude:', longitude);
         setCurrentLocation({ latitude, longitude });
-        saveUserLocation({ latitude, longitude });
+        await saveUserLocation({ latitude, longitude });
+        setLoading(false);
 
         navigation.dispatch(
           CommonActions.reset({
@@ -89,7 +90,7 @@ const LocationPermissionScreen = () => {
       error => {
         setLoading(false);
         console.log(error.code, error.message);
-        setLocationError('Failed to get your current location.\nPlease try again in your preferences screen.');
+        setLocationError('Failed to get your current location.\nPlease try again.');
       },
       { enableHighAccuracy: false, timeout: 3000, maximumAge: 1000000 }
     );
@@ -151,22 +152,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingTop: 20
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
     color: 'black',
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: 40,
   },
   message: {
     fontSize: 16,
     textAlign: 'center',
-    fontStyle: 'italic'
+    fontStyle: 'italic',
   },
   middleContainer: {
-    flex: 2,
+    flex: 1.5,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },  
   bottomContainer: {
-    flex: 1,
+    flex: 0.5,
     justifyContent: 'flex-end',
     alignItems: 'center',
   },

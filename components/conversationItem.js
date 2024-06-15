@@ -1,7 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {auth} from '../services/config';
-import {getUser} from "../services/Databases/users";
+import React, { useEffect, useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, Pressable, View } from 'react-native';
+import { auth, db } from '../services/config';
+import { getUser } from "../services/Databases/users";
+import { updateConversationOpened } from "../services/Databases/chat"
 
 const ConversationItem = ({ item, navigation }) => {
     const [secondUserProfile, setSecondUserProfile] = useState(null);
@@ -17,23 +18,41 @@ const ConversationItem = ({ item, navigation }) => {
         fetchSecondUserProfile().then((p) => setSecondUserProfile(p));
     }, [item]);
 
+    const handlePress = async () => {
+        navigation.navigate('Chat', { conversationID: item.id });
+
+        await updateConversationOpened(item.id);
+    };
+
+    const isNew = !item.openedBy || !item.openedBy.includes(auth.currentUser.uid);
+
     if (!secondUserProfile) {
         return <Text>Loading...</Text>;
     }
 
+
     return (
-        <TouchableOpacity onPress={() => navigation.navigate('Chat', { conversationID: item.id })}>
+        <Pressable     
+            style={({ pressed }) => [
+            { backgroundColor: pressed ? 'lightgray' : '#F8F8F8',},
+            styles.pressable,
+        ]} onPress={handlePress}>
             <View style={styles.conversationItem}>
                 <Image
-                    source={{ uri: secondUserProfile.images[0]}}
+                    source={{ uri: secondUserProfile.images[0] }}
                     style={styles.avatar}
                 />
                 <View style={styles.textContainer}>
-                    <Text style={styles.username}>{secondUserProfile.firstName}</Text>
+                    <Text style={styles.username}>{secondUserProfile.firstName} {secondUserProfile.lastName}</Text>
                 </View>
-                <Text style={styles.time}>{new Date(item.createdAt.seconds * 1000).toLocaleTimeString()}</Text>
+                {isNew && (
+                    <Image
+                        source={require('../assets/new.png')} // Replace with the path to your image
+                        style={styles.newIndicatorImage}
+                    />
+                )}
             </View>
-        </TouchableOpacity>
+        </Pressable>
     );
 };
 
@@ -41,28 +60,30 @@ const styles = StyleSheet.create({
     conversationItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
+        borderRadius: 20,
+        margin: 5,
+        backgroundColor: 'white',
+        elevation: 3,
+        padding: 3
+
     },
     avatar: {
-        width: 50,
-        height: 50,
-        borderRadius: 25,
+        width: 55,
+        height: 55,
+        borderRadius: 20,
     },
     textContainer: {
         flex: 1,
-        marginLeft: 10,
+        marginLeft: 20,
     },
     username: {
-        fontWeight: 'bold',
+        fontSize: 18,
+        fontWeight: '300'
     },
-    additionalInfo: {
-        color: '#666',
-    },
-    time: {
-        marginLeft: 10,
-        color: '#666',
+    newIndicatorImage: {
+        width: 45,
+        height: 45,
+        marginBottom: 10
     },
 });
 

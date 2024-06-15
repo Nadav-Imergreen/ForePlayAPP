@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
-import { View, Image, Text, TouchableWithoutFeedback, StyleSheet, PanResponder, Animated, Alert } from "react-native";
-import {
-    getCurrentUser,
-    getUsersBy,
-} from "../services/Databases/users";
+import { View, Image, Text, TouchableWithoutFeedback, StyleSheet, Dimensions, Animated, Alert } from "react-native";
+import { getCurrentUser, getUsersBy, getAllUsers } from "../services/Databases/users";
 import {saveSeen, saveLike, saveLikeMe, checkForMatch, getMatchingData} from "../services/Databases/matchingData";
 import {createConversation} from "../services/Databases/chat";
 import ProfileCard from "../components/ProfileCard";
 import LinearGradient from 'react-native-linear-gradient';
 import ItsMatchModal from "../components/ItsMatchModal";
+import Loader from '../services/loadingIndicator';
+import { BlurView } from '@react-native-community/blur';
+import { CommonActions } from '@react-navigation/native';
 
-const MatchesScreen = () => {
+const MatchesScreen = ({navigation}) => {
 
     const [currentUser, setCurrentUser] = useState();
     const [suggestedUsers, setSuggestedUsers] = useState([]); // State for suggested users
@@ -30,51 +30,69 @@ const MatchesScreen = () => {
     const [likes, setLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
 
+    const [loading, setLoading] = useState(true);
+    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+    const [conversationId, setConversationId] = useState(null);
+
+    const [goToChat, setgoToChat] = useState(false);
 
     useEffect(() => {
       const fetchData = async () => {
           try {
               // Get current user info
-              const currentUser = await getCurrentUser().catch((err) => console.log(err));
+              const currentUser = await getCurrentUser();
               setCurrentUser(currentUser);
-
+              
               const { partner_gender, preferredAgeRange, radius } = currentUser || {};
+              let usersSnapshot;
+  
+              // Check if user preferences are available
               if (!partner_gender || !preferredAgeRange || !radius) {
-                setNoResults(true);
-                Alert.alert(
-                    "Oops",
-                    "Fill your preferences to begin matching with others.",
-                    [{ text: "OK" }],
-                    { cancelable: false }
-                );
-                return;
+                  Alert.alert(
+                      "Notice",
+                      "You will get better results with preferences, but for now we will show you everyone.",
+                      [{ text: "OK" }],
+                      { cancelable: false }
+                  );
+  
+                  // Fetch all users without applying preferences
+                  usersSnapshot = await getAllUsers();
+              } else {
+                  // Fetch users based on preferences
+                  usersSnapshot = await getUsersBy(currentUser);
               }
-    
-              // Only proceed to fetch suggested users if preferences are available
-              const usersSnapshot = await getUsersBy(currentUser);
-             
+  
               // Get IDs of users already seen by the current user
               const userMatchingData = await getMatchingData();
-              const seenUserIds = userMatchingData ? userMatchingData.map(currentUser => Object.values(currentUser)[0]) : [];
-;
-              // Combined operation to map documents, calculate distance, filter by radius preference, and filter out seen users
+              const seenUserIds = userMatchingData ? userMatchingData.map(entry => Object.values(entry)[0]) : [];
+  
+              // Filter out seen users and calculate distance if preferences are available
               const usersWithDistance = usersSnapshot.docs.map(doc => {
                   const user = {
                       id: doc.id,
                       ...doc.data()
                   };
 
-                  // Calculate distance between current user and suggested user
-                  const distance = Math.round(calculateDistance(currentUser.location.latitude, currentUser.location.longitude, user.location.latitude, user.location.longitude));
-
-                  // Check if the user is within the radius preference and not already seen
-                  if (distance <= currentUser.radius[0] && !seenUserIds.includes(user.userId)) {
-
-                      // If within radius and not already seen, add distance to user object
-                      user.distance = distance;
-                      return user;
+                  // Check if the user is not already seen and is not the current user
+                  if (!seenUserIds.includes(user.userId) && user.userId !== currentUser.userId) {
+                      if (radius) {
+                          // Calculate distance between current user and suggested user
+                          const distance = Math.round(calculateDistance(currentUser.location.latitude, currentUser.location.longitude, user.location.latitude, user.location.longitude));
+  
+                          // Check if the user is within the radius preference
+                          if (distance <= currentUser.radius[0]) {
+                              // If within radius, add distance to user object
+                              user.distance = distance;
+                              return user;
+                          } else {
+                              return null;
+                          }
+                      } else {
+                          // If no preferences, add user directly
+                          return user;
+                      }
                   } else {
-                      // If not within radius or already seen, return null
                       return null;
                   }
               }).filter(user => user !== null); // Remove null entries from the array
@@ -85,18 +103,21 @@ const MatchesScreen = () => {
                   setNoResults(true);
               }
 
+              setLoading(false);
+  
           } catch (error) {
               console.error("Failed to fetch suggested users:", error.message);
               Alert.alert(
                   "Oops",
                   "We couldn't find people in your area. Please give it another try.",
-                  [{ text: "Lets try again", onPress: fetchData }],
+                  [{ text: "Let's try again", onPress: fetchData }],
                   { cancelable: true }
               );
           }
       };
       fetchData();
   }, []);
+
 
     const calculateDistance = (lat1, lon1, lat2, lon2) => {
       const R = 6371; // Radius of the Earth in kilometers
@@ -123,6 +144,21 @@ const MatchesScreen = () => {
       handleDislike();
     }, [dislikes]);
 
+    useEffect(() => {
+      handleModalClose();
+    
+      if (goToChat) {
+        setTimeout(() => {
+          go();
+        }, 1000); // Adjust the delay as necessary
+      }
+    }, [goToChat]);
+
+    const go = () => {
+      const id = 'FC9ULDifiWwNzpd0MOlR'
+      navigation.navigate('Conversations');
+    };
+
     // Function to handle navigation to the next profile.
     const nextProfile = () => {
         setPhotoIndex(0);
@@ -135,17 +171,19 @@ const MatchesScreen = () => {
 
     const handleLike = () => {
       if (suggestedUsers.length > 0){
+        setIsButtonDisabled(true);
         setShowLike(true);
         const likedUser = suggestedUsers[currentIndex];
         const likedUserId = likedUser.userId;
 
         // First, check for a match
         checkForMatch(likedUserId)
-          .then(isMatch => {
+          .then(async isMatch => {
               if (isMatch) {
                   setMatchedUser(likedUser);
                   setMatchVisible(true);
-                  createConversation(likedUserId);
+                  const id = await createConversation(likedUserId);
+                  setConversationId(id);
               }
           })
           .then(() => saveSeen(likedUserId)
@@ -166,13 +204,16 @@ const MatchesScreen = () => {
             nextProfile();
             pan.setValue({ x: 0, y: 0 });
             setShowLike(false);
+            setIsButtonDisabled(false);
           });
         }, 400); // Adjust the timeout duration as per your requirement
       }
+      
     };
 
     const handleDislike = () => {
       if (suggestedUsers.length > 0){
+        setIsButtonDisabled(true);
         setShowDislike(true);
         saveSeen(suggestedUsers[currentIndex].userId);
 
@@ -187,6 +228,7 @@ const MatchesScreen = () => {
             nextProfile();
             pan.setValue({ x: 0, y: 0 });
             setShowDislike(false);
+            setIsButtonDisabled(false);
           });
         }, 300); // Adjust the timeout duration as per your requirement
       }
@@ -206,6 +248,7 @@ const MatchesScreen = () => {
             <Text style={styles.noSuggestionsText}>
               {noResults ? "No people in your area" : "Looking for people..."}
             </Text>
+            {loading && <Loader />}
           </View>
         )}
   
@@ -213,32 +256,48 @@ const MatchesScreen = () => {
         {suggestedUsers.length > 0 && currentIndex < suggestedUsers.length && (
           <>
             {/* Next profile card */}
-            {suggestedUsers[nextIndexRef.current] && (
-
-              <View style={styles.card}>
-                <View style={styles.imageContainer}>
-                  <Image style={styles.image} resizeMode='contain' source={{ uri: suggestedUsers[nextIndexRef.current].images[0] }} />
-                  <View style={styles.photosIndicator}>
-                    {suggestedUsers[nextIndexRef.current].images.map((_, index) => (
-                      <View key={index} style={[styles.indicator, index === 0 ? styles.filledIndicator : styles.unfilledIndicator]} />
-                    ))}
-                  </View>
+            {suggestedUsers[nextIndexRef.current] && suggestedUsers[nextIndexRef.current].images?.length > 0 && (
+            <>
+                <View style={styles.card}>
+                    <View style={styles.imageContainer}>
+                        <Image 
+                            style={styles.image} 
+                            resizeMode='contain' 
+                            source={{ uri: suggestedUsers[nextIndexRef.current].images[0] }} 
+                        />
+                        <View style={styles.photosIndicator}>
+                            {suggestedUsers[nextIndexRef.current].images.map((_, index) => (
+                                <View 
+                                    key={index} 
+                                    style={[styles.indicator, index === 0 ? styles.filledIndicator : styles.unfilledIndicator]} 
+                                />
+                            ))}
+                        </View>
+                    </View>
+                    <View style={styles.overlayContainer}>
+                        <LinearGradient
+                            colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)']} // Gradient colors from white to black
+                            style={styles.gradientOverlay}
+                        />
+                        <Text style={styles.userName}>
+                            {suggestedUsers[nextIndexRef.current].firstName}, {suggestedUsers[nextIndexRef.current].age}
+                        </Text>
+                        <Text style={styles.distance}>
+                            {suggestedUsers[nextIndexRef.current].distance} kilometers from you
+                        </Text>
+                    </View>
                 </View>
-                  <View style={styles.overlayContainer}>
-                  <LinearGradient
-                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.5)', 'rgba(0, 0, 0, 1)', 'rgba(0, 0, 0, 1)']} // Gradient colors from white to black
-                    style={styles.gradientOverlay}
-                  />
-                  <Text style={styles.userName}>{suggestedUsers[nextIndexRef.current].firstName}, {suggestedUsers[nextIndexRef.current].age}</Text>
-                  <Text style={styles.distance}>{suggestedUsers[nextIndexRef.current].distance} kilometers from you</Text>
-                </View>
-              </View>
-
-
-            )}
+                <BlurView
+                    style={StyleSheet.absoluteFill}
+                    blurType="light"
+                    blurAmount={15} // Adjust the blur amount as needed
+                />
+            </>
+          )}
 
             {/* Current profile card */}
-            {suggestedUsers[currentIndex].images[0] && (
+            {suggestedUsers[currentIndex]?.images?.[0] && (
+              <>
               <ProfileCard
                   suggestedUsers={suggestedUsers}
                   currentIndex={currentIndex}
@@ -254,7 +313,7 @@ const MatchesScreen = () => {
                   photoIndex={photoIndex}
                   setPhotoIndex={setPhotoIndex}
               />
-
+            </>
             )}
 
             {/* Its a Match modal */}
@@ -264,15 +323,17 @@ const MatchesScreen = () => {
                     user1={currentUser}
                     user2={matchedUser}
                     onClose={handleModalClose}
+                    conversationId={conversationId}
+                    navigation={navigation}
                 />
             </View>}
 
   
             <View style={styles.buttonContainer}>
               <TouchableWithoutFeedback
-                  onPressIn={() => setDislikePressed(true)}
-                  onPressOut={() => setDislikePressed(false)}
-                  onPress={handleDislike}
+                  onPressIn={isButtonDisabled ? undefined : () => setDislikePressed(true)}
+                  onPressOut={isButtonDisabled ? undefined : () => setDislikePressed(false)}
+                  onPress={isButtonDisabled ? undefined : handleDislike}
                 >
                   <Animated.View style={[styles.buttonBody, { backgroundColor: dislikePressed ? '#f06478' : '#ffffff', transform: [{ scale: dislikePressed ? 1.2 : 1 }] }]}>
                     <Image
@@ -283,10 +344,10 @@ const MatchesScreen = () => {
                 </TouchableWithoutFeedback>
 
                 <TouchableWithoutFeedback
-                  onPressIn={() => setLikePressed(true)}
-                  onPressOut={() => setLikePressed(false)}
-                  onPress={handleLike}
-                >
+                  onPressIn={isButtonDisabled ? undefined : () => setLikePressed(true)}
+                  onPressOut={isButtonDisabled ? undefined : () => setLikePressed(false)}
+                  onPress={isButtonDisabled ? undefined : handleLike}
+                  >
                   <Animated.View style={[styles.buttonBody, { backgroundColor: likePressed ? '#a4cdbd' : '#ffffff', transform: [{ scale: likePressed ? 1.2 : 1 }] }]}>
                     <Image
                       source={likePressed ? require('../assets/like.png') : require('../assets/like_pressed.png')}
@@ -312,7 +373,6 @@ const MatchesScreen = () => {
     container: {
       flex: 1,
       alignItems: 'center',
-      paddingHorizontal: 10,
       paddingBottom: 110
     },
     card: {
@@ -428,6 +488,7 @@ const MatchesScreen = () => {
     noSuggestionsText: {
       fontSize: 20, // Adjust the font size as needed
       textAlign: 'center',
+      marginBottom: 30
     },
     likeContainer: {
       position: 'absolute',

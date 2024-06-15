@@ -50,7 +50,7 @@ export default function App() {
             <Stack.Navigator initialRouteName='Welcome'>
                 {user ? (
                     <>
-                        {/*<Stack.Screen name="LocationPermission" component={LocationPermissionScreen} options={{headerShown: false}}/>*/}
+                        <Stack.Screen name="LocationPermission" component={LocationPermissionScreen} options={{headerShown: false}}/>
                         <Stack.Screen name="TabNavigator" component={BottomTabNav} options={{headerShown: false}}/>
                         <Stack.Screen name="UserInfoScreen" component={UserInfoScreen}/>
                         <Stack.Screen name="My profile" component={EditUserInfoScreen}/>
