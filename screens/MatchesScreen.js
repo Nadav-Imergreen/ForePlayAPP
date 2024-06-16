@@ -35,7 +35,6 @@ const MatchesScreen = ({navigation}) => {
 
     const [conversationId, setConversationId] = useState(null);
 
-    const [goToChat, setgoToChat] = useState(false);
 
     useEffect(() => {
       const fetchData = async () => {
@@ -143,21 +142,6 @@ const MatchesScreen = ({navigation}) => {
     useEffect(() => {
       handleDislike();
     }, [dislikes]);
-
-    useEffect(() => {
-      handleModalClose();
-    
-      if (goToChat) {
-        setTimeout(() => {
-          go();
-        }, 1000); // Adjust the delay as necessary
-      }
-    }, [goToChat]);
-
-    const go = () => {
-      const id = 'FC9ULDifiWwNzpd0MOlR'
-      navigation.navigate('Conversations');
-    };
 
     // Function to handle navigation to the next profile.
     const nextProfile = () => {

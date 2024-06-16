@@ -6,6 +6,8 @@ import ConversationItem from '../components/conversationItem';
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 
 const ConversationsScreen = ({ navigation, route }) => {
+
+    const [isLoading, setIsLoading] = useState([]);
     const [conversations, setConversations] = useState([]);
     const { conversationId } = route.params || {};
 

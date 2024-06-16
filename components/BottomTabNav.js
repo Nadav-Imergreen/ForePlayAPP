@@ -104,6 +104,7 @@ const BottomTabNav = ({navigation}) => {
                             style={styles.icon}
                         />
                     ),
+                    unmountOnBlur: true
                 }}
             />
         </Tab.Navigator>

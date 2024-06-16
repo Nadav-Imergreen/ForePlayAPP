@@ -35,6 +35,8 @@ const UserInfoScreen = () => {
     };
 
     const handleEditPreferences = () => {
+        console.log('1serData');
+        console.log(userData);
         navigation.navigate("My Preferences", { userData: userData });
     };
 

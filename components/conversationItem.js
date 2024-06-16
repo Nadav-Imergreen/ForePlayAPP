@@ -26,17 +26,15 @@ const ConversationItem = ({ item, navigation }) => {
 
     const isNew = !item.openedBy || !item.openedBy.includes(auth.currentUser.uid);
 
-    if (!secondUserProfile) {
-        return <Text>Loading...</Text>;
-    }
-
 
     return (
+        
         <Pressable     
             style={({ pressed }) => [
             { backgroundColor: pressed ? 'lightgray' : '#F8F8F8',},
             styles.pressable,
         ]} onPress={handlePress}>
+            {secondUserProfile && 
             <View style={styles.conversationItem}>
                 <Image
                     source={{ uri: secondUserProfile.images[0] }}
@@ -51,7 +49,7 @@ const ConversationItem = ({ item, navigation }) => {
                         style={styles.newIndicatorImage}
                     />
                 )}
-            </View>
+            </View>}
         </Pressable>
     );
 };
